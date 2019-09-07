@@ -1,0 +1,6 @@
+[submodule "Code/Submodule/Engine"]
+	path = Code/Submodule/Engine
+	url = https://github.com/adamriley1219/Engine.git
+[submodule "Code/Submodule"]
+	path = Code/Submodule
+	url = https://github.com/adamriley1219/Engine.git
