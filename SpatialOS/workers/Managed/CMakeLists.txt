@@ -29,6 +29,9 @@ set(VS_STARTUP_PROJECT ${PROJECT_NAME})
 file(GLOB_RECURSE SOURCE_FILES
     "src/*.cc"
     "src/*.cpp"
+    "../../../Code/*.cc"
+    "../../../Code/*.hpp"
+    "../../../Code/*.cpp"
     "src/*.h"
     "src/*.hpp")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
