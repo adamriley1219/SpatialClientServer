@@ -19,5 +19,7 @@ source_group(generated_code\\improbable "${GENERATED_CODE_DIR}/improbable/[^/]*"
 
 add_library(Schema STATIC ${SCHEMA_FILES} ${SCHEMA_SOURCE_FILES})
 target_include_directories(Schema SYSTEM PUBLIC "${GENERATED_CODE_DIR}")
+target_include_directories(Schema SYSTEM PUBLIC "${APPLICATION_ROOT}/../Code/")
+target_include_directories(Schema SYSTEM PUBLIC "${APPLICATION_ROOT}/../Code/Submodule/Engine/Code/")
 
 target_link_libraries(Schema PRIVATE WorkerSdk)
