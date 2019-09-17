@@ -15,7 +15,7 @@ if(MSVC)
   add_definitions(/W2)
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  add_definitions(-Wall -Wextra -Werror -pedantic)
+#  add_definitions(-Wall -Wextra -Werror -pedantic)
 endif()
 
 add_subdirectory(${WORKER_SDK_DIR} "${CMAKE_CURRENT_BINARY_DIR}/WorkerSdk")
@@ -29,9 +29,11 @@ set(VS_STARTUP_PROJECT ${PROJECT_NAME})
 file(GLOB_RECURSE SOURCE_FILES
     "src/*.cc"
     "src/*.cpp"
-    "../../../Code/*.cc"
-    "../../../Code/*.hpp"
-    "../../../Code/*.cpp"
+    "../../../Code/Server/*.cc"
+    "../../../Code/Server/*.hpp"
+    "../../../Code/Server/*.cpp"
+    "../../../Code/Shared/*.hpp"
+    "../../../Code/Shared/*.cpp"
     "src/*.h"
     "src/*.hpp")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

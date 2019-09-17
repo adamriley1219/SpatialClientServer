@@ -15,7 +15,7 @@
 #include "Game/App.hpp"
 #include <vector>
 
-#include <Math.h>
+#include <math.h>
 //--------------------------------------------------------------------------
 /**
 * Game
@@ -56,7 +56,7 @@ void Game::Shutdown()
 
 }
 
-static int g_index = 0;
+//static int g_index = 0;
 
 //--------------------------------------------------------------------------
 /**
@@ -66,7 +66,7 @@ bool Game::HandleKeyPressed( unsigned char keyCode )
 {
 	if( keyCode == 'O' )
 	{
-		g_index = ++g_index % ( 8 * 2 );
+//		g_index = ++g_index % ( 8 * 2 );
 	}
 	if( keyCode == 'W' )
 	{
@@ -126,7 +126,7 @@ void Game::GameRender() const
 	SpriteSheet spriteSheet( (TextureView*)testTexture2, IntVec2( 8, 2 ), Vec2::ZERO, Vec2::ONE );
 	Vec2 uvAtBottomLeft = Vec2(0.0f, 0.0f);
 	Vec2 uvAtTopRight = Vec2(1.0f, 1.0f);
-	SpriteDefinition sd = spriteSheet.GetSpriteDefinition( g_index );
+	SpriteDefinition sd = spriteSheet.GetSpriteDefinition( 0 );
 	sd.GetUVs(uvAtBottomLeft, uvAtTopRight);
 	std::vector<Vertex_PCU> ssVerts;
 	AddVertsForAABB2D(ssVerts, AABB2( 85.f, 80.f, 90.f, 90 ), Rgba( 1.0f, 1.0f, 1.0f ), uvAtBottomLeft, uvAtTopRight );

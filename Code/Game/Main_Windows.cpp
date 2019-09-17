@@ -1,3 +1,7 @@
+
+
+#ifdef _WIN32
+
 #define WIN32_LEAN_AND_MEAN		// Always #define this before #including <windows.h>
 #include <windows.h>			// #include this (massive, platform-specific) header in very few places
 #include <math.h>
@@ -15,28 +19,12 @@
 #include "Game/GameCommon.hpp"
 #include "Game/App.hpp"
 
+//-----------------------------------------------------------------------------------------------
 
+constexpr float CLIENT_ASPECT = 2.0f; 
+const char* APP_NAME = "Protogame3D";					
 
 //-----------------------------------------------------------------------------------------------
-// #SD1ToDo: Move these constants to GameCommon.hpp or elsewhere
-// 
-constexpr float CLIENT_ASPECT = 2.0f; // We are requesting a 1:1 aspect (square) window area
-
-
-									  //-----------------------------------------------------------------------------------------------
-									  // #SD1ToDo: Move each of these items to its proper place, once that place is established
-									  // 
-void* g_hWnd = nullptr;							// ...becomes WindowContext::m_windowHandle
-HDC g_displayDeviceContext = nullptr;			// ...becomes WindowContext::m_displayContext
-HGLRC g_openGLRenderingContext = nullptr;		// ...becomes RenderContext::m_apiRenderingContext
-const char* APP_NAME = "Protogame3D";					// ...becomes ???
-
-														//-----------------------------------------------------------------------------------------------
-														// Handles Windows (Win32) messages/events; i.e. the OS is trying to tell us something happened.
-														// This function is called by Windows whenever we ask it for notifications
-														//
-														// #SD1ToDo: We will move this function to a more appropriate place later on...
-														//
 static bool AppWindowProc( void* windowHandle, uint32_t wmMessageCode, uintptr_t wParam, uintptr_t lParam )
 {
 	UNREFERENCED_PARAMETER(windowHandle); 
@@ -101,49 +89,18 @@ static bool AppWindowProc( void* windowHandle, uint32_t wmMessageCode, uintptr_t
 }
 
 //-----------------------------------------------------------------------------------------------
-// #SD1ToDo: We will move this function to a more appropriate place later on...
-//
 void CreateWindowAndRenderContext( float clientAspect )
 {
 	g_theWindowContext = new WindowContext();
 	g_theWindowContext->Create( APP_NAME, clientAspect, .90f, AppWindowProc ); 
-
-	// this is the end of the windows part
-	// 	PIXELFORMATDESCRIPTOR pixelFormatDescriptor;
-	// 	memset( &pixelFormatDescriptor, 0, sizeof( pixelFormatDescriptor ) );
-	// 	pixelFormatDescriptor.nSize = sizeof( pixelFormatDescriptor );
-	// 	pixelFormatDescriptor.nVersion = 1;
-	// 	pixelFormatDescriptor.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-	// 	pixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
-	// 	pixelFormatDescriptor.cColorBits = 24;
-	// 	pixelFormatDescriptor.cDepthBits = 24;
-	// 	pixelFormatDescriptor.cAccumBits = 0;
-	// 	pixelFormatDescriptor.cStencilBits = 8;
-	// 
-	// 	int pixelFormatCode = ChoosePixelFormat( g_displayDeviceContext, &pixelFormatDescriptor );
-	// 	SetPixelFormat( g_displayDeviceContext, pixelFormatCode, &pixelFormatDescriptor );
-	// 	g_openGLRenderingContext = wglCreateContext( g_displayDeviceContext );
-	// 	wglMakeCurrent( g_displayDeviceContext, g_openGLRenderingContext );
-
-
 }
-
-
 //-----------------------------------------------------------------------------------------------
-// Processes all Windows messages (WM_xxx) for this app that have queued up since last frame.
-// For each message in the queue, our WindowsMessageHandlingProcedure (or "WinProc") function
-//	is called, telling us what happened (key up/down, minimized/restored, gained/lost focus, etc.)
-//
-// #SD1ToDo: We will move this function to a more appropriate place later on...
-//
 void RunMessagePump()
 {
 	g_theWindowContext->BeginFrame(); 
 }
 
 //-----------------------------------------------------------------------------------------------
-// One "frame" of the game.  Generally: Input, Update, Render.  We call this 60+ times per second.
-//
 void RunFrame()
 {
 	RunMessagePump();
@@ -151,6 +108,7 @@ void RunFrame()
 	g_theApp->RunFrame( (float) GetCurrentTimeSeconds() );	
 
 }
+
 //-----------------------------------------------------------------------------------------------
 void Startup()
 {
@@ -162,7 +120,6 @@ void Startup()
 	g_theApp = new App();
 	g_theApp->Startup();
 }
-
 
 //-----------------------------------------------------------------------------------------------
 void Shutdown()
@@ -178,7 +135,6 @@ void Shutdown()
 
 }
 
-
 //-----------------------------------------------------------------------------------------------
 int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR commandLineString, int )
 {
@@ -192,10 +148,11 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	while( !g_theApp->IsQuitting()) 
 	{
 		RunFrame();
-		//SwapBuffers( g_displayDeviceContext );
 		Sleep(0);
 	}
 
 	Shutdown();
 	return 0;
 }
+
+#endif
