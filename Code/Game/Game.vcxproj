@@ -31,7 +31,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -44,7 +44,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -101,13 +101,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\include;%(AdditionalLibraryDirectories);$(SolutionDir)SpatialOS\generated_code\cpp</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\WorkerSdk.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\CoreSdk.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\libprotobuf.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\RakNetLibStatic.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\zlibstatic.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\grpc++.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\grpc.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\gpr.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\ssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run"</Command>
@@ -115,6 +117,9 @@
     <PostBuildEvent>
       <Message>Copying $(TargetFileName) to $(SolutionDir)Run...</Message>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -122,13 +127,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\include;%(AdditionalLibraryDirectories);$(SolutionDir)SpatialOS\generated_code\cpp</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\WorkerSdk.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\CoreSdk.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\libprotobuf.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\RakNetLibStatic.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\zlibstatic.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\grpc++.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\grpc.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\gpr.lib;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\lib\ssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /F /I "$(TargetPath)" "$(SolutionDir)Run"</Command>
@@ -136,6 +143,9 @@
     <PostBuildEvent>
       <Message>Copying $(TargetFileName) to $(SolutionDir)Run...</Message>
     </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -206,6 +216,15 @@
     <Xml Include="..\..\Run\Data\GameConfig.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SpatialOS\workers\External\cmake_build\Schema\Schema.vcxproj">
+      <Project>{7f705197-ede7-3b18-867b-d875f9e24919}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SpatialOS\workers\External\cmake_build\ZERO_CHECK.vcxproj">
+      <Project>{37349e70-be23-38d0-9075-76f9a5ee9503}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.vcxproj">
+      <Project>{229e7a27-1ca9-4a52-8365-edb039cc4abf}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Submodule\Engine\Code\Engine\Engine.vcxproj">
       <Project>{1ad4ec92-d7fb-4cfd-b03f-bdcab345673e}</Project>
     </ProjectReference>

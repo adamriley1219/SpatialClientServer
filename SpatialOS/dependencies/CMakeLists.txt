@@ -33,6 +33,10 @@ find_library(LIB_RAKNET_DEBUG
   NAMES RakNetLibStatic
   PATHS "${CPP_WORKER_SDK_DIR}/debug/lib" "${CPP_WORKER_SDK_DIR}/lib"
   NO_DEFAULT_PATH)
+#find_library(LIB_FMOD_DEBUG
+#  NAMES fmod64_vc
+#  PATHS "${CPP_WORKER_SDK_DIR}/debug/lib" "${CPP_WORKER_SDK_DIR}/lib"
+#  NO_DEFAULT_PATH)
 find_library(LIB_SSL_DEBUG
   NAMES ssl
   PATHS "${CPP_WORKER_SDK_DIR}/debug/lib" "${CPP_WORKER_SDK_DIR}/lib"
@@ -71,6 +75,10 @@ find_library(LIB_RAKNET_RELEASE
   NAMES RakNetLibStatic
   PATHS "${CPP_WORKER_SDK_DIR}/release/lib" "${CPP_WORKER_SDK_DIR}/lib"
   NO_DEFAULT_PATH)
+#find_library(LIB_FMOD_RELEASE
+#  NAMES fmod64_vc
+#  PATHS "${CPP_WORKER_SDK_DIR}/release/lib" "${CPP_WORKER_SDK_DIR}/lib"
+#  NO_DEFAULT_PATH)
 find_library(LIB_SSL_RELEASE
   NAMES ssl
   PATHS "${CPP_WORKER_SDK_DIR}/release/lib" "${CPP_WORKER_SDK_DIR}/lib"
@@ -104,6 +112,7 @@ target_link_libraries(WorkerSdk INTERFACE
   debug ${LIB_CORE_SDK_DEBUG} optimized ${LIB_CORE_SDK_RELEASE}
   debug ${LIB_PROTOBUF_DEBUG} optimized ${LIB_PROTOBUF_RELEASE}
   debug ${LIB_RAKNET_DEBUG} optimized ${LIB_RAKNET_RELEASE}
+#  debug ${LIB_FMOD_DEBUG} optimized ${LIB_FMOD_RELEASE}
   debug ${LIB_ZLIB_DEBUG} optimized ${LIB_ZLIB_RELEASE}
   debug ${LIB_GRPCXX_DEBUG} optimized ${LIB_GRPCXX_RELEASE}
   debug ${LIB_GRPC_DEBUG} optimized ${LIB_GRPC_RELEASE}

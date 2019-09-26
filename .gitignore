@@ -20,6 +20,7 @@
 *.db
 *.sdf
 *.opensdf
+*.txt
 
 # The ! reverses a rule - so we're not ignoring
 # obj files anywhere in the data folder; Or DLLs in my 

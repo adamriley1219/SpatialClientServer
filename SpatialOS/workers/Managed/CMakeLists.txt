@@ -27,15 +27,12 @@ set(VS_STARTUP_PROJECT ${PROJECT_NAME})
 
 # The worker binary.
 file(GLOB_RECURSE SOURCE_FILES
-    "src/*.cc"
-    "src/*.cpp"
     "../../../Code/Server/*.cc"
     "../../../Code/Server/*.hpp"
     "../../../Code/Server/*.cpp"
     "../../../Code/Shared/*.hpp"
-    "../../../Code/Shared/*.cpp"
-    "src/*.h"
-    "src/*.hpp")
+    "../../../Code/Shared/*.cpp")
+    
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} WorkerSdk Schema)
 

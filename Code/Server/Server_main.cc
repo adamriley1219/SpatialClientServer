@@ -39,7 +39,7 @@ std::string get_random_characters(size_t count) {
 // Entry point
 int main(int argc, char** argv) {
     auto now = std::chrono::high_resolution_clock::now();
-    std::srand(std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count());
+    std::srand( (unsigned int) std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count() );
 
     std::cout << "[local] Worker started " << std::endl;
 
