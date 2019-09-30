@@ -10,9 +10,13 @@
 #include "Engine/Renderer/SpriteAnimDefinition.hpp"
 #include "Engine/Core/Debug/DevConsole.hpp"
 #include "Engine/Core/EventSystem.hpp"
+#include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
+
+
 #include "Game/Game.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/App.hpp"
+
 #include <vector>
 
 #include <math.h>
@@ -210,6 +214,8 @@ void Game::GameRender() const
 	{
 		RenderDebug();
 	}
+
+	g_theDebugRenderSystem->RenderToCamera( &g_theGame->m_CurentCamera );
 }
 
 //--------------------------------------------------------------------------

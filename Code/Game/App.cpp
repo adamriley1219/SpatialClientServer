@@ -8,6 +8,7 @@
 #include "Engine/Core/Debug/DevConsole.hpp"
 #include "Engine/Core/EventSystem.hpp"
 #include "Engine/Physics/PhysicsSystem.hpp"
+#include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
 #include "Game/GameCommon.hpp"
 
 //--------------------------------------------------------------------------
@@ -30,10 +31,13 @@ WindowContext* g_theWindowContext = nullptr;
 */
 void App::Startup()
 {
+	EngineStartup();
+
 	g_theRNG = new RNG();
 	g_theEventSystem = new EventSystem();
 	g_theConsole = new DevConsole( "SquirrelFixedFont" );
 	g_theRenderer = new RenderContext( g_theWindowContext );
+	g_theDebugRenderSystem = new DebugRenderSystem(g_theRenderer, 50.0f, 100.0f, "SquirrelFixedFont");
 	g_theInputSystem = new InputSystem();
 	g_theAudioSystem = new AudioSystem();
 	g_thePhysicsSystem = new PhysicsSystem();
@@ -41,9 +45,13 @@ void App::Startup()
 
 	g_theEventSystem->Startup();
 	g_theRenderer->Startup();
+	g_theDebugRenderSystem->Startup();
 	g_theConsole->Startup();
 	g_thePhysicsSystem->Startup();
 	g_theGame->Startup();
+
+	EventArgs args;
+	g_theDebugRenderSystem->Command_Open(args);
 
 	RegisterEvents();
 }
@@ -57,8 +65,11 @@ void App::Shutdown()
 	g_theGame->Shutdown();
 	g_thePhysicsSystem->Shutdown();
 	g_theConsole->Shutdown();
+	g_theDebugRenderSystem->Shutdown();
 	g_theRenderer->Shutdown();
 	g_theEventSystem->Shutdown();
+
+	EngineShutdown();
 
 	delete g_theGame;
 	g_theGame = nullptr;
@@ -68,11 +79,36 @@ void App::Shutdown()
 	g_theInputSystem = nullptr;
 	delete g_theConsole;
 	g_theConsole = nullptr;
+	delete g_theDebugRenderSystem;
+	g_theDebugRenderSystem = nullptr;
 	delete g_theRenderer;
 	g_theRenderer = nullptr;
 	delete g_theRNG;
 	g_theRNG = nullptr;
 }
+
+//--------------------------------------------------------------------------
+static float fpsGroup[50] = { 60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60 };
+static uint fpsIdx = 0;
+static float allFpsAccumilated = 60.0f * 50.0f;
+
+static void addFPS( float deltaTime )
+{
+	allFpsAccumilated -= fpsGroup[fpsIdx];
+	fpsGroup[fpsIdx] = 1.0f / deltaTime;
+	allFpsAccumilated += fpsGroup[fpsIdx];
+	fpsIdx++;
+	if( fpsIdx >= 50 )
+	{
+		fpsIdx = 0;
+	}
+}
+
+static float getAvgFPS()
+{
+	return allFpsAccumilated / 50.0f;
+}
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 /**
@@ -84,6 +120,7 @@ void App::RunFrame( float timeFrameBeganSec )
 	m_time = timeFrameBeganSec;
 
 	float deltaTime = (float) ( timeFrameBeganSec - timeLastFrameSec );
+	addFPS(deltaTime);
 
 	deltaTime = Clamp( deltaTime, 0.0f, 0.1f );
 
@@ -100,6 +137,8 @@ void App::RunFrame( float timeFrameBeganSec )
 		deltaTime *= 4.0f;
 	}
 
+	float fps = getAvgFPS();
+	DebugRenderMessage( 0.0f, Rgba::YELLOW, Rgba::YELLOW, "%.2f", fps );
 
 	BeginFrame();
 	Update( deltaTime );
@@ -230,11 +269,12 @@ void App::TogglePause()
 */
 void App::BeginFrame()
 {
-	g_theEventSystem->	BeginFrame();
-	g_theRenderer->		BeginFrame();
-	g_theConsole->		BeginFrame();
-	g_theInputSystem->	BeginFrame();
-	g_theAudioSystem->	BeginFrame();
+	g_theDebugRenderSystem->BeginFrame();
+	g_theEventSystem->		BeginFrame();
+	g_theRenderer->			BeginFrame();
+	g_theConsole->			BeginFrame();
+	g_theInputSystem->		BeginFrame();
+	g_theAudioSystem->		BeginFrame();
 
 }
 
@@ -247,6 +287,7 @@ void App::Update( float deltaSeconds )
 {
 	g_theConsole->	Update();
 	g_theGame->		UpdateGame( deltaSeconds );
+	g_theDebugRenderSystem->Update();
 }
 
 //--------------------------------------------------------------------------
@@ -312,12 +353,16 @@ void App::RenderDebugLeftJoystick() const
 void App::Render() const
 {
 	g_theRenderer->ClearScreen( Rgba::BLACK );
-	if( g_isInDebug )
+	g_theGame->GameRender();
+
+	if (g_theConsole->IsOpen())
 	{
-		RenderDebugLeftJoystick();
+		g_theConsole->Render(g_theRenderer, g_theGame->m_DevColsoleCamera, m_consoleTextHeight);
 	}
-	g_theGame->		GameRender();
-	g_theConsole->	Render( g_theRenderer, g_theGame->m_DevColsoleCamera, m_consoleTextHeight );
+	else
+	{
+		g_theDebugRenderSystem->RenderToScreen();
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -326,11 +371,12 @@ void App::Render() const
 */
 void App::EndFrame()
 {
-	g_theConsole->		EndFrame();
-	g_theAudioSystem->	EndFrame();
-	g_theInputSystem->	EndFrame();
-	g_theRenderer->		EndFrame();
-	g_theEventSystem->	EndFrame();
+	g_theDebugRenderSystem->EndFrame();
+	g_theConsole->			EndFrame();
+	g_theAudioSystem->		EndFrame();
+	g_theRenderer->			EndFrame();
+	g_theEventSystem->		EndFrame();
+	g_theInputSystem->		EndFrame();
 }
 
 //--------------------------------------------------------------------------

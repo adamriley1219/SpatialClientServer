@@ -35,7 +35,7 @@ using EmptyRegistry = worker::Components<>;
 
 // Constants and parameters
 const int ErrorExitStatus = 1;
-const std::string kLoggerName = "startup.cc";
+const std::string kLoggerName = "client";
 const std::uint32_t kGetOpListTimeoutInMilliseconds = 100;
 
 // Connection helpers
