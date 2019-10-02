@@ -203,6 +203,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameUtils.cpp" />
     <ClCompile Include="Main_Windows.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameCommon.hpp" />
     <ClInclude Include="GameUtils.hpp" />
+    <ClInclude Include="PlayerController.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run\Data\GameConfig.xml" />

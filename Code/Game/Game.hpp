@@ -1,6 +1,9 @@
 #pragma once
 #include "Game/GameCommon.hpp"
 
+
+class Entity;
+class PlayerController;
 class Shader;
 
 class Game
@@ -19,12 +22,10 @@ public:
 	void GameRender() const;
 	void UpdateGame( float deltaSeconds );
 
+	void BeginCamera();
+	void EndCamera();
 
 private:
-	//Render
-	void RenderDebug() const;
-	void RenderDebugCosmetics() const;
-	void RenderDebugPhysics() const;
 	void RenderDevConsole() const;
 
 	void UpdateCamera( float deltaSeconds );
@@ -40,7 +41,10 @@ private:
 
 	Shader* m_shader;
 
-	Camera m_CurentCamera;
+	mutable Camera m_curentCamera;
 	mutable Camera m_DevColsoleCamera;
+
+	PlayerController* m_clientController = nullptr;
+	Entity* m_clientEntity = nullptr;
 
 };

@@ -207,6 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EntityBase.hpp" />
+    <ClInclude Include="SharedCommon.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Submodule\Engine\Code\Engine\Engine.vcxproj">

@@ -30,7 +30,6 @@ private:
 	void BeginFrame();
 	void Update( float deltaSeconds );
 	void Render() const;
-	void RenderDebugLeftJoystick() const;
 	void EndFrame();
 	void ToggleDebug();
 	void RegisterEvents();

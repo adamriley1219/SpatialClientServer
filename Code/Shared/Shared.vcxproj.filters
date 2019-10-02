@@ -15,5 +15,8 @@
     <ClInclude Include="EntityBase.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="SharedCommon.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -68,8 +68,8 @@ void App::Startup()
 void App::Shutdown()
 {
 	g_theGame->Shutdown();
-	g_thePhysicsSystem->Shutdown();
 	g_theConsole->Shutdown();
+	g_thePhysicsSystem->Shutdown();
 	g_theDebugRenderSystem->Shutdown();
 	g_theRenderer->Shutdown();
 	g_theEventSystem->Shutdown();
@@ -84,6 +84,7 @@ void App::Shutdown()
 	g_theInputSystem = nullptr;
 	delete g_theConsole;
 	g_theConsole = nullptr;
+	SAFE_DELETE(g_thePhysicsSystem);
 	delete g_theDebugRenderSystem;
 	g_theDebugRenderSystem = nullptr;
 	delete g_theRenderer;
@@ -280,6 +281,7 @@ void App::BeginFrame()
 	g_theConsole->			BeginFrame();
 	g_theInputSystem->		BeginFrame();
 	g_theAudioSystem->		BeginFrame();
+	g_thePhysicsSystem->	BeginFrame();
 
 }
 
@@ -291,64 +293,9 @@ void App::BeginFrame()
 void App::Update( float deltaSeconds )
 {
 	g_theConsole->	Update();
+	g_thePhysicsSystem->Update( deltaSeconds );
 	g_theGame->		UpdateGame( deltaSeconds );
 	g_theDebugRenderSystem->Update();
-}
-
-//--------------------------------------------------------------------------
-/**
-* RenderDebugRenderDebugLeftJoystick
-*/
-void App::RenderDebugLeftJoystick() const
-{
-	float inRangex = 2.0f;
-	float inRangey = 2.0f;
-	float outerRadius = 8.0f;
-	float posRadius = 0.5f;
-	const XboxController& curController = g_theInputSystem->GetControllerByID(0);
-	if( !curController.IsConnected() )
-		return;
-	const AnalogJoystick& curLJoystick = curController.GetLeftJoystick();
-	const Vec2& upRightRef = g_theGame->m_DevColsoleCamera.GetOrthoTopRight();
-
-	Vec3 center
-	(	
-		upRightRef.x - inRangex - outerRadius
-		,	upRightRef.y - inRangey - outerRadius
-		,	0.0f
-	);
-
-	Vertex_PCU centerVert( center, Rgba( 0.4f, 0.4f, 0.4f, 0.5f ), Vec2( 0.0f, 0.0f ) );
-	DrawDisc( centerVert , outerRadius );
-
-
-
-	centerVert.color.r = 0.1f;
-	centerVert.color.g = 0.1f;
-	centerVert.color.b = 0.1f;
-	DrawDisc( centerVert , outerRadius * curLJoystick.GetOuterDeadZoneFraction() );
-	centerVert.color.r = 0.3f;
-	centerVert.color.g = 0.3f;
-	centerVert.color.b = 0.3f;
-	DrawDisc( centerVert , outerRadius * curLJoystick.GetInnerDeadZoneFraction() );
-
-	Vec3 rawCenter
-	(
-		center.x + curLJoystick.GetRawPosition().x * outerRadius
-		,	center.y + curLJoystick.GetRawPosition().y * outerRadius
-		,	0.0f	
-	);
-	Vertex_PCU rawInput( rawCenter, Rgba( 1.0f, 0.0f, 0.0f, 1.0f ), Vec2( 0.0f, 0.0f ) );
-	DrawDisc( rawInput , posRadius );
-
-	Vec3 fixedCenter
-	(
-		center.x + curLJoystick.GetPosition().x * outerRadius
-		,	center.y + curLJoystick.GetPosition().y * outerRadius
-		,	0.0f	
-	);
-	Vertex_PCU fixedInput( fixedCenter, Rgba( 0.0f, 0.7f, 0.7f, 1.0f ), Vec2( 0.0f, 0.0f ) );
-	DrawDisc( fixedInput , posRadius );
 }
 
 //--------------------------------------------------------------------------
@@ -357,6 +304,7 @@ void App::RenderDebugLeftJoystick() const
 */
 void App::Render() const
 {
+	g_theGame->BeginCamera();
 	g_theRenderer->ClearScreen( Rgba::BLACK );
 	g_theGame->GameRender();
 
@@ -368,6 +316,7 @@ void App::Render() const
 	{
 		g_theDebugRenderSystem->RenderToScreen();
 	}
+	g_theGame->EndCamera();
 }
 
 //--------------------------------------------------------------------------
@@ -376,6 +325,7 @@ void App::Render() const
 */
 void App::EndFrame()
 {
+	g_thePhysicsSystem->	EndFrame();
 	g_theDebugRenderSystem->EndFrame();
 	g_theConsole->			EndFrame();
 	g_theAudioSystem->		EndFrame();

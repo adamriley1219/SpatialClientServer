@@ -91,7 +91,7 @@ std::string get_random_characters(size_t count) {
 //-----------------------------------------------------------------------------------------------
 
 constexpr float CLIENT_ASPECT = 2.0f; 
-const char* APP_NAME = "Protogame3D";					
+const char* APP_NAME = "Client";					
 
 //-----------------------------------------------------------------------------------------------
 static bool AppWindowProc( void* windowHandle, uint32_t wmMessageCode, uintptr_t wParam, uintptr_t lParam )
