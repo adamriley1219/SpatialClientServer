@@ -1,13 +1,19 @@
 #include "Game/App.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Renderer/RenderContext.hpp"
-#include "Engine/Core/Vertex/Vertex_PCU.hpp"
-#include "Engine/Math/RNG.hpp"
-#include "Engine/Input/InputSystem.hpp"
-#include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/Debug/DevConsole.hpp"
 #include "Engine/Core/EventSystem.hpp"
+#include "Engine/Core/Vertex/Vertex_PCU.hpp"
+#include "Engine/Core/Debug/Log.hpp"
+
+#include "Engine/Math/RNG.hpp"
+
+#include "Engine/Input/InputSystem.hpp"
+
+#include "Engine/Audio/AudioSystem.hpp"
+
 #include "Engine/Physics/PhysicsSystem.hpp"
+
+#include "Engine/Renderer/RenderContext.hpp"
 #include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
 #include "Game/GameCommon.hpp"
 
@@ -31,8 +37,6 @@ WindowContext* g_theWindowContext = nullptr;
 */
 void App::Startup()
 {
-	EngineStartup();
-
 	g_theRNG = new RNG();
 	g_theEventSystem = new EventSystem();
 	g_theConsole = new DevConsole( "SquirrelFixedFont" );
@@ -43,6 +47,7 @@ void App::Startup()
 	g_thePhysicsSystem = new PhysicsSystem();
 	g_theGame = new Game();
 
+	LogSystemStartup("Data/Log/Log.txt");
 	g_theEventSystem->Startup();
 	g_theRenderer->Startup();
 	g_theDebugRenderSystem->Startup();
@@ -69,7 +74,7 @@ void App::Shutdown()
 	g_theRenderer->Shutdown();
 	g_theEventSystem->Shutdown();
 
-	EngineShutdown();
+	LogSystemShutdown();
 
 	delete g_theGame;
 	g_theGame = nullptr;

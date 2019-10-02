@@ -298,7 +298,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	// Program main loop; keep running frames until it's time to quit
 	while( !g_theApp->IsQuitting() && is_connected) 
 	{
-		dispatcher.Process(connection.GetOpList(kGetOpListTimeoutInMilliseconds));
+		//dispatcher.Process(connection.GetOpList(kGetOpListTimeoutInMilliseconds));
 		RunFrame();
 		Sleep(0);
 	}

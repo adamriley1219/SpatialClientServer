@@ -15,7 +15,7 @@ set(ENGINE_SOURCE_DIR "${APPLICATION_ROOT}/../Code/Submodule/Engine/Code/")
 if(MSVC)
   add_definitions(/W2)
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
   add_definitions(-Wall -Wextra -Werror -pedantic)
 endif()
 

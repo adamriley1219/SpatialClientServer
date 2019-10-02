@@ -14,7 +14,7 @@ set(WORKER_SDK_DIR "${APPLICATION_ROOT}/dependencies")
 if(MSVC)
   add_definitions(/W2)
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -lm")
 #  add_definitions(-Wall -Wextra -Werror -pedantic)
 endif()
 
@@ -30,6 +30,14 @@ file(GLOB_RECURSE SOURCE_FILES
     "../../../Code/Server/*.cc"
     "../../../Code/Server/*.hpp"
     "../../../Code/Server/*.cpp"
+    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.hpp"
+    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.cpp"
+    "../../../Code/Submodule/Engine/Code/Engine/Math/*.hpp"
+    "../../../Code/Submodule/Engine/Code/Engine/Math/*.cpp"
+    "../../../Code/Submodule/Engine/Code/Engine/Core/*.hpp"
+    "../../../Code/Submodule/Engine/Code/Engine/Core/*.cpp"
+    "../../../Code/Submodule/Engine/Code/ThirdParty/TinyXML2/*.h"
+    "../../../Code/Submodule/Engine/Code/ThirdParty/TinyXML2/*.cpp"
     "../../../Code/Shared/*.hpp"
     "../../../Code/Shared/*.cpp")
     
