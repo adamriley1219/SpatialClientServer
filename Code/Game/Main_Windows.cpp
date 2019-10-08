@@ -17,6 +17,9 @@
 #include "Engine/Core/EventSystem.hpp"
 #include "Engine/Core/WindowContext.hpp"
 #include "Engine/Renderer/RenderContext.hpp"
+
+#include "Engine/ImGUI/ImGUISystem.hpp"
+
 #include "Game/GameCommon.hpp"
 #include "Game/App.hpp"
 
@@ -96,9 +99,11 @@ const char* APP_NAME = "Client";
 //-----------------------------------------------------------------------------------------------
 static bool AppWindowProc( void* windowHandle, uint32_t wmMessageCode, uintptr_t wParam, uintptr_t lParam )
 {
-	UNREFERENCED_PARAMETER(windowHandle); 
-	UNREFERENCED_PARAMETER(wParam); 
-	UNREFERENCED_PARAMETER(lParam); 
+	if (ImGUI_ProcessInputWindows(windowHandle, wmMessageCode, wParam, lParam))
+	{
+		// ImGUI Consumed it
+		return true;
+	}
 
 	switch( wmMessageCode )
 	{
@@ -174,7 +179,7 @@ void RunFrame()
 {
 	RunMessagePump();
 
-	g_theApp->RunFrame( (float) GetCurrentTimeSeconds() );	
+	g_theApp->RunFrame();	
 
 }
 
@@ -248,7 +253,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 		arguments = { "receptionist", "localhost", "7777", parameters.WorkerType + "_" + get_random_characters(4) };
 	}
 	else {
-		for( uint i = 1; i < argc; ++i )
+		for( uint i = 1; i < (uint)argc; ++i )
 		{
 			arguments.push_back( std::string( (char*)argv[i] ) );
 		}
@@ -296,7 +301,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	//--------------------------------------------------------------------------
 
 	// Program main loop; keep running frames until it's time to quit
-	while( !g_theApp->IsQuitting() && is_connected) 
+	while( !g_theApp->IsQuitting() ) //&& is_connected) 
 	{
 		//dispatcher.Process(connection.GetOpList(kGetOpListTimeoutInMilliseconds));
 		RunFrame();

@@ -10,6 +10,17 @@ extern RenderContext* g_theRenderer;
 class AudioSystem;
 extern AudioSystem* g_theAudioSystem;
 
+class WindowContext;
+extern WindowContext* g_theWindowContext;
+
+class PhysicsSystem;
+extern PhysicsSystem* g_thePhysicsSystem;
+
+class RNG;
+extern RNG* g_theRNG;
+
+class Game;
+extern Game* g_theGame;
 
 class WindowContext;
 extern WindowContext* g_theWindowContext;

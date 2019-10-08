@@ -4,12 +4,17 @@
 #include "Engine/Core/EventSystem.hpp"
 #include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #include "Engine/Core/Debug/Log.hpp"
+#include "Engine/Core/Debug/Profiler.hpp"
+#include "Engine/Core/Time/Clock.hpp"
 
 #include "Engine/Math/RNG.hpp"
 
 #include "Engine/Input/InputSystem.hpp"
 
 #include "Engine/Audio/AudioSystem.hpp"
+
+#include "Engine/ImGUI/ImGUI_Interfaces/ProfilerDisplay.hpp"
+#include "Engine/ImGUI/ImGUISystem.hpp"
 
 #include "Engine/Physics/PhysicsSystem.hpp"
 
@@ -29,6 +34,7 @@ RNG* g_theRNG = nullptr;
 PhysicsSystem* g_thePhysicsSystem = nullptr;
 Game* g_theGame = nullptr;
 WindowContext* g_theWindowContext = nullptr;
+ImGUISystem* g_theImGUISystem = nullptr;
 
 
 //--------------------------------------------------------------------------
@@ -45,14 +51,24 @@ void App::Startup()
 	g_theInputSystem = new InputSystem();
 	g_theAudioSystem = new AudioSystem();
 	g_thePhysicsSystem = new PhysicsSystem();
+	g_theImGUISystem = new ImGUISystem(g_theRenderer);
+
 	g_theGame = new Game();
 
+
 	LogSystemStartup("Data/Log/Log.txt");
+	ProfilerSystemInit();
+
+	ClockSystemStartup();
+	m_gameClock = new Clock(&Clock::Master);
+
 	g_theEventSystem->Startup();
 	g_theRenderer->Startup();
 	g_theDebugRenderSystem->Startup();
 	g_theConsole->Startup();
 	g_thePhysicsSystem->Startup();
+	g_theImGUISystem->Startup();
+
 	g_theGame->Startup();
 
 	EventArgs args;
@@ -74,23 +90,21 @@ void App::Shutdown()
 	g_theRenderer->Shutdown();
 	g_theEventSystem->Shutdown();
 
+	ProfilerSystemDeinit();
 	LogSystemShutdown();
 
-	delete g_theGame;
-	g_theGame = nullptr;
-	delete g_theAudioSystem;
-	g_theAudioSystem = nullptr;
-	delete g_theInputSystem;
-	g_theInputSystem = nullptr;
-	delete g_theConsole;
-	g_theConsole = nullptr;
+	SAFE_DELETE(g_theGame);
+
+	SAFE_DELETE(m_gameClock);
+	SAFE_DELETE(g_theImGUISystem);
 	SAFE_DELETE(g_thePhysicsSystem);
-	delete g_theDebugRenderSystem;
-	g_theDebugRenderSystem = nullptr;
-	delete g_theRenderer;
-	g_theRenderer = nullptr;
-	delete g_theRNG;
-	g_theRNG = nullptr;
+	SAFE_DELETE(g_theAudioSystem);
+	SAFE_DELETE(g_theInputSystem);
+	SAFE_DELETE(g_theConsole);
+	SAFE_DELETE(g_theDebugRenderSystem);
+	SAFE_DELETE(g_theRenderer);
+	SAFE_DELETE(g_theEventSystem);
+	SAFE_DELETE(g_theRNG);
 }
 
 //--------------------------------------------------------------------------
@@ -100,6 +114,10 @@ static float allFpsAccumilated = 60.0f * 50.0f;
 
 static void addFPS( float deltaTime )
 {
+	if( deltaTime <= 0.0f )
+	{
+		return;
+	}
 	allFpsAccumilated -= fpsGroup[fpsIdx];
 	fpsGroup[fpsIdx] = 1.0f / deltaTime;
 	allFpsAccumilated += fpsGroup[fpsIdx];
@@ -120,36 +138,32 @@ static float getAvgFPS()
 /**
 * RunFrame
 */
-void App::RunFrame( float timeFrameBeganSec )
+void App::RunFrame()
 {
-	double timeLastFrameSec = m_time;
-	m_time = timeFrameBeganSec;
-
-	float deltaTime = (float) ( timeFrameBeganSec - timeLastFrameSec );
-	addFPS(deltaTime);
-
-	deltaTime = Clamp( deltaTime, 0.0f, 0.1f );
-
-	if( m_isPaused )
+	ProfilerBeginFrame();
+	if (m_isSlowMo)
 	{
-		deltaTime = 0.0f;
+		m_gameClock->Dilate(0.1f);
 	}
-	else if( m_isSlowMo )
+	else if (m_isFastMo)
 	{
-		deltaTime *= 0.1f;
+		m_gameClock->Dilate(4.0f);
 	}
-	else if( m_isFastMo )
+	else
 	{
-		deltaTime *= 4.0f;
+		m_gameClock->Dilate(1.0f);
 	}
 
+	addFPS( (float)m_gameClock->GetFrameTime() );
 	float fps = getAvgFPS();
 	DebugRenderMessage( 0.0f, Rgba::YELLOW, Rgba::YELLOW, "%.2f", fps );
 
 	BeginFrame();
-	Update( deltaTime );
+	Update( (float)m_gameClock->GetFrameTime() );
 	Render();
 	EndFrame();
+
+	ProfilerEndFrame();
 }
 
 //--------------------------------------------------------------------------
@@ -187,8 +201,17 @@ bool App::HandleKeyPressed( unsigned char keyCode )
 		g_theGame = new Game();
 		return true;
 		break;
-	case 'p': // F1 press
+	case 112: // F1
+		ProfilerToggleDisply();
 		ToggleDebug();
+		return true;
+		break;
+	case 113: // F2
+		ProfilerTogglePaused();
+		return true;
+		break;
+	case 114: // F2
+		ProfilerToggleTreeMode();
 		return true;
 		break;
 	default:
@@ -260,13 +283,57 @@ bool App::QuitEvent( EventArgs& args )
 	return true;
 }
 
+
 //--------------------------------------------------------------------------
 /**
-* HandleKeyPressedTogglePause
+* IsPaused
+*/
+bool App::IsPaused() const
+{
+	return m_gameClock->IsPaused();
+}
+
+//--------------------------------------------------------------------------
+/**
+* Unpause
+*/
+void App::Unpause()
+{
+	m_gameClock->Resume();
+}
+
+//--------------------------------------------------------------------------
+/**
+* Pause
+*/
+void App::Pause()
+{
+	m_gameClock->Pause();
+}
+
+//--------------------------------------------------------------------------
+/**
+* TogglePause
 */
 void App::TogglePause()
 {
-	m_isPaused = !m_isPaused;
+	if( IsPaused() )
+	{
+		Unpause();
+	}
+	else
+	{
+		Pause();
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetGlobleTime
+*/
+float App::GetGlobleTime() const
+{
+	return (float) m_gameClock->GetTotalTime();
 }
 
 //--------------------------------------------------------------------------
@@ -275,6 +342,9 @@ void App::TogglePause()
 */
 void App::BeginFrame()
 {
+	PROFILE_FUNCTION();
+	ClockSystemBeginFrame();
+	g_theImGUISystem->		BeginFrame();
 	g_theDebugRenderSystem->BeginFrame();
 	g_theEventSystem->		BeginFrame();
 	g_theRenderer->			BeginFrame();
@@ -292,6 +362,7 @@ void App::BeginFrame()
 */
 void App::Update( float deltaSeconds )
 {
+	PROFILE_FUNCTION();
 	g_theConsole->	Update();
 	g_thePhysicsSystem->Update( deltaSeconds );
 	g_theGame->		UpdateGame( deltaSeconds );
@@ -304,9 +375,14 @@ void App::Update( float deltaSeconds )
 */
 void App::Render() const
 {
+	PROFILE_FUNCTION();
+
 	g_theGame->BeginCamera();
 	g_theRenderer->ClearScreen( Rgba::BLACK );
 	g_theGame->GameRender();
+
+	ProfilerDisplayRender();
+	g_theImGUISystem->Render();
 
 	if (g_theConsole->IsOpen())
 	{
@@ -325,6 +401,7 @@ void App::Render() const
 */
 void App::EndFrame()
 {
+	PROFILE_FUNCTION();
 	g_thePhysicsSystem->	EndFrame();
 	g_theDebugRenderSystem->EndFrame();
 	g_theConsole->			EndFrame();
@@ -332,6 +409,7 @@ void App::EndFrame()
 	g_theRenderer->			EndFrame();
 	g_theEventSystem->		EndFrame();
 	g_theInputSystem->		EndFrame();
+	g_theImGUISystem->		EndFrame();
 }
 
 //--------------------------------------------------------------------------

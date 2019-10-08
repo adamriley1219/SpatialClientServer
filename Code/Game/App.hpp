@@ -1,10 +1,9 @@
 #pragma once
-#include "Engine/Math/Vec2.hpp"
-#include "Engine/Renderer/Camera.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/EventSystem.hpp"
 #include "Game/Game.hpp"
 
+#include "Engine/Core/EventSystem.hpp"
+
+class Clock;
 
 //--------------------------------------------------------------------------
 class App
@@ -14,7 +13,7 @@ public:
 	~App() {};
 	void Startup();
 	void Shutdown();
-	void RunFrame( float timeFrameBeganSec );
+	void RunFrame();
 
 	bool IsQuitting() const { return m_isQuitting; }
 	bool HandleKeyPressed( unsigned char keyCode );
@@ -24,8 +23,11 @@ public:
 
 	static bool QuitEvent( EventArgs& args );
 
+	bool IsPaused() const;
+	void Unpause();
+	void Pause();
 	void TogglePause();
-	float GetGlobleTime() const { return m_time; }
+	float GetGlobleTime() const;
 private:
 	void BeginFrame();
 	void Update( float deltaSeconds );
@@ -39,7 +41,8 @@ private:
 	bool m_isPaused = false;
 	bool m_isSlowMo = false;
 	bool m_isFastMo = false;
-	float m_time = 0;
 	float m_consoleTextHeight = 2.0f;
+
+	Clock* m_gameClock = nullptr;
 
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "Game/GameCommon.hpp"
 
+#include "Engine/Renderer/Camera.hpp"
 
 class Entity;
 class PlayerController;
