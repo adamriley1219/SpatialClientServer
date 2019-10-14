@@ -203,11 +203,26 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AbilityBase.cpp" />
+    <ClCompile Include="AbilityBaseDefinition.cpp" />
+    <ClCompile Include="ActorBase.cpp" />
+    <ClCompile Include="ActorBaseDefinition.cpp" />
     <ClCompile Include="EntityBase.cpp" />
+    <ClCompile Include="EntityBaseDefinition.cpp" />
+    <ClCompile Include="SharedCommon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbilityBase.hpp" />
+    <ClInclude Include="AbilityBaseDefinition.hpp" />
+    <ClInclude Include="ActorBase.hpp" />
+    <ClInclude Include="ActorBaseDefinition.hpp" />
     <ClInclude Include="EntityBase.hpp" />
+    <ClInclude Include="EntityBaseDefinition.hpp" />
     <ClInclude Include="SharedCommon.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\Run\Data\Gameplay\AbilityDefinitions.xml" />
+    <Xml Include="..\..\Run\Data\Gameplay\ActorDefinitions.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Submodule\Engine\Code\Engine\Engine.vcxproj">

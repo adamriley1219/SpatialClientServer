@@ -20,8 +20,10 @@
 #include "Game/Game.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/App.hpp"
-#include "Game/Entity.hpp"
+#include "Game/ActorRenderable.hpp"
 #include "Game/PlayerController.hpp"
+
+#include "Shared/AbilityBaseDefinition.hpp"
 
 #include <vector>
 
@@ -58,8 +60,10 @@ void Game::Startup()
 
 	g_thePhysicsSystem->SetGravity( Vec2::ZERO );
 	
+	LoadAbilities();
+	LoadActors();
 
-	m_clientEntity = new Entity();
+	m_clientEntity = new ActorRenderable( "player" );
 	m_clientController = new PlayerController( m_clientEntity );
 
 	m_curentCamera.SetModelMatrix( Matrix44::IDENTITY );
@@ -116,11 +120,6 @@ void Game::GameRender() const
 	AddVertsForRing2D(verts, Vec2::ZERO, 5.0f, 0.5f, Rgba::CYAN);
 
 	g_theRenderer->DrawVertexArray(verts);
-
-	//DebugRenderScreenPoint( 0.0, Vec2::ZERO );
-	DebugRenderPoint( 0.0, eDebugRenderMode::DEBUG_RENDER_ALWAYS, Vec3( 10.0f, 0.0f, 0.0f ), Rgba::RED, Rgba::RED, 5.0f );
-	DebugRenderPoint( 0.0, eDebugRenderMode::DEBUG_RENDER_ALWAYS, Vec3( 0.0f, 10.0f, 0.0f ) );
-	DebugRenderPoint( 0.0, eDebugRenderMode::DEBUG_RENDER_ALWAYS, Vec3( 10.0f, 10.0f, 0.0f ) );
 
 	g_theDebugRenderSystem->RenderToCamera( &g_theGame->m_curentCamera );
 }

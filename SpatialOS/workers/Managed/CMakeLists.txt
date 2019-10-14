@@ -4,15 +4,16 @@
 # !!! This needs to match the artifact_name in spatialos.<name>.worker.json
 # !!! because ${PROJECT_NAME} is used below when creating the zip target
 project(Managed)
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 set(APPLICATION_ROOT "${PROJECT_SOURCE_DIR}/../..")
 set(SCHEMA_SOURCE_DIR "${APPLICATION_ROOT}/schema")
 set(WORKER_SDK_DIR "${APPLICATION_ROOT}/dependencies")
 
+
 # Strict warnings.
 if(MSVC)
-  add_definitions(/W2)
+  add_definitions(/W3)
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -lm")
 #  add_definitions(-Wall -Wextra -Werror -pedantic)

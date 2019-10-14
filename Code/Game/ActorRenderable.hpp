@@ -3,13 +3,15 @@
 
 #include "Game/GameCommon.hpp"
 
-#include "Shared/EntityBase.hpp"
+#include "Shared/ActorBase.hpp"
 
-class Entity : public EntityBase
+
+
+class ActorRenderable : public ActorBase
 {
 public:
-	Entity();
-	virtual ~Entity();
+	ActorRenderable( const std::string& name  );
+	virtual ~ActorRenderable();
 
 	virtual void Render() const;
 

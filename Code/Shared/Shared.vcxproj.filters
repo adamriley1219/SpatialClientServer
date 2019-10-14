@@ -5,18 +5,71 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{4717a96c-b219-4618-beea-6ef2d2e74529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity\Definitions">
+      <UniqueIdentifier>{f59601e9-583c-4a9e-bd9d-b1db91f77a0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{ecbefdd9-6a4a-4353-9878-742300c63748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Gameplay">
+      <UniqueIdentifier>{a762e598-b832-40f5-98f8-d98fc49b1285}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AbilityBaseDefinition.cpp">
+      <Filter>Source Files\Entity\Definitions</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorBaseDefinition.cpp">
+      <Filter>Source Files\Entity\Definitions</Filter>
+    </ClCompile>
     <ClCompile Include="EntityBase.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="AbilityBase.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorBase.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityBaseDefinition.cpp">
+      <Filter>Source Files\Entity\Definitions</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EntityBase.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="SharedCommon.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="AbilityBaseDefinition.hpp">
+      <Filter>Source Files\Entity\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorBaseDefinition.hpp">
+      <Filter>Source Files\Entity\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityBase.hpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="AbilityBase.hpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorBase.hpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityBaseDefinition.hpp">
+      <Filter>Source Files\Entity\Definitions</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\Run\Data\Gameplay\AbilityDefinitions.xml">
+      <Filter>Data\Gameplay</Filter>
+    </Xml>
+    <Xml Include="..\..\Run\Data\Gameplay\ActorDefinitions.xml">
+      <Filter>Data\Gameplay</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

@@ -379,6 +379,7 @@ void App::Render() const
 
 	g_theGame->BeginCamera();
 	g_theRenderer->ClearScreen( Rgba::BLACK );
+
 	g_theGame->GameRender();
 
 	ProfilerDisplayRender();

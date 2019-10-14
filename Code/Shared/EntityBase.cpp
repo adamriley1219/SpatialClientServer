@@ -3,18 +3,24 @@
 
 #include "Engine/Physics/PhysicsSystem.hpp"
 
+#include "Shared/EntityBaseDefinition.hpp"
+
 
 //--------------------------------------------------------------------------
 /**
 * Entity
 */
-EntityBase::EntityBase()
+EntityBase::EntityBase(  const std::string& name  )
 {
+	m_name = m_name;
+
 	m_rigidbody = g_thePhysicsSystem->CreateRigidbody( 1.0f );
 	m_rigidbody->SetOriginalSimulationType( ePhysicsSimulationType::PHYSICS_SIM_DYNAMIC );
 
 	m_rigidbody->SetObject( this, &m_transform );
-	m_rigidbody->SetPhyMaterial( 0.0f, 0.0f, 5.0f, 5.0f );
+	m_rigidbody->SetPhyMaterial( 0.0f, 0.0f, 13.0f, 8.0f );
+
+	m_rigidbody->SetRestrictions( false, false, true );
 
 	m_collider = g_thePhysicsSystem->CreateCollider( false, Vec2::ZERO, 0.5f );
 	m_rigidbody->SetCollider( m_collider );
@@ -74,7 +80,7 @@ void EntityBase::Update(float deltaSeconds)
 */
 void EntityBase::ApplyForce(const Vec2& force)
 {
-	m_rigidbody->AddForce( force * 13.0f );
+	m_rigidbody->AddForce( force * 50.0f );
 }
 
 //--------------------------------------------------------------------------

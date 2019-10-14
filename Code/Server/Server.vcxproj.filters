@@ -10,5 +10,16 @@
     <ClCompile Include="Server_main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ServerApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ServerApp.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerCommon.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

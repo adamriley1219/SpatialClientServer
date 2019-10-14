@@ -163,7 +163,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ServerApp.cpp" />
     <ClCompile Include="Server_main.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ServerApp.hpp" />
+    <ClInclude Include="ServerCommon.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.vcxproj">
+      <Project>{229e7a27-1ca9-4a52-8365-edb039cc4abf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Submodule\Engine\Code\Engine\Engine.vcxproj">
+      <Project>{1ad4ec92-d7fb-4cfd-b03f-bdcab345673e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

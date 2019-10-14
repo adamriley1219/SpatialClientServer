@@ -11,9 +11,14 @@ set(SCHEMA_SOURCE_DIR "${APPLICATION_ROOT}/schema")
 set(WORKER_SDK_DIR "${APPLICATION_ROOT}/dependencies")
 set(ENGINE_SOURCE_DIR "${APPLICATION_ROOT}/../Code/Submodule/Engine/Code/")
 
+
+
+
 # Strict warnings.
 if(MSVC)
   add_definitions(/W2)
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
   add_definitions(-Wall -Wextra -Werror -pedantic)

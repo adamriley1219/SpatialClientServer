@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
@@ -33,11 +30,11 @@
     <ClCompile Include="PlayerController.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="ActorRenderable.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entity.hpp">
-      <Filter>Gameplay</Filter>
-    </ClInclude>
     <ClInclude Include="Game.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
@@ -54,6 +51,9 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="PlayerController.hpp">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorRenderable.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
   </ItemGroup>

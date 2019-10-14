@@ -1,0 +1,5 @@
+<AbilityDefinitions>
+  <AbilityDefinitions name="basic_ranged" speed="8~11" ranged="true" />
+  <AbilityDefinitions name="basic_melee" speed="1" ranged="false" />
+</AbilityDefinitions>
+

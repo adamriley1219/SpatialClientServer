@@ -1,11 +1,12 @@
-#include "Game/Entity.hpp"
+#include "Game/ActorRenderable.hpp"
 
 
 //--------------------------------------------------------------------------
 /**
-* EntityBase
+* ActorRenderable
 */
-Entity::Entity() : EntityBase()
+ActorRenderable::ActorRenderable( const std::string& name )
+	: ActorBase( name )
 {
 
 }
@@ -14,7 +15,7 @@ Entity::Entity() : EntityBase()
 /**
 * ~EntityBase
 */
-Entity::~Entity()
+ActorRenderable::~ActorRenderable()
 {
 	EntityBase::~EntityBase();
 }
@@ -23,7 +24,7 @@ Entity::~Entity()
 /**
 * Render
 */
-void Entity::Render() const
+void ActorRenderable::Render() const
 {
 
 }
@@ -34,7 +35,7 @@ void Entity::Render() const
 /**
 * EntityGetColor
 */
-Rgba Entity::GetTint() const
+Rgba ActorRenderable::GetTint() const
 {
 	return m_tint;
 }

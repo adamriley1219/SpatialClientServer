@@ -3,7 +3,8 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RNG.hpp"
 #include "Engine/Renderer/Camera.hpp"
-#include "Game/Entity.hpp"
+
+#include "Game/ActorRenderable.hpp"
 #include "Game/App.hpp"
 
 
@@ -41,7 +42,7 @@ void DrawDisc( const Vertex_PCU translation, float radius )
 /**
 * ResolveBulletVxAsteroidGetDistance
 */
-float GetDistanceBetween( const Entity* entityA, const Entity* entiryB )
+float GetDistanceBetween( const ActorRenderable* entityA, const ActorRenderable* entiryB )
 {
 	return GetDistance( entityA->GetPosition(), entiryB->GetPosition() );
 }

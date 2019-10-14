@@ -3,7 +3,7 @@
 
 #include "Engine/Renderer/Camera.hpp"
 
-class Entity;
+class ActorRenderable;
 class PlayerController;
 class Shader;
 
@@ -46,6 +46,8 @@ private:
 	mutable Camera m_DevColsoleCamera;
 
 	PlayerController* m_clientController = nullptr;
-	Entity* m_clientEntity = nullptr;
+	ActorRenderable* m_clientEntity = nullptr;
+
+	std::vector<ActorRenderable*> m_entities;
 
 };

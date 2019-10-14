@@ -1,5 +1,5 @@
 #include "Game/PlayerController.hpp"
-#include "Game/Entity.hpp"
+#include "Game/ActorRenderable.hpp"
 
 #include "Engine/Input/InputSystem.hpp"
 
@@ -7,7 +7,7 @@
 /**
 * PlayerController
 */
-PlayerController::PlayerController( Entity* toControl )
+PlayerController::PlayerController( ActorRenderable* toControl )
 {
 	m_controlled = toControl;
 }

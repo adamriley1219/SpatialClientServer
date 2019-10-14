@@ -5,6 +5,13 @@
 #include <improbable/standard_library.h>
 #include <iostream>
 
+#include "Server/ServerApp.hpp"
+#include "Server/ServerCommon.hpp"
+
+#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/Strings/NamedStrings.hpp"
+
+
 // Use this to make a worker::ComponentRegistry.
 // For example use worker::Components<improbable::Position, improbable::Metadata> to track these common components
 using ComponentRegistry = worker::Components<improbable::Position, improbable::Metadata>;
@@ -34,6 +41,37 @@ std::string get_random_characters(size_t count) {
     std::string str(count, 0);
     std::generate_n(str.begin(), count, randchar);
     return str;
+}
+
+//-----------------------------------------------------------------------------------------------
+void RunFrame()
+{
+	g_theServerApp->RunFrame();
+}
+
+//-----------------------------------------------------------------------------------------------
+void Startup()
+{
+	tinyxml2::XMLDocument config;
+	config.LoadFile("Data/GameConfig.xml");
+	XmlElement* root = config.RootElement();
+	if( root )
+	{
+		g_gameConfigBlackboard.PopulateFromXmlElementAttributes(*root);
+	}
+	g_theServerApp = new ServerApp();
+	g_theServerApp->Startup();
+}
+
+//-----------------------------------------------------------------------------------------------
+void Shutdown()
+{
+	g_theServerApp->Shutdown();
+
+	// Destroy the global App instance
+	delete g_theServerApp;
+	g_theServerApp = nullptr;
+
 }
 
 // Entry point
@@ -113,8 +151,11 @@ int main(int argc, char** argv) {
         std::cout << "[local] Connected successfully to SpatialOS, listening to ops... " << std::endl;
     }
 
+	//Startup();
+
     while (is_connected) {
         dispatcher.Process(connection.GetOpList(kGetOpListTimeoutInMilliseconds));
+		//RunFrame();
     }
 
     return ErrorExitStatus;

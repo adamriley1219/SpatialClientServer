@@ -4,10 +4,11 @@
 #include "Engine/Math/Vec2.hpp"
 
 
+
 class EntityBase
 {
 public:
-	EntityBase();
+	EntityBase( const std::string& name );
 	virtual ~EntityBase();
 
 	virtual void Die();
@@ -24,6 +25,8 @@ public:
 	void TakeDamage(float damage);
 
 private:
+	std::string m_name = "NONE";
+
 	Rigidbody2D* m_rigidbody;
 	Collider2D* m_collider;
 	Transform2D m_transform;

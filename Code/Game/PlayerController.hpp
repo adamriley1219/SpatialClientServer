@@ -1,17 +1,17 @@
 #pragma once
 
-class Entity;
+class ActorRenderable;
 
 
 class PlayerController
 {
 public:
-	PlayerController( Entity* toControl );
+	PlayerController( ActorRenderable* toControl );
 	~PlayerController();
 
 	void Update( float deltaTime );
 
 private:
-	Entity* m_controlled = nullptr;
+	ActorRenderable* m_controlled = nullptr;
 
 };
