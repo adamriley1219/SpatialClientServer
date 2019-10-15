@@ -12,7 +12,7 @@ std::map< std::string, ActorBaseDefinition* > ActorBaseDefinition::s_actorDefs;
 ActorBaseDefinition::ActorBaseDefinition(const XmlElement& element)
 	: EntityBaseDefinition( element )
 {
-	
+	basic_attack = ParseXmlAttribute( element, "basic_attack", basic_attack );
 }
 
 //--------------------------------------------------------------------------

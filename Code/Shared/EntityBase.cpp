@@ -4,26 +4,35 @@
 #include "Engine/Physics/PhysicsSystem.hpp"
 
 #include "Shared/EntityBaseDefinition.hpp"
-
+#include "Shared/Zone.hpp"
 
 //--------------------------------------------------------------------------
 /**
 * Entity
 */
-EntityBase::EntityBase(  const std::string& name  )
+EntityBase::EntityBase(  const std::string& name, uint zone_id )
 {
-	m_name = m_name;
+	m_name = name;
 
-	m_rigidbody = g_thePhysicsSystem->CreateRigidbody( 1.0f );
-	m_rigidbody->SetOriginalSimulationType( ePhysicsSimulationType::PHYSICS_SIM_DYNAMIC );
+	m_owning_zone = zone_id;
+	Zone* zone = Zone::GetZone(zone_id);
+	ASSERT_RECOVERABLE( zone, "Adding entity to a zone that doesnt exist" );
+	if( zone )
+	{
+		m_rigidbody = zone->m_physics_system->CreateRigidbody( 1.0f );
+		m_rigidbody->SetOriginalSimulationType( ePhysicsSimulationType::PHYSICS_SIM_DYNAMIC );
 
-	m_rigidbody->SetObject( this, &m_transform );
-	m_rigidbody->SetPhyMaterial( 0.0f, 0.0f, 13.0f, 8.0f );
+		m_rigidbody->SetObject( this, &m_transform );
+		m_rigidbody->SetPhyMaterial( 0.0f, 0.0f, 13.0f, 8.0f );
 
-	m_rigidbody->SetRestrictions( false, false, true );
+		m_rigidbody->SetRestrictions( false, false, true );
 
-	m_collider = g_thePhysicsSystem->CreateCollider( false, Vec2::ZERO, 0.5f );
-	m_rigidbody->SetCollider( m_collider );
+		m_collider = zone->m_physics_system->CreateCollider( false, Vec2::ZERO, 0.5f );
+		m_rigidbody->SetCollider( m_collider );
+
+		zone->AddEntity( this );
+	}
+
 
 }
 
@@ -34,6 +43,11 @@ EntityBase::EntityBase(  const std::string& name  )
 */
 EntityBase::~EntityBase()
 {
+	Zone* zone = Zone::GetZone( m_owning_zone );
+	if (zone)
+	{
+		zone->m_physics_system->RemoveRigidbody(m_rigidbody);
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -90,6 +104,15 @@ void EntityBase::ApplyForce(const Vec2& force)
 Vec2 EntityBase::GetPosition() const
 {
 	return m_transform.m_position;
+}
+
+//--------------------------------------------------------------------------
+/**
+* SetPosition
+*/
+void EntityBase::SetPosition( const Vec2& pos )
+{
+	m_transform.m_position = pos;
 }
 
 //--------------------------------------------------------------------------

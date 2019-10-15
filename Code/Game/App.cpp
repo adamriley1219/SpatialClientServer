@@ -22,6 +22,8 @@
 #include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
 #include "Game/GameCommon.hpp"
 
+#include "Shared/Zone.hpp"
+
 //--------------------------------------------------------------------------
 // Global Singletons
 //--------------------------------------------------------------------------
@@ -31,7 +33,6 @@ AudioSystem* g_theAudioSystem = nullptr;
 App* g_theApp = nullptr;					// Created and owned by Main_Windows.cpp
 bool g_isInDebug = false;
 RNG* g_theRNG = nullptr;
-PhysicsSystem* g_thePhysicsSystem = nullptr;
 Game* g_theGame = nullptr;
 WindowContext* g_theWindowContext = nullptr;
 ImGUISystem* g_theImGUISystem = nullptr;
@@ -50,7 +51,6 @@ void App::Startup()
 	g_theDebugRenderSystem = new DebugRenderSystem(g_theRenderer, 50.0f, 100.0f, "SquirrelFixedFont");
 	g_theInputSystem = new InputSystem();
 	g_theAudioSystem = new AudioSystem();
-	g_thePhysicsSystem = new PhysicsSystem();
 	g_theImGUISystem = new ImGUISystem(g_theRenderer);
 
 	g_theGame = new Game();
@@ -66,7 +66,6 @@ void App::Startup()
 	g_theRenderer->Startup();
 	g_theDebugRenderSystem->Startup();
 	g_theConsole->Startup();
-	g_thePhysicsSystem->Startup();
 	g_theImGUISystem->Startup();
 
 	g_theGame->Startup();
@@ -85,7 +84,6 @@ void App::Shutdown()
 {
 	g_theGame->Shutdown();
 	g_theConsole->Shutdown();
-	g_thePhysicsSystem->Shutdown();
 	g_theDebugRenderSystem->Shutdown();
 	g_theRenderer->Shutdown();
 	g_theEventSystem->Shutdown();
@@ -97,7 +95,6 @@ void App::Shutdown()
 
 	SAFE_DELETE(m_gameClock);
 	SAFE_DELETE(g_theImGUISystem);
-	SAFE_DELETE(g_thePhysicsSystem);
 	SAFE_DELETE(g_theAudioSystem);
 	SAFE_DELETE(g_theInputSystem);
 	SAFE_DELETE(g_theConsole);
@@ -351,8 +348,8 @@ void App::BeginFrame()
 	g_theConsole->			BeginFrame();
 	g_theInputSystem->		BeginFrame();
 	g_theAudioSystem->		BeginFrame();
-	g_thePhysicsSystem->	BeginFrame();
 
+	Zone::BeginFrame();
 }
 
 
@@ -364,7 +361,6 @@ void App::Update( float deltaSeconds )
 {
 	PROFILE_FUNCTION();
 	g_theConsole->	Update();
-	g_thePhysicsSystem->Update( deltaSeconds );
 	g_theGame->		UpdateGame( deltaSeconds );
 	g_theDebugRenderSystem->Update();
 }
@@ -403,7 +399,8 @@ void App::Render() const
 void App::EndFrame()
 {
 	PROFILE_FUNCTION();
-	g_thePhysicsSystem->	EndFrame();
+
+	Zone::EndFrame();
 	g_theDebugRenderSystem->EndFrame();
 	g_theConsole->			EndFrame();
 	g_theAudioSystem->		EndFrame();

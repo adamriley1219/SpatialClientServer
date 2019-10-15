@@ -11,11 +11,12 @@
 
 #include "Server/ServerApp.hpp"
 
+#include "Shared/Zone.hpp"
+
 //--------------------------------------------------------------------------
 // Global Singletons
 //--------------------------------------------------------------------------
 ServerApp* g_theServerApp = nullptr;					// Created and owned by Main_Windows.cpp
-PhysicsSystem* g_thePhysicsSystem = nullptr;
 
 
 //--------------------------------------------------------------------------
@@ -24,16 +25,11 @@ PhysicsSystem* g_thePhysicsSystem = nullptr;
 */
 void ServerApp::Startup()
 {
-	g_thePhysicsSystem = new PhysicsSystem();
-
 	LogSystemStartup("Data/Log/Log.txt");
 	ProfilerSystemInit();
 
 	ClockSystemStartup();
 	m_gameClock = new Clock(&Clock::Master);
-
-	g_thePhysicsSystem->Startup();
-
 
 	RegisterEvents();
 }
@@ -44,14 +40,11 @@ void ServerApp::Startup()
 */
 void ServerApp::Shutdown()
 {
-	g_thePhysicsSystem->Shutdown();
-
 	ProfilerSystemDeinit();
 	LogSystemShutdown();
 
 
 	SAFE_DELETE(m_gameClock);
-	SAFE_DELETE(g_thePhysicsSystem);
 }
 
 //--------------------------------------------------------------------------
@@ -111,7 +104,7 @@ void ServerApp::BeginFrame()
 {
 	PROFILE_FUNCTION();
 	ClockSystemBeginFrame();
-	g_thePhysicsSystem->	BeginFrame();
+	Zone::BeginFrame();
 
 }
 
@@ -123,7 +116,7 @@ void ServerApp::BeginFrame()
 void ServerApp::Update( float deltaSeconds )
 {
 	PROFILE_FUNCTION();
-	g_thePhysicsSystem->Update( deltaSeconds );
+	Zone::UpdateZones( deltaSeconds );
 }
 
 
@@ -134,7 +127,7 @@ void ServerApp::Update( float deltaSeconds )
 void ServerApp::EndFrame()
 {
 	PROFILE_FUNCTION();
-	g_thePhysicsSystem->	EndFrame();
+	Zone::EndFrame();
 }
 
 //--------------------------------------------------------------------------

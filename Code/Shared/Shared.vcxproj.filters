@@ -40,6 +40,9 @@
     <ClCompile Include="SharedCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Zone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SharedCommon.hpp">
@@ -62,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="EntityBaseDefinition.hpp">
       <Filter>Source Files\Entity\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="Zone.hpp">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

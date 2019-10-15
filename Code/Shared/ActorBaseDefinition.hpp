@@ -7,11 +7,13 @@ class ActorBaseDefinition
 	: public EntityBaseDefinition
 {
 	friend class ActorBase;
-private:
+protected:
 	ActorBaseDefinition( const XmlElement& element );
 	~ActorBaseDefinition();
 
 	static std::map< std::string, ActorBaseDefinition* > s_actorDefs;
+	
+	std::string basic_attack = "none";
 
 public:
 	static void AddActorDefinition(const XmlElement& element);

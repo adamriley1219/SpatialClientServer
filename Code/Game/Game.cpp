@@ -24,6 +24,7 @@
 #include "Game/PlayerController.hpp"
 
 #include "Shared/AbilityBaseDefinition.hpp"
+#include "Shared/Zone.hpp"
 
 #include <vector>
 
@@ -58,7 +59,8 @@ void Game::Startup()
 	m_DevColsoleCamera.SetOrthographicProjection( Vec2( -100.0f, -50.0f ), Vec2( 100.0f,  50.0f ) );
 	m_DevColsoleCamera.SetModelMatrix( Matrix44::IDENTITY );
 
-	g_thePhysicsSystem->SetGravity( Vec2::ZERO );
+	Zone* zone = Zone::AddZone( m_currentZone );
+	zone->m_physics_system->SetGravity( Vec2::ZERO );
 	
 	LoadAbilities();
 	LoadActors();
@@ -68,6 +70,7 @@ void Game::Startup()
 
 	m_curentCamera.SetModelMatrix( Matrix44::IDENTITY );
 	m_curentCamera.SetOrthographicProjection( Vec2( -25.0f, -12.5f ), Vec2( 25.0f, 12.5f ) );
+
 	
 }
 
@@ -77,7 +80,7 @@ void Game::Startup()
 */
 void Game::Shutdown()
 {
-
+	Zone::ClearAllZones();
 }
 
 //static int g_index = 0;
@@ -110,11 +113,9 @@ bool Game::HandleKeyReleased( unsigned char keyCode )
 */
 void Game::GameRender() const
 {
-	g_theRenderer->BindShader(m_shader);
-	
-	g_theRenderer->BindTextureViewWithSampler( 0, nullptr );
-	g_thePhysicsSystem->DebugRender(g_theRenderer, Rgba::RED);
+	g_theRenderer->BindMaterial( g_theRenderer->CreateOrGetMaterialFromXML( "Data/Materials/default_unlit.mat" ) );
 
+	Zone::GetZone(m_currentZone)->m_physics_system->DebugRender(g_theRenderer, Rgba::GREEN);
 
 	std::vector<Vertex_PCU> verts;
 	AddVertsForRing2D(verts, Vec2::ZERO, 5.0f, 0.5f, Rgba::CYAN);
@@ -131,6 +132,8 @@ void Game::GameRender() const
 void Game::UpdateGame( float deltaSeconds )
 {
 	m_clientController->Update( deltaSeconds );
+
+	Zone::GetZone(m_currentZone)->Update(deltaSeconds);
 
 	UpdateCamera( deltaSeconds );
 }
@@ -156,6 +159,15 @@ void Game::EndCamera()
 {
 	// End Rendering
 	g_theRenderer->EndCamera();
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetCamera
+*/
+Camera* Game::GetCamera()
+{
+	return &m_curentCamera;
 }
 
 //--------------------------------------------------------------------------

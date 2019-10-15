@@ -1,0 +1,9 @@
+
+
+
+
+<material id="defaultUnlit"
+  shader="Data/Shaders/default_lit.xml">
+  
+  
+</material>

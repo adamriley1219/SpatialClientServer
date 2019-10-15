@@ -1,12 +1,12 @@
 #include "Game/ActorRenderable.hpp"
-
+#include "Game/Game.hpp"
 
 //--------------------------------------------------------------------------
 /**
 * ActorRenderable
 */
 ActorRenderable::ActorRenderable( const std::string& name )
-	: ActorBase( name )
+	: ActorBase( name, g_theGame->GetZoneID() )
 {
 
 }

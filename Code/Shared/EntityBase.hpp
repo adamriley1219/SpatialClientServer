@@ -8,7 +8,7 @@
 class EntityBase
 {
 public:
-	EntityBase( const std::string& name );
+	EntityBase( const std::string& name, uint zone_id );
 	virtual ~EntityBase();
 
 	virtual void Die();
@@ -20,11 +20,12 @@ public:
 
 	// Getters
 	Vec2 GetPosition() const;
+	void SetPosition( const Vec2& pos );
 
 	// Game play
 	void TakeDamage(float damage);
 
-private:
+protected:
 	std::string m_name = "NONE";
 
 	Rigidbody2D* m_rigidbody;
@@ -41,6 +42,6 @@ private:
 	float m_health = 0.0f;
 	float m_collisionDamage = 1.0f;
 
-	
+	uint m_owning_zone = 999999;
 
 };

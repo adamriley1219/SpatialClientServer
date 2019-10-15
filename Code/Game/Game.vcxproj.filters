@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
     <ClCompile Include="App.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
@@ -33,11 +30,11 @@
     <ClCompile Include="ActorRenderable.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.hpp">
-      <Filter>Gameplay</Filter>
-    </ClInclude>
     <ClInclude Include="App.hpp">
       <Filter>Framework</Filter>
     </ClInclude>
@@ -54,6 +51,9 @@
       <Filter>Gameplay</Filter>
     </ClInclude>
     <ClInclude Include="ActorRenderable.hpp">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
   </ItemGroup>

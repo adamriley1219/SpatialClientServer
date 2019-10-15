@@ -13,9 +13,6 @@ extern AudioSystem* g_theAudioSystem;
 class WindowContext;
 extern WindowContext* g_theWindowContext;
 
-class PhysicsSystem;
-extern PhysicsSystem* g_thePhysicsSystem;
-
 class RNG;
 extern RNG* g_theRNG;
 

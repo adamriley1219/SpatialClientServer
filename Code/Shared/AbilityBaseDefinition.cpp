@@ -11,6 +11,8 @@ AbilityBaseDefinition::AbilityBaseDefinition(const XmlElement& element)
 {
 	m_ranged = ParseXmlAttribute( element, "ranged", m_ranged );
 	m_speed = ParseXmlAttribute( element, "speed", m_speed );
+	m_isTrigger = ParseXmlAttribute( element, "trigger", m_isTrigger );
+	m_life_time = ParseXmlAttribute( element, "life_time", m_life_time );
 }
 
 //--------------------------------------------------------------------------

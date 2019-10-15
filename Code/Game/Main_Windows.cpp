@@ -275,7 +275,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	// Connect with locator or receptionist
 	worker::Connection connection = use_locator
 		? ConnectWithLocator(arguments[1], arguments[2], arguments[3], arguments[4], parameters)
-		: ConnectWithReceptionist(arguments[1], (uint64_t)atoi(arguments[2].c_str()), arguments[3], parameters);
+		: ConnectWithReceptionist(arguments[1], (uint16_t)atoi(arguments[2].c_str()), arguments[3], parameters);
 
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
 

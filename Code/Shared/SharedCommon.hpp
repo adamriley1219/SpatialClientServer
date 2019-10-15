@@ -1,10 +1,6 @@
 
 
-
-
-class PhysicsSystem;
-extern PhysicsSystem* g_thePhysicsSystem;
-
+typedef unsigned int uint;
 
 
 void LoadActors();

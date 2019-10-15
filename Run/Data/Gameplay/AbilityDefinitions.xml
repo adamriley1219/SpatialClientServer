@@ -1,5 +1,5 @@
 <AbilityDefinitions>
-  <AbilityDefinitions name="basic_ranged" speed="8~11" ranged="true" />
-  <AbilityDefinitions name="basic_melee" speed="1" ranged="false" />
+  <AbilityDefinitions name="basic_ranged" speed="10" ranged="true" life_time="1.0" />
+  <AbilityDefinitions name="basic_melee" speed="0" ranged="false" life_time="0.1f" />
 </AbilityDefinitions>
 
