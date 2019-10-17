@@ -17,6 +17,9 @@
     <Filter Include="Data\Gameplay">
       <UniqueIdentifier>{a762e598-b832-40f5-98f8-d98fc49b1285}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Controllers">
+      <UniqueIdentifier>{db355289-f1cc-4f07-83e2-dcfffeceb7b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AbilityBaseDefinition.cpp">
@@ -43,6 +46,12 @@
     <ClCompile Include="Zone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ControllerBase.cpp">
+      <Filter>Source Files\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="AIController.cpp">
+      <Filter>Source Files\Controllers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SharedCommon.hpp">
@@ -68,6 +77,12 @@
     </ClInclude>
     <ClInclude Include="Zone.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerBase.hpp">
+      <Filter>Source Files\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="AIController.hpp">
+      <Filter>Source Files\Controllers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -102,7 +102,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -130,7 +130,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -160,7 +160,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -192,7 +192,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -219,6 +219,8 @@
     <ClCompile Include="AbilityBaseDefinition.cpp" />
     <ClCompile Include="ActorBase.cpp" />
     <ClCompile Include="ActorBaseDefinition.cpp" />
+    <ClCompile Include="AIController.cpp" />
+    <ClCompile Include="ControllerBase.cpp" />
     <ClCompile Include="EntityBase.cpp" />
     <ClCompile Include="EntityBaseDefinition.cpp" />
     <ClCompile Include="SharedCommon.cpp" />
@@ -229,6 +231,8 @@
     <ClInclude Include="AbilityBaseDefinition.hpp" />
     <ClInclude Include="ActorBase.hpp" />
     <ClInclude Include="ActorBaseDefinition.hpp" />
+    <ClInclude Include="AIController.hpp" />
+    <ClInclude Include="ControllerBase.hpp" />
     <ClInclude Include="EntityBase.hpp" />
     <ClInclude Include="EntityBaseDefinition.hpp" />
     <ClInclude Include="SharedCommon.hpp" />

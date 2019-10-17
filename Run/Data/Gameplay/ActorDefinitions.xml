@@ -1,5 +1,5 @@
 <ActorDefinitions>
-  <ActorDefinition name="player" basic_attack="basic_ranged" str="5~8" int="7" speed="5" possess="true"/>
+  <ActorDefinition name="player" basic_attack="basic_ranged" str="6" int="7" speed="6" possess="true"/>
   <ActorDefinition name="turret"  basic_attack="basic_ranged" str="1~3" speed="0"/>
-  <ActorDefinition name="crawler" basic_attack="basic_melee" str="5~8" speed="3~4"/>
+  <ActorDefinition name="crawler" basic_attack="basic_melee" str="5~8" speed="3"/>
 </ActorDefinitions>

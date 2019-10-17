@@ -83,6 +83,7 @@ void App::Startup()
 void App::Shutdown()
 {
 	g_theGame->Shutdown();
+	g_theImGUISystem->Shutdown();
 	g_theConsole->Shutdown();
 	g_theDebugRenderSystem->Shutdown();
 	g_theRenderer->Shutdown();
@@ -342,12 +343,12 @@ void App::BeginFrame()
 	PROFILE_FUNCTION();
 	ClockSystemBeginFrame();
 	g_theImGUISystem->		BeginFrame();
-	g_theDebugRenderSystem->BeginFrame();
 	g_theEventSystem->		BeginFrame();
 	g_theRenderer->			BeginFrame();
 	g_theConsole->			BeginFrame();
 	g_theInputSystem->		BeginFrame();
 	g_theAudioSystem->		BeginFrame();
+	g_theDebugRenderSystem->BeginFrame();
 
 	Zone::BeginFrame();
 }

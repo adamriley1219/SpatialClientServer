@@ -25,6 +25,7 @@
 
 #include "Shared/AbilityBaseDefinition.hpp"
 #include "Shared/Zone.hpp"
+#include "Shared/AIController.hpp"
 
 #include <vector>
 
@@ -53,9 +54,6 @@ Game::~Game()
 */
 void Game::Startup()
 {
-	m_shader = g_theRenderer->CreateOrGetShaderFromXML( "Data/Shaders/shader.xml" );
-	g_theRenderer->m_shader = m_shader;
-
 	m_DevColsoleCamera.SetOrthographicProjection( Vec2( -100.0f, -50.0f ), Vec2( 100.0f,  50.0f ) );
 	m_DevColsoleCamera.SetModelMatrix( Matrix44::IDENTITY );
 
@@ -65,13 +63,20 @@ void Game::Startup()
 	LoadAbilities();
 	LoadActors();
 
+	m_clientController = new PlayerController();
 	m_clientEntity = new ActorRenderable( "player" );
-	m_clientController = new PlayerController( m_clientEntity );
+	m_clientEntity->Possess( m_clientController );
+
+	ActorRenderable* ai_one = new ActorRenderable( "turret" );
+	ai_one->Possess( new AIController() );
+	ai_one->SetPosition( Vec2( 5.0f, 5.0f ) );
+
+	ActorRenderable* ai_two = new ActorRenderable( "crawler" );
+	ai_two->Possess( new AIController() );
+	ai_two->SetPosition( Vec2( -5.0f, 5.0f ) );
 
 	m_curentCamera.SetModelMatrix( Matrix44::IDENTITY );
-	m_curentCamera.SetOrthographicProjection( Vec2( -25.0f, -12.5f ), Vec2( 25.0f, 12.5f ) );
-
-	
+	m_curentCamera.SetOrthographicProjection( Vec2( -25.0f, -12.5f ), Vec2( 25.0f, 12.5f ) );	
 }
 
 //--------------------------------------------------------------------------
@@ -83,7 +88,6 @@ void Game::Shutdown()
 	Zone::ClearAllZones();
 }
 
-//static int g_index = 0;
 
 //--------------------------------------------------------------------------
 /**
@@ -104,8 +108,6 @@ bool Game::HandleKeyReleased( unsigned char keyCode )
 	UNUSED(keyCode);
 	return false;
 }
-
-
 
 //--------------------------------------------------------------------------
 /**
@@ -131,9 +133,7 @@ void Game::GameRender() const
 */
 void Game::UpdateGame( float deltaSeconds )
 {
-	m_clientController->Update( deltaSeconds );
-
-	Zone::GetZone(m_currentZone)->Update(deltaSeconds);
+	Zone::GetZone(m_currentZone)->Update( deltaSeconds );
 
 	UpdateCamera( deltaSeconds );
 }

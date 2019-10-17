@@ -19,5 +19,6 @@ protected:
 
 protected:
 	std::string m_name = "NONE";
+	EntityType m_type = ENTITY_UNKNOWN_ENTITY_TYPE;
 
 };

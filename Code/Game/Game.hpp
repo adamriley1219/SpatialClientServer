@@ -43,8 +43,6 @@ private:
 private:
 	bool m_isQuitting = false;
 
-	Shader* m_shader;
-
 	mutable Camera m_curentCamera;
 	mutable Camera m_DevColsoleCamera;
 

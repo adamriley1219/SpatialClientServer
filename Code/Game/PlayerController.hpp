@@ -1,25 +1,23 @@
 #pragma once
+#include "Shared/ControllerBase.hpp"
 
-class ActorRenderable;
+class ActorBase;
 
 struct Vec2;
 struct IntVec2;
 struct Ray3;
 
 
-class PlayerController
+class PlayerController : public ControllerBase
 {
 public:
-	PlayerController( ActorRenderable* toControl );
+	PlayerController();
 	~PlayerController();
 
-	void Update( float deltaTime );
+	virtual void Update( float deltaTime );
 
 private:
 	Vec2 GetScreenMousePos();
 	IntVec2 GetRawScreenMousePos();
-
-private:
-	ActorRenderable* m_controlled = nullptr;
 
 };

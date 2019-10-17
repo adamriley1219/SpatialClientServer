@@ -15,6 +15,7 @@ AbilityBase::AbilityBase(const std::string& name, uint zone_id)
 	m_collider->SetTrigger(def->m_isTrigger);
 	m_life_time = def->m_life_time;
 	m_speed = def->m_speed;
+	m_type = def->m_type;
 }
 
 //--------------------------------------------------------------------------

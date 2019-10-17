@@ -3,7 +3,7 @@
 
 #include "Engine/Math/Vec2.hpp"
 
-
+#include "Shared/EntityBaseDefinition.hpp"
 
 class EntityBase
 {
@@ -25,8 +25,13 @@ public:
 	// Game play
 	void TakeDamage(float damage);
 
+	uint GetResidingZone() const;
+	EntityType GetType() const;
+	std::string GetName() const;
+
 protected:
-	std::string m_name = "NONE";
+	std::string m_name = "none";
+	EntityType m_type = ENTITY_UNKNOWN_ENTITY_TYPE;
 
 	Rigidbody2D* m_rigidbody;
 	Collider2D* m_collider;

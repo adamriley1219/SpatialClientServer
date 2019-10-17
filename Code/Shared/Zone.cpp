@@ -1,5 +1,6 @@
 #include "Shared/Zone.hpp"
 #include "Shared/EntityBase.hpp"
+#include "Shared/ControllerBase.hpp"
 
 #include "Engine/Core/EngineCommon.hpp"
 
@@ -22,8 +23,7 @@ Zone::Zone()
 Zone::~Zone()
 {
 	m_physics_system->Shutdown();
-	delete m_physics_system;
-	m_physics_system = nullptr;
+	SAFE_DELETE( m_physics_system );
 }
 
 //--------------------------------------------------------------------------
@@ -32,6 +32,14 @@ Zone::~Zone()
 */
 void Zone::Update(float deltaTime)
 {
+	for ( ControllerBase* contr : m_controllers )
+	{
+		if (contr)
+		{
+			contr->Update(deltaTime);
+		}
+	}
+
 	for( EntityBase* entity : m_entities )
 	{
 		if( entity )
@@ -39,41 +47,31 @@ void Zone::Update(float deltaTime)
 			entity->Update(deltaTime);
 		}
 	}
+
 	m_physics_system->Update(deltaTime);
 }
 
+
+
+
 //--------------------------------------------------------------------------
 /**
-* AddEntity
+* AddEntityWithController
 */
-void Zone::AddEntity(EntityBase* entity_to_add)
+void Zone::AddEntityWithController(EntityBase* entity_to_add, ControllerBase* controller /*= nullptr*/)
 {
-	for( EntityBase*& entity : m_entities )
-	{
-		if( !entity )
-		{
-			entity = entity_to_add;
-			return;
-		}
-	}
-	m_entities.push_back( entity_to_add );
+	AddController(controller);
+	AddEntity( entity_to_add );
 }
 
 //--------------------------------------------------------------------------
 /**
-* RemoveEntity
+* RemoveEntityWithController
 */
-void Zone::RemoveEntity(EntityBase* entity_to_remove)
+void Zone::RemoveEntityWithController(EntityBase* entity_to_remove, ControllerBase* controller /*= nullptr*/)
 {
-	for (EntityBase*& entity : m_entities)
-	{
-		if (entity == entity_to_remove)
-		{
-			delete entity;
-			entity = nullptr;
-			return;
-		}
-	}
+	RemoveEntity(entity_to_remove);
+	RemoveController(controller);
 }
 
 //--------------------------------------------------------------------------
@@ -113,6 +111,84 @@ Zone* Zone::AddZone( uint id, Zone* zone /*= nullptr*/ )
 void Zone::ClearAllZones()
 {
 	GetZones().clear();
+}
+
+//--------------------------------------------------------------------------
+/**
+* AddEntity
+*/
+void Zone::AddEntity( EntityBase* entity_to_add )
+{
+	if( !entity_to_add )
+	{
+		return;
+	}
+
+	for (EntityBase*& entity : m_entities)
+	{
+		if (!entity)
+		{
+			entity = entity_to_add;
+			return;
+		}
+	}
+	m_entities.push_back(entity_to_add);
+}
+
+//--------------------------------------------------------------------------
+/**
+* RemoveEntity
+*/
+void Zone::RemoveEntity( EntityBase* entity_to_remove )
+{
+	for (EntityBase*& entity : m_entities)
+	{
+		if (entity == entity_to_remove)
+		{
+			delete entity;
+			entity = nullptr;
+			return;
+		}
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* AddController
+*/
+void Zone::AddController(ControllerBase* controller)
+{
+	if( !controller )
+	{
+		return;
+	}
+
+	for (ControllerBase*& contr : m_controllers)
+	{
+		if (!contr)
+		{
+			contr = controller;
+			return;
+		}
+	}
+	m_controllers.push_back(controller);
+}
+
+//--------------------------------------------------------------------------
+/**
+* RemoveController
+*/
+void Zone::RemoveController(ControllerBase* controller)
+{
+	for (ControllerBase*& contr : m_controllers)
+	{
+		if (contr == controller)
+		{
+			delete contr;
+			contr = nullptr;
+			return;
+		}
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -166,7 +242,7 @@ void Zone::EndFrame()
 		{
 			if( entity && entity->IsGarbage() )
 			{
-				zone.second->RemoveEntity(entity);
+				zone.second->RemoveEntityWithController(entity);
 			}
 		}
 	}

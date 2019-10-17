@@ -1,5 +1,6 @@
 #include "Shared/EntityBase.hpp"
 #include "Shared/SharedCommon.hpp"
+#include "Shared/ControllerBase.hpp"
 
 #include "Engine/Physics/PhysicsSystem.hpp"
 
@@ -30,9 +31,9 @@ EntityBase::EntityBase(  const std::string& name, uint zone_id )
 		m_collider = zone->m_physics_system->CreateCollider( false, Vec2::ZERO, 0.5f );
 		m_rigidbody->SetCollider( m_collider );
 
+		
 		zone->AddEntity( this );
 	}
-
 
 }
 
@@ -94,7 +95,7 @@ void EntityBase::Update(float deltaSeconds)
 */
 void EntityBase::ApplyForce(const Vec2& force)
 {
-	m_rigidbody->AddForce( force * 50.0f );
+	m_rigidbody->AddForce( force * 10.0f );
 }
 
 //--------------------------------------------------------------------------
@@ -125,5 +126,32 @@ void EntityBase::TakeDamage(float damage)
 	{
 		Die();
 	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetResidingZone
+*/
+uint EntityBase::GetResidingZone() const
+{
+	return m_owning_zone;
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetType
+*/
+EntityType EntityBase::GetType() const
+{
+	return m_type;
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetName
+*/
+std::string EntityBase::GetName() const
+{
+	return m_name;
 }
 
