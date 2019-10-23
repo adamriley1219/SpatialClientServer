@@ -3,3 +3,8 @@ package sample;
 component Blank {
   id = 1001;
 }
+
+component Controller
+{
+	id = 1003;
+}

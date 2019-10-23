@@ -1,4 +1,3 @@
-#include "Game/App.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #include "Engine/Core/Debug/Log.hpp"
@@ -10,8 +9,12 @@
 #include "Engine/Physics/PhysicsSystem.hpp"
 
 #include "Server/ServerApp.hpp"
+#include "Server/SpatialOS/SpatialOSServer.hpp"
 
 #include "Shared/Zone.hpp"
+
+
+
 
 //--------------------------------------------------------------------------
 // Global Singletons
@@ -42,7 +45,6 @@ void ServerApp::Shutdown()
 {
 	ProfilerSystemDeinit();
 	LogSystemShutdown();
-
 
 	SAFE_DELETE(m_gameClock);
 }

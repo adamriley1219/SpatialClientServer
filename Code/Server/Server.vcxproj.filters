@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\SpatialOS">
+      <UniqueIdentifier>{9c172dfa-0f0c-40e4-a05f-aeb64083e9b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server_main.cc">
@@ -13,6 +16,9 @@
     <ClCompile Include="ServerApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SpatialOS\SpatialOSServer.cpp">
+      <Filter>Source Files\SpatialOS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerApp.hpp">
@@ -20,6 +26,9 @@
     </ClInclude>
     <ClInclude Include="ServerCommon.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialOS\SpatialOSServer.hpp">
+      <Filter>Source Files\SpatialOS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
