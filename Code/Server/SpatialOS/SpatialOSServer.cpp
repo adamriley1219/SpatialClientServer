@@ -140,6 +140,9 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		is_connected = false;
 		});
 
+	std::cout << "OnDisconnect done" << std::endl;
+
+
 	// Print log messages received from SpatialOS
 	dispatcher.OnLogMessage([&](const worker::LogMessageOp& op) {
 		if (op.Level == worker::LogLevel::kFatal) {
@@ -148,17 +151,23 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		}
 		std::cout << "[remote] " << op.Message << std::endl;
 		});
+	std::cout << "OnLogMessage done" << std::endl;
 
 	if (is_connected) {
 		std::cout << "[local] Connected successfully to SpatialOS, listening to ops... " << std::endl;
 		GetInstance()->isRunning = true;
 	}
 
+	std::cout << "Is Connected done" << std::endl;
+
 
 	while ( connection.IsConnected() && GetInstance()->IsRunning() )
 	{
 		dispatcher.Process(connection.GetOpList(kGetOpListTimeoutInMilliseconds));
 	}
+
+	std::cout << "Finish Running" << std::endl;
+
 
 	GetInstance()->isRunning = false;
 	GetInstance()->connection = nullptr;
