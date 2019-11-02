@@ -173,12 +173,12 @@
   <ItemGroup>
     <ClCompile Include="ServerApp.cpp" />
     <ClCompile Include="Server_main.cc" />
-    <ClCompile Include="SpatialOS\SpatialOSServer.cpp" />
+    <ClCompile Include="SpatialOSServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerApp.hpp" />
     <ClInclude Include="ServerCommon.hpp" />
-    <ClInclude Include="SpatialOS\SpatialOSServer.hpp" />
+    <ClInclude Include="SpatialOSServer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.vcxproj">

@@ -1,11 +1,12 @@
 
-#include "Server/SpatialOS/SpatialOSServer.hpp"
+#include "Server/SpatialOSServer.hpp"
 #include "Server/ServerApp.hpp"
 #include "Server/ServerCommon.hpp"
 
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/Strings/NamedStrings.hpp"
 
+#include <iostream>
 
 //-----------------------------------------------------------------------------------------------
 void RunFrame()
@@ -53,13 +54,18 @@ int main( int argc, char** argv )
 
 	SpatialOSServer::Startup( arguments );
 
-	//Startup();
+	Startup();
+	std::cout << "STARTUP COMPLETE" << std::endl;
 
     while ( SpatialOSServer::IsRunning() ) {
-		//RunFrame();
+		RunFrame();
     }
 
+	std::cout << "SHUTDOWN INIT" << std::endl;
+
 	SpatialOSServer::Shutdown();
+
+	std::cout << "SHUTDOWN COMPLETE" << std::endl;
 
     return 0;
 }

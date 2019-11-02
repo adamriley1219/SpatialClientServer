@@ -206,7 +206,7 @@
     <ClCompile Include="GameUtils.cpp" />
     <ClCompile Include="Main_Windows.cpp" />
     <ClCompile Include="PlayerController.cpp" />
-    <ClCompile Include="SpatialOS\SpatialOSClient.cpp" />
+    <ClCompile Include="SpatialOSClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
@@ -216,7 +216,7 @@
     <ClInclude Include="GameCommon.hpp" />
     <ClInclude Include="GameUtils.hpp" />
     <ClInclude Include="PlayerController.hpp" />
-    <ClInclude Include="SpatialOS\SpatialOSClient.hpp" />
+    <ClInclude Include="SpatialOSClient.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run\Data\GameConfig.xml" />

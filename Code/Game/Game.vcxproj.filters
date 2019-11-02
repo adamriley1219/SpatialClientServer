@@ -13,8 +13,8 @@
     <Filter Include="Data\Shaders">
       <UniqueIdentifier>{547b9bda-62d0-4236-b41c-03eb8c8ae9a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SpatialOS">
-      <UniqueIdentifier>{7cce10f7-4719-4a20-a3df-92ff16337a4f}</UniqueIdentifier>
+    <Filter Include="Network">
+      <UniqueIdentifier>{1921b216-12cc-4016-866d-5e5a1d0b566d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,8 +36,8 @@
     <ClCompile Include="Game.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
-    <ClCompile Include="SpatialOS\SpatialOSClient.cpp">
-      <Filter>SpatialOS</Filter>
+    <ClCompile Include="SpatialOSClient.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,8 +62,8 @@
     <ClInclude Include="Game.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="SpatialOS\SpatialOSClient.hpp">
-      <Filter>SpatialOS</Filter>
+    <ClInclude Include="SpatialOSClient.hpp">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

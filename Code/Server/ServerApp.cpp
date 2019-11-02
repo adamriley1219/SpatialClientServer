@@ -9,7 +9,7 @@
 #include "Engine/Physics/PhysicsSystem.hpp"
 
 #include "Server/ServerApp.hpp"
-#include "Server/SpatialOS/SpatialOSServer.hpp"
+#include "Server/SpatialOSServer.hpp"
 
 #include "Shared/Zone.hpp"
 

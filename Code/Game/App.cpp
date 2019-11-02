@@ -176,6 +176,7 @@ bool App::HandleKeyPressed( unsigned char keyCode )
 	}
 	switch( keyCode )
 	{
+	
 	case 192: // '~' press
 
 		break;

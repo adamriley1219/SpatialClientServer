@@ -41,10 +41,10 @@
       "worker_type": "External",
       "permissions": [{
         "entity_creation": {
-          "allow": false
+          "allow": true
         },
         "entity_deletion": {
-          "allow": false
+          "allow": true
         },
         "entity_query": {
           "allow": true,
