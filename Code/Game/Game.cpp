@@ -109,6 +109,8 @@ bool Game::HandleKeyReleased( unsigned char keyCode )
 	return false;
 }
 
+
+#include "Game/SpatialOSClient.hpp"
 //--------------------------------------------------------------------------
 /**
 * GameRender
@@ -118,6 +120,21 @@ void Game::GameRender() const
 	g_theRenderer->BindMaterial( g_theRenderer->CreateOrGetMaterialFromXML( "Data/Materials/default_unlit.mat" ) );
 
 	Zone::GetZone(m_currentZone)->m_physics_system->DebugRender(g_theRenderer, Rgba::GREEN);
+
+	auto entities = SpatialOSClient::GetEntityList();
+	for( const entity_info_t& info : entities )
+	{
+		auto option = info.entity->Get<improbable::Position>();
+		DebugRenderScreenPoint( 0.0f, Vec2( option->coords().x(), option->coords().y() ) );
+	}
+
+	worker::View* view = SpatialOSClient::GetView();
+
+	for( auto itrPair : view->Entities )
+	{
+		auto options = itrPair.second.Get<improbable::Position>();
+		DebugRenderScreenPoint( 0.0f, Vec2( options->coords().x(), options->coords().y() ) );
+	}
 
 	std::vector<Vertex_PCU> verts;
 	AddVertsForRing2D(verts, Vec2::ZERO, 5.0f, 0.5f, Rgba::CYAN);

@@ -3,6 +3,7 @@
 
 #include <improbable/worker.h>
 #include <improbable/standard_library.h>
+#include <improbable/view.h>
 
 #include <thread>
 
@@ -10,9 +11,7 @@ struct entity_info_t
 {
 	worker::Entity* entity;
 	worker::EntityId id;
-	worker::RequestId<worker::CreateEntityRequest> entity_creation_request_id;
-	worker::RequestId<worker::DeleteEntityRequest> entity_deletion_request_id;
-	worker::RequestId<worker::ReserveEntityIdsRequest> entity_id_reservation_request_id;
+	bool created = false;
 };
 
 class SpatialOSClient
@@ -22,23 +21,20 @@ public:
 	static void Shutdown();
 
 public:
-	static void RequestEntityCreation( worker::Entity* entity );
 	static bool IsRunning(); 
 
 private:
 	static void Run(std::vector<std::string> arguments);
+	static void RegisterCallbacks( worker::View& view );
 
+	static entity_info_t* GetInfoFromEnityId(const worker::EntityId& entity_id);
 
-	static uint64_t DeleteEntityResponse( const worker::DeleteEntityResponseOp& op );
-	static uint64_t CreateEntityResponse( const worker::CreateEntityResponseOp& op );
-	static uint64_t ReserveEntityIdsResponse( const worker::ReserveEntityIdsResponseOp& op );
+public:
+	// Component Updating
+	static void PositionUpdated(const worker::ComponentUpdateOp<improbable::Position>& op);
 
-
-	static bool GetInfoFromCreateEnityRequest( const worker::RequestId<worker::CreateEntityRequest>& entity_creation_request_id, entity_info_t& entity_info_to_fill );
-	static bool GetInfoFromDeleteEnityRequest( const worker::RequestId<worker::DeleteEntityRequest>& entity_deletion_request_id, entity_info_t& entity_info_to_fill );
-	static bool GetInfoFromReserveEnityIdsRequest( const worker::RequestId<worker::ReserveEntityIdsRequest>& entity_id_reservation_request_id, entity_info_t& entity_info_to_fill );
-	static bool GetInfoFromEnityId( const worker::EntityId& entity_id, entity_info_t& entity_info_to_fill );
-	static bool GetInfoFromEnity( const worker::Entity* entity, entity_info_t& entity_info_to_fill );
+	static const std::vector<entity_info_t>& GetEntityList();
+	static worker::View* GetView();
 
 private:
 	static SpatialOSClient* GetInstance();
@@ -49,8 +45,8 @@ private:
 	bool isRunning = false;
 	std::thread client_thread;
 
-	worker::Dispatcher* dispatcher;
-	worker::Connection* connection;
+	worker::View* view = nullptr;
+	worker::Connection* connection = nullptr;
 
 	std::vector<entity_info_t> entity_info_list;
 };

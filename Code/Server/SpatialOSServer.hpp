@@ -11,9 +11,10 @@ struct entity_info_t
 {
 	worker::Entity* entity;
 	worker::EntityId id;
-	worker::RequestId<worker::CreateEntityRequest> entity_creation_request_id;
-	worker::RequestId<worker::DeleteEntityRequest> entity_deletion_request_id;
-	worker::RequestId<worker::ReserveEntityIdsRequest> entity_id_reservation_request_id;
+	uint64_t entity_creation_request_id;
+	uint64_t entity_deletion_request_id;
+	uint64_t entity_id_reservation_request_id;
+	bool created = false;
 };
 
 class SpatialOSServer
@@ -28,15 +29,20 @@ public:
 
 private:
 	static void Run( std::vector<std::string> arguments );
+	static void RegisterCallbacks( worker::Dispatcher& dispatcher );
 
 	static uint64_t DeleteEntityResponse( const worker::DeleteEntityResponseOp& op );
 	static uint64_t CreateEntityResponse( const worker::CreateEntityResponseOp& op );
 	static uint64_t ReserveEntityIdsResponse( const worker::ReserveEntityIdsResponseOp& op );
 
-	static bool GetInfoFromCreateEnityRequest( const worker::RequestId<worker::CreateEntityRequest>& entity_creation_request_id, entity_info_t& entity_info_to_fill );
-	static bool GetInfoFromDeleteEnityRequest( const worker::RequestId<worker::DeleteEntityRequest>& entity_deletion_request_id, entity_info_t& entity_info_to_fill );
-	static bool GetInfoFromReserveEnityIdsRequest( const worker::RequestId<worker::ReserveEntityIdsRequest>& entity_id_reservation_request_id, entity_info_t& entity_info_to_fill );
-	static bool GetInfoFromEnityId( const worker::EntityId& entity_id, entity_info_t& entity_info_to_fill );
+	static entity_info_t* GetInfoFromCreateEnityRequest( uint64_t entity_creation_request_id );
+	static entity_info_t* GetInfoFromDeleteEnityRequest( uint64_t entity_deletion_request_id );
+	static entity_info_t* GetInfoFromReserveEnityIdsRequest( uint64_t entity_id_reservation_request_id );
+	static entity_info_t* GetInfoFromEnityId( const worker::EntityId& entity_id );
+
+public:
+	// Component Updating
+	static void PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op );
 
 private:
 	static SpatialOSServer* GetInstance();

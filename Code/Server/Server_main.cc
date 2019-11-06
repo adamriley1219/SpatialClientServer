@@ -54,11 +54,11 @@ int main( int argc, char** argv )
 
 	SpatialOSServer::Startup( arguments );
 
-	Startup();
+	//Startup();
 	std::cout << "STARTUP COMPLETE" << std::endl;
 
     while ( SpatialOSServer::IsRunning() ) {
-		RunFrame();
+		//RunFrame();
     }
 
 	std::cout << "SHUTDOWN INIT" << std::endl;

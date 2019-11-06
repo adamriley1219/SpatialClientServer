@@ -98,27 +98,6 @@ void SpatialOSClient::Shutdown()
 
 //--------------------------------------------------------------------------
 /**
-* RequestEntityCreation
-*/
-void SpatialOSClient::RequestEntityCreation( worker::Entity* entity )
-{
-	if( !IsRunning() )
-	{
-		return;
-	}
-
-	entity_info_t info;
-	// Reserve an entity ID.
-	info.entity_id_reservation_request_id =
-		GetInstance()->connection->SendReserveEntityIdsRequest(1, kGetOpListTimeoutInMilliseconds);
-
-	info.entity = entity;
-
-	GetInstance()->entity_info_list.push_back(info);
-}
-
-//--------------------------------------------------------------------------
-/**
 * IsRunning
 */
 bool SpatialOSClient::IsRunning()
@@ -179,222 +158,103 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
 
 	// Register callbacks and run the worker main loop.
-	worker::Dispatcher dispatcher{ EmptyRegistry{} };
-	GetInstance()->dispatcher = &dispatcher;
+	worker::View view{ EmptyRegistry{} };
+	GetInstance()->view = &view;
 	bool is_connected = connection.IsConnected();
 
-	dispatcher.OnDisconnect([&](const worker::DisconnectOp& op) {
+	view.OnDisconnect([&](const worker::DisconnectOp& op) {
 		std::cerr << "[disconnect] " << op.Reason << std::endl;
 		is_connected = false;
 		});
 
+
+	RegisterCallbacks( view );
+	
+	constexpr unsigned kFramesPerSecond = 60;
+	constexpr std::chrono::duration<double> kFramePeriodSeconds{
+		1. / static_cast<double>(kFramesPerSecond) };
+
+	while ( GetInstance()->connection->IsConnected() && IsRunning() )
+	{
+		auto start_time = std::chrono::steady_clock::now();
+
+		auto opList = GetInstance()->connection->GetOpList(0);
+		GetInstance()->view->Process(opList);
+
+		auto end_time = std::chrono::steady_clock::now();
+		auto wait_for = kFramePeriodSeconds - (end_time - start_time);
+		std::this_thread::sleep_for(wait_for);
+	}
+
+	GetInstance()->isRunning = false;
+	GetInstance()->connection = nullptr;
+	GetInstance()->view = nullptr;
+}
+
+
+//--------------------------------------------------------------------------
+/**
+* RegisterCallbacks
+*/
+void SpatialOSClient::RegisterCallbacks( worker::View& view )
+{
 	// Print messages received from SpatialOS
-	dispatcher.OnLogMessage([&](const worker::LogMessageOp& op) {
+	view.OnLogMessage([&](const worker::LogMessageOp& op) {
 		if (op.Level == worker::LogLevel::kFatal) {
 			std::cerr << "Fatal error: " << op.Message << std::endl;
 			std::terminate();
 		}
 		std::cout << "Connection: " << op.Message << std::endl;
 		});
-
-	// When the reservation succeeds, create an entity with the reserved ID.
-	dispatcher.OnReserveEntityIdsResponse( ReserveEntityIdsResponse );
-
-	// When the creation succeeds, delete the entity.
-	dispatcher.OnCreateEntityResponse( CreateEntityResponse );
-
-	// When the deletion succeeds, we're done.
-	dispatcher.OnDeleteEntityResponse( DeleteEntityResponse );
-
-	dispatcher.OnRemoveEntity( [&](const worker::RemoveEntityOp& op )
-		{
-
-		});
-	dispatcher.OnAddEntity( [&](const worker::AddEntityOp& op )
-		{
-			op.EntityId;
-			
-		});
-
-	dispatcher.OnCreateEntityResponse([&]( const worker::CreateEntityResponseOp& op )
-		{
-
-		});
-
-	
-
-	//dispatcher.OnComponentUpdate();
-	//dispatcher.OnDeleteEntityResponse();
-
-	worker::Entity entity;
-	RequestEntityCreation( &entity );
-
-	while ( GetInstance()->connection->IsConnected() && IsRunning() )
-	{
-		dispatcher.Process(connection.GetOpList(kGetOpListTimeoutInMilliseconds));
-	}
-
-	if( GetInstance()->connection->IsConnected() )
-	{
-		entity_info_t info;
-		if( GetInfoFromEnity( &entity, info ) )
-		{
-			connection.SendDeleteEntityRequest( info.id, kGetOpListTimeoutInMilliseconds );
-		}
-	}
-
-	GetInstance()->isRunning = false;
-	GetInstance()->connection = nullptr;
-	GetInstance()->dispatcher = nullptr;
-}
-
-
-//--------------------------------------------------------------------------
-/**
-* DeleteEntityResponse
-*/
-uint64_t SpatialOSClient::DeleteEntityResponse(const worker::DeleteEntityResponseOp& op)
-{
-	entity_info_t entity_info;
-	if (GetInfoFromEnityId( op.EntityId, entity_info ) &&
-		op.StatusCode == worker::StatusCode::kSuccess)
-	{
-		// Test successful!
-		SAFE_DELETE(entity_info.entity);
-	}
-	return 0;
-}
-
-//--------------------------------------------------------------------------
-/**
-* CreateEntityResponse
-*/
-uint64_t SpatialOSClient::CreateEntityResponse(const worker::CreateEntityResponseOp& op)
-{
-	entity_info_t entity_info;
-	if (GetInfoFromCreateEnityRequest(op.RequestId, entity_info) &&
-		op.StatusCode == worker::StatusCode::kSuccess)
-	{
-		entity_info.id = *op.EntityId;
-	}
-	return 0;
-}
-
-//--------------------------------------------------------------------------
-/**
-* ReserveEntityIdsResponse
-*/
-uint64_t SpatialOSClient::ReserveEntityIdsResponse(const worker::ReserveEntityIdsResponseOp& op)
-{
-	entity_info_t entity_info;
-
-	if (GetInfoFromReserveEnityIdsRequest(op.RequestId, entity_info) &&
-		op.StatusCode == worker::StatusCode::kSuccess) {
-		// ID reservation was successful - create an entity with the reserved ID.
-		entity_info.entity->Add<improbable::Position>({ {1, 2, 3} });
-		auto result = GetInstance()->connection->SendCreateEntityRequest(*(entity_info.entity), op.FirstEntityId, kGetOpListTimeoutInMilliseconds);
-		// Check no errors occurred.
-		if (result) {
-			entity_info.entity_creation_request_id = *result;
-		}
-		else {
-			GetInstance()->connection->SendLogMessage(worker::LogLevel::kError, "CreateDeleteEntity",
-				result.GetErrorMessage());
-			std::terminate();
-		}
-	}
-	return 0;
-}
-
-//--------------------------------------------------------------------------
-/**
-* GetInfoFromCreateEnityRequest
-*/
-bool SpatialOSClient::GetInfoFromCreateEnityRequest(const worker::RequestId<worker::CreateEntityRequest>& entity_creation_request_id, entity_info_t& entity_info_to_fill)
-{
-	for (entity_info_t& entity : GetInstance()->entity_info_list)
-	{
-		if (entity.entity_creation_request_id == entity_creation_request_id)
-		{
-			entity_info_to_fill = entity;
-			return true;
-		}
-	}
-
-	return false;
-}
-
-//--------------------------------------------------------------------------
-/**
-* GetInfoFromDeleteEnityRequest
-*/
-bool SpatialOSClient::GetInfoFromDeleteEnityRequest(const worker::RequestId<worker::DeleteEntityRequest>& entity_deletion_request_id, entity_info_t& entity_info_to_fill)
-{
-	for (entity_info_t& entity : GetInstance()->entity_info_list)
-	{
-		if (entity.entity_deletion_request_id == entity_deletion_request_id)
-		{
-			entity_info_to_fill = entity;
-			return true;
-		}
-	}
-
-	return false;
-}
-
-//--------------------------------------------------------------------------
-/**
-* GetInfoFromReserveEnityIdsRequest
-*/
-bool SpatialOSClient::GetInfoFromReserveEnityIdsRequest(const worker::RequestId<worker::ReserveEntityIdsRequest>& entity_id_reservation_request_id, entity_info_t& entity_info_to_fill)
-{
-	for (entity_info_t& entity : GetInstance()->entity_info_list)
-	{
-		if (entity.entity_id_reservation_request_id == entity_id_reservation_request_id)
-		{
-			entity_info_to_fill = entity;
-			return true;
-		}
-	}
-
-	return false;
 }
 
 //--------------------------------------------------------------------------
 /**
 * GetInfoFromEnityId
 */
-bool SpatialOSClient::GetInfoFromEnityId(const worker::EntityId& entity_id, entity_info_t& entity_info_to_fill)
+entity_info_t* SpatialOSClient::GetInfoFromEnityId( const worker::EntityId& entity_id )
 {
 	for (entity_info_t& entity : GetInstance()->entity_info_list)
 	{
 		if (entity.id == entity_id)
 		{
-			entity_info_to_fill = entity;
-			return true;
+			return &entity;
 		}
 	}
 
-	return false;
+	return nullptr;
 }
-
 
 //--------------------------------------------------------------------------
 /**
-* GetInfoFromEnity
+* PositionUpdated
 */
-bool SpatialOSClient::GetInfoFromEnity(const worker::Entity* entity_to_find, entity_info_t& entity_info_to_fill)
+void SpatialOSClient::PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op )
 {
-	for ( entity_info_t& entity : GetInstance()->entity_info_list )
+	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
+	if ( info && info->created )
 	{
-		if ( entity.entity == entity_to_find )
-		{
-			entity_info_to_fill = entity;
-			return true;
-		}
+		worker::Option<improbable::PositionData&> curPos = info->entity->Get<improbable::Position>();
+		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
 	}
+}
 
-	return false;
+//--------------------------------------------------------------------------
+/**
+* GetEntityList
+*/
+const std::vector<entity_info_t>& SpatialOSClient::GetEntityList()
+{
+	return GetInstance()->entity_info_list;
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetView
+*/
+worker::View* SpatialOSClient::GetView()
+{
+	return GetInstance()->view;
 }
 
 //--------------------------------------------------------------------------
