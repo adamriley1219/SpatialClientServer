@@ -166,10 +166,10 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	UNUSED( commandLineString );
 
 
-	LPWSTR* argv;
-	int argc;
-
-	argv = CommandLineToArgvW( GetCommandLineW(), &argc);
+	char** argv = __argv;
+	int argc = __argc;
+	
+	//argv = CommandLineToArgvW( GetCommandLineW(), &argc);
 
 	std::vector<std::string> arguments;
 

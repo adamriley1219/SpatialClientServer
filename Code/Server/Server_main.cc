@@ -47,10 +47,20 @@ int main( int argc, char** argv )
 	// if no arguments are supplied, use the defaults for a local deployment
 	if (argc == 1) {
 		arguments = { "receptionist", "localhost", "7777" };
+		std::cout << "No args" << std::endl;
 	}
 	else {
-		arguments = std::vector<std::string>(argv + 1, argv + argc);
+		arguments = std::vector<std::string>( argv + 1, argv + argc );
+		std::cout << "Get args" << std::endl;
+		for( std::string arg : arguments )
+		{
+			std::cout << arg << " ";
+		}
+		std::cout << std::endl;
 	}
+
+	std::cout << "STARTUP BEGIN" << std::endl;
+
 
 	SpatialOSServer::Startup( arguments );
 

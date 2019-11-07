@@ -17,7 +17,7 @@ using ComponentRegistry = worker::Components<improbable::Position, improbable::M
 // Constants and parameters
 const int ErrorExitStatus = 1;
 const std::string kLoggerName = "startup.cc";
-const std::uint32_t kGetOpListTimeoutInMilliseconds = 500;
+const std::uint32_t kGetOpListTimeoutInMilliseconds = 100;
 
 worker::Connection ConnectWithReceptionist(const std::string hostname,
 	const std::uint16_t port,

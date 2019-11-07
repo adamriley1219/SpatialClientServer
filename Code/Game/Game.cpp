@@ -129,11 +129,13 @@ void Game::GameRender() const
 	}
 
 	worker::View* view = SpatialOSClient::GetView();
-
-	for( auto itrPair : view->Entities )
+	if( view )
 	{
-		auto options = itrPair.second.Get<improbable::Position>();
-		DebugRenderScreenPoint( 0.0f, Vec2( options->coords().x(), options->coords().y() ) );
+		for (auto itrPair : view->Entities)
+		{
+			auto options = itrPair.second.Get<improbable::Position>();
+			DebugRenderScreenPoint(0.0f, Vec2(options->coords().x(), options->coords().y()));
+		}
 	}
 
 	std::vector<Vertex_PCU> verts;
