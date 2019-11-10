@@ -1,6 +1,7 @@
 #include "Game/SpatialOSClient.hpp"
 
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/Debug/Log.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -43,6 +44,7 @@ worker::Connection ConnectWithLocator(const std::string hostname,
 		}
 		std::cout << "Worker of type '" << connection_parameters.WorkerType
 			<< "' connecting through locator: queueing." << std::endl;
+		Logf( "ClientLog", "Worker of type '%s' connecting through locator: queueing.", connection_parameters.WorkerType.c_str() );
 		return true;
 	};
 
@@ -164,6 +166,8 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 
 	view.OnDisconnect([&](const worker::DisconnectOp& op) {
 		std::cerr << "[disconnect] " << op.Reason << std::endl;
+		Logf("ClientLog", "[disconnect] %s", op.Reason.c_str() );
+
 		is_connected = false;
 		});
 
@@ -173,6 +177,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	constexpr unsigned kFramesPerSecond = 60;
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
 		1. / static_cast<double>(kFramesPerSecond) };
+	Logf( "ClientLog", "Connected and running" );
 
 	while ( GetInstance()->connection->IsConnected() && IsRunning() )
 	{
@@ -180,6 +185,13 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 
 		auto opList = GetInstance()->connection->GetOpList(0);
 		GetInstance()->view->Process(opList);
+
+		for( auto map_ID_entity : view.Entities )
+		{
+			worker::EntityId id = map_ID_entity.first;
+			Logf( "ClientLog", "Client can see %u", id );
+			std::cout << "Client can see " << map_ID_entity.first << std::endl;
+		}
 
 		auto end_time = std::chrono::steady_clock::now();
 		auto wait_for = kFramePeriodSeconds - (end_time - start_time);
@@ -202,9 +214,11 @@ void SpatialOSClient::RegisterCallbacks( worker::View& view )
 	view.OnLogMessage([&](const worker::LogMessageOp& op) {
 		if (op.Level == worker::LogLevel::kFatal) {
 			std::cerr << "Fatal error: " << op.Message << std::endl;
+			Logf( "ClientLog", "Fetal error: %s", op.Message.c_str() );
 			std::terminate();
 		}
 		std::cout << "Connection: " << op.Message << std::endl;
+		Logf("ClientLog", "Connection: %s", op.Message.c_str());
 		});
 }
 
@@ -235,7 +249,9 @@ void SpatialOSClient::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 	if ( info && info->created )
 	{
 		worker::Option<improbable::PositionData&> curPos = info->entity->Get<improbable::Position>();
-		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
+		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().y() << "," << curPos->coords().z() << std::endl;
+		Logf("ClientLog", "PosUpdate: entCords for %u:%.03f,%.03f,%.03f %s", info->id, curPos->coords().x(), curPos->coords().y(), curPos->coords().z() );
+
 	}
 }
 
@@ -265,6 +281,18 @@ SpatialOSClient* SpatialOSClient::GetInstance()
 {
 	static SpatialOSClient* s_system = new SpatialOSClient(); 
 	return s_system;  
+}
+
+//--------------------------------------------------------------------------
+/**
+* MyComponents
+*/
+const worker::ComponentRegistry& SpatialOSClient::MyComponents()
+{
+	static const worker::Components<
+		improbable::EntityAcl,
+		improbable::Position > components;
+	return components;
 }
 
 //--------------------------------------------------------------------------

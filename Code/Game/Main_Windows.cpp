@@ -214,8 +214,8 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	//--------------------------------------------------------------------------
 	// Program main loop; keep running frames until it's time to quit
 
-	SpatialOSClient::Startup( arguments );
 	Startup();
+	SpatialOSClient::Startup( arguments );
 
 	while( !g_theApp->IsQuitting() && SpatialOSClient::IsRunning() ) 
 	{

@@ -1,11 +1,11 @@
 {
   "name": "beta_cat_grey_781",
   "project_version": "1.0.0",
-  "sdk_version": "14.1.0",
+  "sdk_version": "14.2.0",
   "dependencies": [
     {
         "name": "standard_library",
-        "version": "14.1.0"
+        "version": "14.2.0"
     }
   ]
 }

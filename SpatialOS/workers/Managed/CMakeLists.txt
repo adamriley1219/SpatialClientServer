@@ -8,17 +8,15 @@ cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-
 set(APPLICATION_ROOT "${PROJECT_SOURCE_DIR}/../..")
 set(SCHEMA_SOURCE_DIR "${APPLICATION_ROOT}/schema")
 set(WORKER_SDK_DIR "${APPLICATION_ROOT}/dependencies")
-
 
 # Strict warnings.
 if(MSVC)
   add_definitions(/W3)
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -lm")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 #  add_definitions(-Wall -Wextra -Werror -pedantic)
 endif()
 
@@ -34,16 +32,17 @@ file(GLOB_RECURSE SOURCE_FILES
     "../../../Code/Server/*.cc"
     "../../../Code/Server/*.hpp"
     "../../../Code/Server/*.cpp"
-    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.hpp"
-    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.cpp"
-    "../../../Code/Submodule/Engine/Code/Engine/Math/*.hpp"
-    "../../../Code/Submodule/Engine/Code/Engine/Math/*.cpp"
-    "../../../Code/Submodule/Engine/Code/Engine/Core/*.hpp"
-    "../../../Code/Submodule/Engine/Code/Engine/Core/*.cpp"
-    "../../../Code/Submodule/Engine/Code/ThirdParty/TinyXML2/*.h"
-    "../../../Code/Submodule/Engine/Code/ThirdParty/TinyXML2/*.cpp"
-    "../../../Code/Shared/*.hpp"
-    "../../../Code/Shared/*.cpp")
+#    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.hpp"
+#    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.cpp"
+#    "../../../Code/Submodule/Engine/Code/Engine/Math/*.hpp"
+#    "../../../Code/Submodule/Engine/Code/Engine/Math/*.cpp"
+#    "../../../Code/Submodule/Engine/Code/Engine/Core/*.hpp"
+#    "../../../Code/Submodule/Engine/Code/Engine/Core/*.cpp"
+#    "../../../Code/Submodule/Engine/Code/ThirdParty/TinyXML2/*.h"
+#    "../../../Code/Submodule/Engine/Code/ThirdParty/TinyXML2/*.cpp"
+#    "../../../Code/Shared/*.hpp"
+#    "../../../Code/Shared/*.cpp"
+    )
     
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} WorkerSdk Schema)

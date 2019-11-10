@@ -5,10 +5,10 @@
 #include <iostream>
 
 
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Time/Time.hpp"
+//#include "Engine/Core/EngineCommon.hpp"
+//#include "Engine/Core/Time/Time.hpp"
 
-
+typedef unsigned int uint;
 
 // Use this to make a worker::ComponentRegistry.
 // For example use worker::Components<improbable::Position, improbable::Metadata> to track these common components
@@ -16,7 +16,7 @@ using ComponentRegistry = worker::Components<improbable::Position, improbable::M
 
 // Constants and parameters
 const int ErrorExitStatus = 1;
-const std::string kLoggerName = "startup.cc";
+const std::string kLoggerName = "SpatialOSServer.cpp";
 const std::uint32_t kGetOpListTimeoutInMilliseconds = 100;
 
 worker::Connection ConnectWithReceptionist(const std::string hostname,
@@ -49,7 +49,8 @@ std::string get_random_characters(size_t count) {
 void SpatialOSServer::Startup( const std::vector<std::string>& arguments )
 {
 	GetInstance()->isRunning = true;
-	GetInstance()->server_thread = std::thread( Run, arguments );
+	Run( arguments );
+	//GetInstance()->server_thread = std::thread( Run, arguments );
 }
 
 //--------------------------------------------------------------------------
@@ -100,7 +101,6 @@ bool SpatialOSServer::IsRunning()
 */
 void SpatialOSServer::Run( const std::vector<std::string> arguments )
 {
-
 	auto now = std::chrono::high_resolution_clock::now();
 	std::srand((unsigned int)std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count());
 
@@ -158,9 +158,11 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
 
 	std::cout << "connection done" << std::endl;
-
+	const worker::Components<
+		improbable::EntityAcl,
+		improbable::Position> MyComponents;
 	// Register callbacks and run the worker main loop.
-	worker::Dispatcher dispatcher = worker::Dispatcher{ ComponentRegistry{} };
+	worker::Dispatcher dispatcher = worker::Dispatcher{  ComponentRegistry{} };
 	GetInstance()->dispatcher = &dispatcher;
 	bool is_connected = connection.IsConnected();
 
@@ -169,6 +171,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 	dispatcher.OnDisconnect([&](const worker::DisconnectOp& op) {
 		std::cerr << "[disconnect] " << op.Reason << std::endl;
 		is_connected = false;
+		GetInstance()->isRunning = false;
 		});
 	
 
@@ -179,39 +182,39 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		GetInstance()->isRunning = true;
 	}
 
- 	worker::Entity entity;
-	entity.Add<improbable::Position>( {{ 7,7,7 }} );
+// 	worker::Entity entity;
+// 	entity.Add<improbable::Position>({ { 7,7,7 } });
+// 
+// 	RequestEntityCreation(&entity);
 
-	RequestEntityCreation( &entity );
+// 	constexpr unsigned kFramesPerSecond = 60;
+// 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
+// 		1. / static_cast<double>(kFramesPerSecond) };
 
-	constexpr unsigned kFramesPerSecond = 60;
-	constexpr std::chrono::duration<double> kFramePeriodSeconds{
-		1. / static_cast<double>(kFramesPerSecond) };
-
-	while (GetInstance()->connection->IsConnected() && IsRunning())
+	while (connection.IsConnected() && IsRunning())
 	{
-		auto start_time = std::chrono::steady_clock::now();
+		//auto start_time = std::chrono::steady_clock::now();
 
-		auto opList = GetInstance()->connection->GetOpList(0);
-		GetInstance()->dispatcher->Process( opList );
+		auto opList = connection.GetOpList(0);
+		dispatcher.Process( opList );
 
-		// Temp code for testing
-		entity_info_t* entity;
-		if( ( entity = GetInfoFromEnityId( test_id ) ) && entity->created )
-		{
-			worker::Option<improbable::PositionData&> curPos = entity->entity->Get<improbable::Position>();
-			float offset = SinDegrees( GetCurrentTimeSeconds() * 300.0 );
-			curPos->coords().set_x( 7 + offset );
-			std::cout << "Set     entCords      for " << entity->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
-			improbable::Position::Update posUpdate;
-			posUpdate.set_coords( curPos->coords() );
-			std::cout << "Set     Update Corrds for " << entity->id << ":" << posUpdate.coords()->x() << "," << posUpdate.coords()->z() << "," << posUpdate.coords()->y() << std::endl;
-			connection.SendComponentUpdate<improbable::Position>( entity->id, posUpdate );
-		}
+ 		// Temp code for testing
+// 		entity_info_t* entity;
+// 		if( ( entity = GetInfoFromEnityId( test_id ) ) && entity->created )
+// 		{
+// 			worker::Option<improbable::PositionData&> curPos = entity->entity->Get<improbable::Position>();
+// 			float offset = SinDegrees( GetCurrentTimeSeconds() * 300.0 );
+// 			std::cout << "Set     entCords      for " << entity->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
+// 			improbable::Position::Update posUpdate;
+// 			posUpdate.set_coords( curPos->coords() );
+// 			posUpdate.coords()->set_x( 7 + offset );
+// 			std::cout << "Set     Update Corrds for " << entity->id << ":" << posUpdate.coords()->x() << "," << posUpdate.coords()->z() << "," << posUpdate.coords()->y() << std::endl;
+// 			connection.SendComponentUpdate<improbable::Position>( entity->id, posUpdate );
+// 		}
 
-		auto end_time = std::chrono::steady_clock::now();
-		auto wait_for = kFramePeriodSeconds - ( end_time - start_time );
-		std::this_thread::sleep_for( wait_for );
+// 		auto end_time = std::chrono::steady_clock::now();
+// 		auto wait_for = kFramePeriodSeconds - ( end_time - start_time );
+// 		std::this_thread::sleep_for( wait_for );
 	}
 
 	
@@ -238,26 +241,26 @@ void SpatialOSServer::RegisterCallbacks( worker::Dispatcher& dispatcher )
 		std::cout << "[remote] " << op.Message << std::endl;
 		});
 
-	dispatcher.OnRemoveEntity([&](const worker::RemoveEntityOp& op)
-		{
-			std::cout << "Removed entity " << op.EntityId << std::endl;
-		});
-	dispatcher.OnAddEntity([&]( const worker::AddEntityOp& op )
-		{
-			std::cout << "Added entity " << op.EntityId << std::endl;
-		});
-
-	// When the reservation succeeds, create an entity with the reserved ID.
-	dispatcher.OnReserveEntityIdsResponse( ReserveEntityIdsResponse );
-
-	// When the creation succeeds, delete the entity.
-	dispatcher.OnCreateEntityResponse( CreateEntityResponse );
-
-	// When the deletion succeeds, we're done.
-	dispatcher.OnDeleteEntityResponse( DeleteEntityResponse );
-
-	// For updating components
-	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
+// 	dispatcher.OnRemoveEntity([&](const worker::RemoveEntityOp& op)
+// 		{
+// 			std::cout << "Removed entity " << op.EntityId << std::endl;
+// 		});
+// 	dispatcher.OnAddEntity([&]( const worker::AddEntityOp& op )
+// 		{
+// 			std::cout << "Added entity " << op.EntityId << std::endl;
+// 		});
+// 
+// 	// When the reservation succeeds, create an entity with the reserved ID.
+// 	dispatcher.OnReserveEntityIdsResponse( ReserveEntityIdsResponse );
+// 
+// 	// When the creation succeeds, delete the entity.
+// 	dispatcher.OnCreateEntityResponse( CreateEntityResponse );
+// 
+// 	// When the deletion succeeds, we're done.
+// 	dispatcher.OnDeleteEntityResponse( DeleteEntityResponse );
+// 
+// 	// For updating components
+// 	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
 }
 
 //--------------------------------------------------------------------------
@@ -271,7 +274,8 @@ uint64_t SpatialOSServer::DeleteEntityResponse( const worker::DeleteEntityRespon
 		op.StatusCode == worker::StatusCode::kSuccess ) 
 	{
 		entity_info->created = false;
-		SAFE_DELETE( entity_info->entity );
+		delete( entity_info->entity );
+		entity_info->entity = nullptr;
 	}
 	return op.RequestId.Id;
 }
@@ -421,6 +425,10 @@ void SpatialOSServer::PositionUpdated (const worker::ComponentUpdateOp<improbabl
 	if( info && info->created )
 	{
 		worker::Option<improbable::PositionData&> curPos = info->entity->Get<improbable::Position>();
+		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
+		curPos->coords().set_x( coords->x() );
+		curPos->coords().set_y( coords->y() );
+		curPos->coords().set_z( coords->z() );
 		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
 	}
 }

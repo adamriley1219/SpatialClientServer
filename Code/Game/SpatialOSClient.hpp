@@ -38,6 +38,7 @@ public:
 
 private:
 	static SpatialOSClient* GetInstance();
+	static 	const worker::ComponentRegistry& MyComponents();
 	SpatialOSClient();
 	~SpatialOSClient();
 

@@ -3,39 +3,39 @@
 #include "Server/ServerApp.hpp"
 #include "Server/ServerCommon.hpp"
 
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Strings/NamedStrings.hpp"
+//#include "Engine/Core/EngineCommon.hpp"
+//#include "Engine/Core/Strings/NamedStrings.hpp"
 
 #include <iostream>
 
 //-----------------------------------------------------------------------------------------------
 void RunFrame()
 {
-	g_theServerApp->RunFrame();
+	//g_theServerApp->RunFrame();
 }
 
 //-----------------------------------------------------------------------------------------------
 void Startup()
 {
-	tinyxml2::XMLDocument config;
-	config.LoadFile("Data/GameConfig.xml");
-	XmlElement* root = config.RootElement();
-	if( root )
-	{
-		g_gameConfigBlackboard.PopulateFromXmlElementAttributes(*root);
-	}
-	g_theServerApp = new ServerApp();
-	g_theServerApp->Startup();
+// 	tinyxml2::XMLDocument config;
+// 	config.LoadFile("Data/GameConfig.xml");
+// 	XmlElement* root = config.RootElement();
+// 	if( root )
+// 	{
+// 		g_gameConfigBlackboard.PopulateFromXmlElementAttributes(*root);
+// 	}
+// 	g_theServerApp = new ServerApp();
+// 	g_theServerApp->Startup();
 }
 
 //-----------------------------------------------------------------------------------------------
 void Shutdown()
 {
-	g_theServerApp->Shutdown();
-
-	// Destroy the global App instance
-	delete g_theServerApp;
-	g_theServerApp = nullptr;
+// 	g_theServerApp->Shutdown();
+// 
+// 	// Destroy the global App instance
+// 	delete g_theServerApp;
+// 	g_theServerApp = nullptr;
 
 }
 
@@ -61,7 +61,7 @@ int main( int argc, char** argv )
 
 	std::cout << "STARTUP BEGIN" << std::endl;
 
-
+	
 	SpatialOSServer::Startup( arguments );
 
 	//Startup();

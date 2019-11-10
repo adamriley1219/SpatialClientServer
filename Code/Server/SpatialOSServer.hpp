@@ -28,7 +28,7 @@ public:
 	static bool IsRunning();
 
 private:
-	static void Run( std::vector<std::string> arguments );
+	static void Run( const std::vector<std::string> arguments );
 	static void RegisterCallbacks( worker::Dispatcher& dispatcher );
 
 	static uint64_t DeleteEntityResponse( const worker::DeleteEntityResponseOp& op );
