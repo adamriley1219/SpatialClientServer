@@ -5,7 +5,7 @@
 #include "Engine/Core/Debug/TextLine.hpp"
 #include "Engine/Core/EventSystem.hpp"
 #include "Engine/Core/Time/Clock.hpp"
-#include "Engine/Core/Memory/MemoryManagement.hpp"
+#include "Engine/Memory/MemoryManagement.hpp"
 #include "Engine/Core/Vertex/Vertex_PCU.hpp"
 
 #include "Engine/Input/InputSystem.hpp"

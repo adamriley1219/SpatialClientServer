@@ -1,8 +1,8 @@
 #include "Engine/Core/Debug/UnitTest.hpp"
-#include "Engine/Core/Debug/Log.hpp"
 
 #ifdef _WIN32
 #define PLATFORM_WINDOWS
+#include "Engine/Memory/Debug/Log.hpp"
 #include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
 #endif
 
@@ -32,8 +32,8 @@ void UnitTestsRunAllCategories( uint priority /*= INT_MAX */ )
 			#ifdef PLATFORM_WINDOWS
 				DebugRenderMessage( 20.0f, Rgba::YELLOW, Rgba::YELLOW, "Failed to pass UnitTest: \"%s\", with category: \"%s\"", testIter->m_name.c_str(), testIter->m_category.c_str() );
 				DebuggerPrintf( "Failed to pass UnitTest: \"%s\", with category: \"%s\"", testIter->m_name.c_str(), testIter->m_category.c_str() );
-			#endif
 				Logf( "UnitTest","Failed to pass UnitTest: \"%s\", with category: \"%s\"", testIter->m_name.c_str(), testIter->m_category.c_str() );
+			#endif
 			}
 			++totalTests;
 		}
@@ -67,8 +67,8 @@ void UnitTestsRun( const char* category, uint priority /*= INT_MAX */ )
 			#ifdef PLATFORM_WINDOWS
 				DebugRenderMessage(20.0f, Rgba::YELLOW, Rgba::YELLOW, "Failed to pass UnitTest: \"%s\", with category: \"%s\"", testIter->m_name.c_str(), testIter->m_category.c_str());
 				DebuggerPrintf("Failed to pass UnitTest: \"%s\", with category: \"%s\"\n", testIter->m_name.c_str(), testIter->m_category.c_str());
-			#endif
 				Logf("UnitTest", "Failed to pass UnitTest: \"%s\", with category: \"%s\"", testIter->m_name.c_str(), testIter->m_category.c_str());
+			#endif
 			}
 			++totalTests;
 		}
