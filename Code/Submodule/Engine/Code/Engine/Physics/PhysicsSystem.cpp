@@ -1,13 +1,17 @@
 #include "Engine/Physics/PhysicsSystem.hpp"
 #include "Engine/Core/Vertex/Vertex_PCU.hpp"
-#include "Engine/Renderer/RenderContext.hpp"
 #include "Engine/Physics/Rigidbody2D.hpp"
 #include "Engine/Physics/Collision2D.hpp"
 #include "Engine/Physics/Collider2D.hpp"
 #include "Engine/Physics/PillboxCollider2D.hpp"
 #include "Engine/Physics/AABB2Collider2D.hpp"
 #include "Engine/Physics/DiscCollider2D.hpp"
+
+#ifdef PLATFORM_WINDOWS
+#include "Engine/Renderer/RenderContext.hpp"
 #include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
+#endif // PLATFORM_WINDOWS
+
 
 //--------------------------------------------------------------------------
 /**
