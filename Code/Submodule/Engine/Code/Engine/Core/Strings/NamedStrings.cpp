@@ -6,7 +6,11 @@
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Math/IntRange.hpp"
 #include "Engine/Math/FloatRange.hpp"
+
+#ifdef PLATFORM_WINDOWS
 #include "Engine/Renderer/Camera.hpp"
+#endif // PLATFORM_WINDOWS
+
 
 
 

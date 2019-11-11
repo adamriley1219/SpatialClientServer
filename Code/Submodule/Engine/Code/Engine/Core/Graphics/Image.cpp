@@ -1,6 +1,5 @@
 #include "Engine/Core/Graphics/Image.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Renderer/RenderUtil.hpp"
 #include "Engine/Core/Graphics/Rgba.hpp"
 
 

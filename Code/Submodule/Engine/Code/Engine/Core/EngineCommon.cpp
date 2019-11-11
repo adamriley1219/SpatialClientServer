@@ -10,4 +10,7 @@ EventSystem* g_theEventSystem = nullptr;
 
 DevConsole* g_theConsole = nullptr;
 
+#ifdef PLATFORM_WINDOWS
 DebugRenderSystem* g_theDebugRenderSystem = nullptr;
+#endif // PLATFORM_WINDOWS
+

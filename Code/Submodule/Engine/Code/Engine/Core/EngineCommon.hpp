@@ -1,9 +1,14 @@
 #pragma once
 #include "Engine/Core/Strings/StringUtils.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Memory/MemoryManagement.hpp"
 #include "Engine/Core/EngineUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
+
+#ifdef __WIN32
+#define PLATFORM_WINDOWS
+#include "Engine/Memory/MemoryManagement.hpp"
+#endif // __WIN32
+
 
 #pragma warning( error: 4172 ) // Making returning a temporary variable reference an error instead of a warning.
 
@@ -50,8 +55,10 @@ extern DevConsole* g_theConsole;
 class EventSystem;
 extern EventSystem* g_theEventSystem;
 
+#ifdef PLATFORM_WINDOWS
 class DebugRenderSystem;
 extern DebugRenderSystem* g_theDebugRenderSystem;
+#endif // PLATFORM_WINDOWS
 
 struct AABB2;
 struct IntVec2;
