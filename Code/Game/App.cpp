@@ -3,8 +3,8 @@
 #include "Engine/Core/Debug/DevConsole.hpp"
 #include "Engine/Core/EventSystem.hpp"
 #include "Engine/Core/Vertex/Vertex_PCU.hpp"
-#include "Engine/Core/Debug/Log.hpp"
-#include "Engine/Core/Debug/Profiler.hpp"
+#include "Engine/Memory/Debug/Log.hpp"
+#include "Engine/Memory/Debug/Profiler.hpp"
 #include "Engine/Core/Time/Clock.hpp"
 
 #include "Engine/Math/RNG.hpp"

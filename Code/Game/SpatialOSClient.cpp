@@ -1,7 +1,7 @@
 #include "Game/SpatialOSClient.hpp"
 
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Debug/Log.hpp"
+#include "Engine/Memory/Debug/Log.hpp"
 
 #include <algorithm>
 #include <chrono>
