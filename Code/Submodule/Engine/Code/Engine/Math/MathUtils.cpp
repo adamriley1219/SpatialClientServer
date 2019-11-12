@@ -315,7 +315,7 @@ bool DoesDiscOverlapLineSegment2D( const Vec2& discCenter, float discRadius, con
 	}
 	else
 	{
-		ERROR_AND_DIE("MathUtils - DoesDiscOverlapLineSegment2D should never get to this point.");
+
 		return false;
 	}
 }
@@ -953,7 +953,7 @@ float GetRayImpactFractionVsDisc2D( const Vec2& rayStart, const Vec2& rayNormali
 	float impactPoint = scOnRdLength - b;
 	float normImpactPoint = impactPoint / rayLength;
 
-	GUARANTEE_OR_DIE( normImpactPoint >= 0.0f && normImpactPoint <= 1.0f, "MathUtils::GetRayImpactFractionVsDisc2D gave an incorrect value" );
+
 
 	return normImpactPoint;
 }

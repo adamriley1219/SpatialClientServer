@@ -53,7 +53,7 @@ void FloatRange::SetFromText( const char* text )
 	}
 	else
 	{
-		ERROR_AND_DIE( Stringf( "FloatRange SetFromText had a split of size %d", (int) splits.size() ) );
+
 	}
 
 }

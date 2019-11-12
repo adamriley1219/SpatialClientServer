@@ -1,5 +1,5 @@
 #include "Engine/Math/RNG.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
+
 #include "Engine/Math/RawNoise.hpp"
 
 
@@ -46,7 +46,7 @@ int RNG::GetRandomIntInRange( int minInclusive, int maxInclusive )
 	}
 	if( minInclusive > maxInclusive)
 	{
-		ERROR_RECOVERABLE( "RNG::GetRandomIntInRange was called with bad values." );
+
 		return -1;
 	}
 	// Shift min to 0
@@ -82,7 +82,7 @@ float RNG::GetRandomFloatInRange( float minInclusive, float maxInclusive )
 	}
 	if( minInclusive > maxInclusive)
 	{
-		ERROR_RECOVERABLE( "RNG::GetRandomIntInRange was called with bad values." );
+
 		return -1.0f;
 	}
 

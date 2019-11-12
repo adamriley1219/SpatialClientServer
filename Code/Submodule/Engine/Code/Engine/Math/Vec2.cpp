@@ -229,7 +229,7 @@ void Vec2::SetLength( float newLength )
 	}
 
 	float length = GetLength();
-	ASSERT_OR_DIE( length != 0.0f, "Deviding by 0 while attempting to call Vec2::SetLength" );
+
 	float toScale = newLength / length;
 	x *= toScale;
 	y *= toScale;
@@ -374,7 +374,7 @@ void Vec2::SetPolarRadians( float newAngleRadians, float newLength )
 void Vec2::SetFromText( const char* text )
 {
 	std::vector<std::string> splits = SplitStringOnDelitmiter( text, "," );
-	GUARANTEE_OR_DIE( (int) splits.size() == 2, Stringf( "Vec2 SetFromText being called with %d splits", (int) splits.size() ) );
+
 
 	x = StringToFloat( splits[0] );
 	y = StringToFloat( splits[1] );

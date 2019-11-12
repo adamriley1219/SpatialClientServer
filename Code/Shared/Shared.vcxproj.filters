@@ -76,9 +76,6 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.cpp">
       <Filter>TempEngine\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.cpp">
-      <Filter>TempEngine\Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.cpp">
       <Filter>TempEngine\Core</Filter>
     </ClCompile>
@@ -244,9 +241,6 @@
       <Filter>TempEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.hpp">
-      <Filter>TempEngine\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.hpp">
       <Filter>TempEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.hpp">

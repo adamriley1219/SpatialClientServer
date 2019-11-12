@@ -47,7 +47,7 @@ public:
 
 		eColliderType2D a_type = a->GetType(); 
 		eColliderType2D b_type = b->GetType(); 
-		ASSERT_OR_DIE( (a_type < NUM_COLLIDER_TYPES) && (b_type < NUM_COLLIDER_TYPES), "GetCollisionInfo recieved bad data." ); 
+
 
 		Collision2DCheckCallback cb = COLLISION_LOOKUP_TABLE[a_type][b_type]; 
 		if (cb == nullptr) {

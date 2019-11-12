@@ -410,7 +410,6 @@ static std::string InfixToPostfix( const std::string& infixExpression )
 			{
 				if (my_stack.empty())
 				{
-					ERROR_AND_DIE( Stringf( "Invalid us if %s", x.c_str() ).c_str() );
 				}
 				else
 				{
@@ -420,7 +419,6 @@ static std::string InfixToPostfix( const std::string& infixExpression )
 						my_stack.pop();
 						if (my_stack.empty())
 						{
-							ERROR_AND_DIE( Stringf( "Invalid string: %s", infixExpression.c_str() ) );
 						}
 					}
 					my_stack.pop();
@@ -442,12 +440,10 @@ static std::string InfixToPostfix( const std::string& infixExpression )
 		}
 		else
 		{
-			ERROR_AND_DIE( Stringf( "Invalid string: %s", infixExpression.c_str() ) );
 		}
 	}
 	else
 	{
-		ERROR_AND_DIE( Stringf( "Invalid string: %s", infixExpression.c_str() ) );
 	}
 
 }
@@ -477,7 +473,6 @@ float EquateString( std::string string )
 		}
 		else if ( GetOperator(curSeg) == 1 )
 		{
-			ERROR_AND_DIE( Stringf( "Unsupported Opertator: %s", curSeg.c_str() ).c_str() );
 		}
 		else if ( GetOperator(curSeg) == 2 )
 		{
@@ -503,7 +498,6 @@ float EquateString( std::string string )
 			}
 			else
 			{
-				ERROR_AND_DIE( "Incorrect Placement of args" );
 			}
 		}
 		else if( GetOperator(curSeg) == 3 ||  GetOperator(curSeg) == 4 )
@@ -529,7 +523,6 @@ float EquateString( std::string string )
 					}
 					else
 					{
-						ERROR_AND_DIE( "Can't divide by 0" );
 					}
 				}
 				else if (curSeg == "^")
@@ -541,12 +534,10 @@ float EquateString( std::string string )
 			}
 			else
 			{
-				ERROR_AND_DIE( "Incorrect Placement of args" );
 			}
 		}
 		else if ( GetOperator(curSeg) == 5 )
 		{
-			ERROR_AND_DIE( Stringf( "Unsupported Opertator: %s", curSeg.c_str() ).c_str() );
 		}
 	}
 	return my_stack.top();

@@ -306,7 +306,7 @@ Event::Event( std::string const &commandLine )
 			}
 			else
 			{
-				ERROR_RECOVERABLE( Stringf( "There were bad args in the given string: %s", theArgs.c_str() ) );
+
 			}
 		}
 	}

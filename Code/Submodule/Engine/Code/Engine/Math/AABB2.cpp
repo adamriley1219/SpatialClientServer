@@ -168,7 +168,7 @@ void AABB2::SetFromText( const char* text )
 {
 	std::vector<std::string> splits = SplitStringOnDelitmiter( text, "," );
 	int size = (int) splits.size();
-	GUARANTEE_OR_DIE( size == 4, Stringf( "RGBA SetFromText being called with %d splits", size ) );
+
 
 	m_bottomLeft.x = StringToFloat( splits[0] );
 	m_bottomLeft.y = StringToFloat( splits[1] );

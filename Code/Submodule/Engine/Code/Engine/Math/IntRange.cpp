@@ -53,6 +53,6 @@ void IntRange::SetFromText( const char* text )
 	}
 	else
 	{
-		ERROR_AND_DIE( Stringf( "IntRange SetFromText had a split of size %d", (int) splits.size() ) );
+
 	}
 }

@@ -285,7 +285,7 @@ Vec3 Vec3::GetNormalized() const
 void Vec3::SetFromText( const char* text )
 {
 	std::vector<std::string> splits = SplitStringOnDelitmiter( text, "," );
-	GUARANTEE_OR_DIE( (int) splits.size() == 3, Stringf( "Vec3 SetFromText being called with %d splits", (int) splits.size() ) );
+
 
 	x = StringToFloat( splits[0] );
 	y = StringToFloat( splits[1] );
@@ -307,7 +307,7 @@ void Vec3::SetLength( float newLength )
 	}
 
 	float length = GetLength();
-	ASSERT_OR_DIE( length != 0.0f, "Deviding by 0 while attempting to call Vec3::SetLength" );
+
 	float toScale = newLength / length;
 	x *= toScale;
 	y *= toScale;

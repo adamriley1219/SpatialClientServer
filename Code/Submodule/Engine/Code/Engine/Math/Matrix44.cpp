@@ -406,7 +406,7 @@ Matrix44 Matrix44::FromEuler( Vec3 euler, eRotationOrder rot )
 	else 
 	{
 		// other cases
-		ASSERT_RECOVERABLE(false, "Not Implemented Euler case."); // implement unknown case
+
 	}
 
 	return ret; 

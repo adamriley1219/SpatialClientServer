@@ -43,7 +43,7 @@ IntVec2::IntVec2( Vec2 vec )
 void IntVec2::SetFromText( const char* text )
 {
 	std::vector< std::string > splits = SplitStringOnDelitmiter( text, "," );
-	GUARANTEE_OR_DIE( (int) splits.size() == 2, Stringf( "IntVec2 SetFromText being called with %d splits", (int) splits.size() ) );
+
 
 	x = StringToInt( splits[0] );
 	y = StringToInt( splits[1] );
