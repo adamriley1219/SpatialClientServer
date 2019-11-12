@@ -21,33 +21,12 @@ IntVec2::IntVec2( int x, int y )
 /**
 * IntVec2
 */
-IntVec2::IntVec2( const char* text )
-{
-	SetFromText( text );
-}
-
-//--------------------------------------------------------------------------
-/**
-* IntVec2
-*/
 IntVec2::IntVec2( Vec2 vec )
 {
 	x = (int) vec.x;
 	y = (int) vec.y;
 }
 
-//--------------------------------------------------------------------------
-/**
-* SetFromText
-*/
-void IntVec2::SetFromText( const char* text )
-{
-	std::vector< std::string > splits = SplitStringOnDelitmiter( text, "," );
-
-
-	x = StringToInt( splits[0] );
-	y = StringToInt( splits[1] );
-}
 
 //--------------------------------------------------------------------------
 /**

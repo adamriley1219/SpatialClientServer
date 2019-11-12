@@ -75,7 +75,7 @@ int NamedStrings::GetValue( const std::string& keyName, int defaultValue ) const
 	{
 		return defaultValue;
 	}
-	return StringToInt( value );
+	return 0;
 }
 
 //--------------------------------------------------------------------------
@@ -94,7 +94,7 @@ float NamedStrings::GetValue( const std::string& keyName, float defaultValue ) c
 	{
 		return defaultValue;
 	}
-	return StringToFloat( value );
+	return 0.0f;
 }
 
 //--------------------------------------------------------------------------
@@ -130,7 +130,7 @@ std::string NamedStrings::GetValue( const std::string& keyName, const char* defa
 	}
 	else	
 	{
-		return Stringf( defaultValue );
+		return std::string( defaultValue );
 	}
 	return value;
 }
@@ -152,7 +152,7 @@ Vec2 NamedStrings::GetValue( const std::string& keyName, const Vec2& defaultValu
 	{
 		return defaultValue;
 	}
-	return Vec2( value.c_str() );
+	return Vec2();
 }
 
 //--------------------------------------------------------------------------
@@ -171,7 +171,7 @@ IntVec2 NamedStrings::GetValue( const std::string& keyName, const IntVec2& defau
 	{
 		return defaultValue;
 	}
-	return IntVec2( value.c_str() );
+	return IntVec2();
 }
 
 //--------------------------------------------------------------------------
@@ -190,7 +190,7 @@ FloatRange NamedStrings::GetValue( const std::string& keyName, const FloatRange&
 	{
 		return defaultValue;
 	}
-	return FloatRange( value.c_str() );
+	return FloatRange();
 }
 
 //--------------------------------------------------------------------------
@@ -209,7 +209,7 @@ IntRange NamedStrings::GetValue( const std::string& keyName, const IntRange& def
 	{
 		return defaultValue;
 	}
-	return IntRange( value.c_str() );
+	return IntRange();
 }
 
 //--------------------------------------------------------------------------

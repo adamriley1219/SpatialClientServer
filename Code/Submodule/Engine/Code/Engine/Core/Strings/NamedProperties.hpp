@@ -1,5 +1,4 @@
 #pragma once
-#include "Engine/Core/Strings/StringUtils.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include <string>
 #include <map>
@@ -38,7 +37,7 @@ public:
 template <typename OBJ_TYPE>
 std::string TypedProperty<OBJ_TYPE>::AsString() const
 {
-	return ToString( m_value ); 
+	return ""; 
 }
 
 //--------------------------------------------------------------------------
@@ -99,13 +98,13 @@ private:
 	float FromString( const char* str, const float& def )
 	{
 		(void)(def);
-		return StringToFloat(str);
+		return 0.0f;
 	}
 
 	int FromString( const char* str, const int& def )
 	{
 		(void)(def);
-		return StringToInt(str);
+		return 0;
 	}
 
 	std::string FromString( const char* str, const std::string& def )

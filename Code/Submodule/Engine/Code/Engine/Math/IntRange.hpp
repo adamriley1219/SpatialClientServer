@@ -12,8 +12,6 @@ public:
 	IntRange() {}
 	explicit IntRange( int min, int max );
 	explicit IntRange( int minAndMax );
-	explicit IntRange( const char* text );
 	~IntRange(){}
 
-	void SetFromText( const char* text );
 };

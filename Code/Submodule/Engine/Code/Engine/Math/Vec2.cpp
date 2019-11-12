@@ -59,15 +59,6 @@ Vec2::Vec2()
 /**
 * Vec2
 */
-Vec2::Vec2( const char* text )
-{
-	SetFromText( text );
-}
-
-//--------------------------------------------------------------------------
-/**
-* Vec2
-*/
 Vec2::Vec2( const Vec3& toCopy )
 {
 	x = toCopy.x;
@@ -367,18 +358,6 @@ void Vec2::SetPolarRadians( float newAngleRadians, float newLength )
 	SetPolarDegrees( ConvertRadiansToDegrees( newAngleRadians ), newLength );
 }
 
-//--------------------------------------------------------------------------
-/**
-* SetFromText
-*/
-void Vec2::SetFromText( const char* text )
-{
-	std::vector<std::string> splits = SplitStringOnDelitmiter( text, "," );
-
-
-	x = StringToFloat( splits[0] );
-	y = StringToFloat( splits[1] );
-}
 
 //--------------------------------------------------------------------------
 /**

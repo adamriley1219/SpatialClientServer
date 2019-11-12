@@ -18,7 +18,6 @@ public:
 	Vec2();												// default constructor: do nothing (for speed)
 	Vec2( const Vec2& copyFrom );							// copy constructor (from another vec2)
 	explicit Vec2( float initialX, float initialY );		// explicit constructor (from x, y)
-	explicit Vec2( const char* text );
 	explicit Vec2( const Vec3& toCopy );
 	explicit Vec2( const Vec4& toCopy );
 	explicit Vec2( const IntVec2& toCopy );
@@ -63,7 +62,6 @@ public:
 	void SetAngleRadians( float angleRadians );
 	void SetPolarDegrees( float newAngleDegrees, float newLength );
 	void SetPolarRadians( float newAngleRadians, float newLength );
-	void SetFromText( const char* text );
 
 	void RotateDegrees( float rotateDegrees );
 	void RotateRadians( float rotateRadians );
