@@ -33,18 +33,6 @@ NamedStrings::~NamedStrings()
 
 //--------------------------------------------------------------------------
 /**
-* PopulateFromXmlElementAttributes
-*/
-void NamedStrings::PopulateFromXmlElementAttributes( const XmlElement& element )
-{
-	for( const tinyxml2::XMLAttribute* att = element.FirstAttribute(); att; att = att->Next() )
-	{
-		SetValue( att->Name(), att->Value() );
-	}
-}
-
-//--------------------------------------------------------------------------
-/**
 * SetValue
 */
 void NamedStrings::SetValue( const std::string& keyName, const std::string& newValue )

@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Core/XML/XMLUtils.hpp"
 //--------------------------------------------------------------------------
 #ifdef _WIN32
 #define PLATFORM_WINDOWS
@@ -42,7 +41,6 @@ public:
 	eColliderType2D GetType() { return m_type; };
 	bool IsColliding() { return m_isColliding; }
 	virtual float GetMomentOfInertia() = 0;
-	virtual tinyxml2::XMLElement* GetAsXMLElemnt( tinyxml2::XMLDocument* doc ) const = 0;
 
 #ifdef PLATFORM_WINDOWS
 	// Note, only define DebugRender if you are in windows.

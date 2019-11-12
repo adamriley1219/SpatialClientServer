@@ -227,7 +227,6 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\StopWatch.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\Time.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\WindowContext.cpp" />
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\AABB2.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\AABB3.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\Capsule3.cpp" />
@@ -286,7 +285,6 @@
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\StopWatch.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\Time.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\WindowContext.hpp" />
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\AABB2.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\AABB3.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\Capsule3.hpp" />

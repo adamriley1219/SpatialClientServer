@@ -1,6 +1,5 @@
 #pragma once
 #include <map>
-#include "Engine/Core/XML/XMLUtils.hpp"
 
 struct IntVec2;
 struct Vec2;
@@ -18,7 +17,6 @@ public:
 	NamedStrings();
 	~NamedStrings();
 
-	void			PopulateFromXmlElementAttributes( const XmlElement& element );
 	void			SetValue( const std::string& keyName, const std::string& newValue );
 
 	bool			GetValue( const std::string& keyName, bool defaultValue ) const;

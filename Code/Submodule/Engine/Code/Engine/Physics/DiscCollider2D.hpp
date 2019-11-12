@@ -21,7 +21,6 @@ public:
 #ifdef PLATFORM_WINDOWS
 	void DebugRender( RenderContext* renderer, const Rgba& color ) const;
 #endif
-	virtual tinyxml2::XMLElement* GetAsXMLElemnt( tinyxml2::XMLDocument* doc ) const;
 	virtual float GetMomentOfInertia();
 
 public:

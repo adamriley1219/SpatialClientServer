@@ -50,23 +50,6 @@ float DiscCollider2D::GetMomentOfInertia()
 
 //--------------------------------------------------------------------------
 /**
-* GetAsXMLElemnt
-*/
-tinyxml2::XMLElement* DiscCollider2D::GetAsXMLElemnt( tinyxml2::XMLDocument* doc ) const
-{
-	tinyxml2::XMLElement* shapeColEle = doc->NewElement( "collider" );
-
-	shapeColEle->SetAttribute( "radius", Stringf( "%f", m_localShape.m_radius ).c_str() );
-	shapeColEle->SetAttribute( "extents", Stringf( "%f,%f",	0.0f, 0.0f ).c_str() );
-	shapeColEle->SetAttribute( "locCenter", Stringf( "%f,%f", m_localShape.m_center.x, m_localShape.m_center.y ).c_str() );
-	shapeColEle->SetAttribute( "locRight", Stringf( "%f,%f", 1.0f, 0.0f ).c_str() );
-
-	return shapeColEle;
-}
-
-
-//--------------------------------------------------------------------------
-/**
 * GetLocalShape
 */
 Disc DiscCollider2D::GetLocalShape() const

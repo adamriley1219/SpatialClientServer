@@ -2,7 +2,6 @@
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Physics/Transform2D.hpp"
 #include "Engine/Physics/PhysicsMaterial.hpp"
-#include "Engine/Core/XML/XMLUtils.hpp"
 
 class RenderContext;
 class PhysicsSystem;
@@ -75,7 +74,6 @@ public:
 	void UpdateMomentOfInertia();
 
 public:
-	tinyxml2::XMLElement* GetAsXMLElement( tinyxml2::XMLDocument* doc ) const;
 
 private:
 	PhysicsSystem *m_system						= nullptr; 		// system this rigidbody belongs to; 

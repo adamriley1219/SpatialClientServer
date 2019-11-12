@@ -18,7 +18,6 @@ public:
 	void DebugRender( RenderContext* renderer, const Rgba& color ) const;
 #endif
 	virtual float GetMomentOfInertia();
-	virtual tinyxml2::XMLElement* GetAsXMLElemnt( tinyxml2::XMLDocument* doc ) const;
 
 
 public:

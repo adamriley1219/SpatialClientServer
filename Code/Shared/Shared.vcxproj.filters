@@ -35,9 +35,6 @@
     <Filter Include="TempEngine\Core\Time">
       <UniqueIdentifier>{1b41cbd9-3166-4051-b9aa-2e25f44588f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TempEngine\Core\XML">
-      <UniqueIdentifier>{26a97677-2c9c-4070-9bb7-946d8059bbae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="TempEngine\Physics">
       <UniqueIdentifier>{1dab7b88-6f7c-4dfd-a3b2-b921431c3260}</UniqueIdentifier>
     </Filter>
@@ -159,9 +156,6 @@
     </ClCompile>
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\Vec4.cpp">
       <Filter>TempEngine\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.cpp">
-      <Filter>TempEngine\Core\XML</Filter>
     </ClCompile>
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\Clock.cpp">
       <Filter>TempEngine\Core\Time</Filter>
@@ -332,9 +326,6 @@
     </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\Vec4.hpp">
       <Filter>TempEngine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.hpp">
-      <Filter>TempEngine\Core\XML</Filter>
     </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\Clock.hpp">
       <Filter>TempEngine\Core\Time</Filter>

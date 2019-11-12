@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine/Core/Strings/StringUtils.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/XML/XMLUtils.hpp"
 #include <string>
 #include <map>
 
@@ -70,7 +69,6 @@ public:
 	NamedProperties();
 	~NamedProperties(); 
 
-	void PopulateFromXmlElementAttributes( const XmlElement& element );
 	std::string GetPropertyString( std::string const &name, std::string const &def = "" ); 
 
 public:

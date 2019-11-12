@@ -77,19 +77,3 @@ float AABB2Collider2D::GetMomentOfInertia()
 	return twelfth * mass * ( doubleHeight + doubleWidth ) + ( curBox.GetCenter() - curBox.GetCenter() ).GetLengthSquared() * mass;
 
 }
-
-//--------------------------------------------------------------------------
-/**
-* GetAsXMLElemnt
-*/
-tinyxml2::XMLElement* AABB2Collider2D::GetAsXMLElemnt( tinyxml2::XMLDocument* doc ) const
-{
-	tinyxml2::XMLElement* shapeColEle = doc->NewElement( "collider" );
-
-	shapeColEle->SetAttribute( "radius", Stringf( "%f", 0.0f ).c_str() );
-	shapeColEle->SetAttribute( "extents", Stringf( "%f,%f",		m_localShape.GetWidth() * 0.5f,	m_localShape.GetHeight() * 0.5f ).c_str() );
-	shapeColEle->SetAttribute( "locCenter", Stringf( "%f,%f",	m_localShape.GetCenter().x,	m_localShape.GetCenter().y ).c_str() );
-	shapeColEle->SetAttribute( "locRight", Stringf( "%f,%f", 1.0f, 0.0f ).c_str() );
-
-	return shapeColEle;
-}

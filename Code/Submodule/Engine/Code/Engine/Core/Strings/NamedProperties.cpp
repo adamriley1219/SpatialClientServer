@@ -24,18 +24,6 @@ NamedProperties::~NamedProperties()
 
 //--------------------------------------------------------------------------
 /**
-* PopulateFromXmlElementAttributes
-*/
-void NamedProperties::PopulateFromXmlElementAttributes( const XmlElement& element )
-{
-	for( const tinyxml2::XMLAttribute* att = element.FirstAttribute(); att; att = att->Next() )
-	{
-		SetValue( att->Name(), att->Value() );
-	}
-}
-
-//--------------------------------------------------------------------------
-/**
 * GetPropertyString
 */
 std::string NamedProperties::GetPropertyString( std::string const &name, std::string const &def /*= "" */ )
