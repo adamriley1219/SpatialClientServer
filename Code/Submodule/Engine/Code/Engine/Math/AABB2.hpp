@@ -17,6 +17,7 @@ public:
 	explicit AABB2( float bottomLeftX, float bottomLeftY, float topRightX, float topRightY );
 	explicit AABB2( Vec2 bottomLeft, Vec2 topRight );
 	explicit AABB2( float width, float height, Vec2 center = Vec2::ZERO );
+	explicit AABB2( const char* text );
 
 	void ScaleUniform( float scale );
 	Vec2 GetDimention() const;
@@ -29,6 +30,7 @@ public:
 	void AddPaddingXY( float paddingX, float paddingY );
 	
 	float GetScaleToFitWithin( float width, float height ) const;
+	void SetFromText( const char* text );
 
  	void	Resize( const Vec2& newDimensions, const Vec2& pivotAnchorAlignment = Vec2::ALIGN_CENTERED );
  	void	AlignWithinBox( const AABB2& box, const Vec2& alignment );

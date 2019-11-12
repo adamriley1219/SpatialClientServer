@@ -33,6 +33,15 @@ Vec3::Vec3( float initialX, float initialY, float initialZ )
 /**
 * Vec3
 */
+Vec3::Vec3( const char* text )
+{
+	SetFromText( text );
+}
+
+//--------------------------------------------------------------------------
+/**
+* Vec3
+*/
 Vec3::Vec3( Vec4 vec4 )
 {
 	x = vec4.x;
@@ -269,6 +278,19 @@ Vec3 Vec3::GetNormalized() const
 	return vec;
 }
 
+//--------------------------------------------------------------------------
+/**
+* SetFromText
+*/
+void Vec3::SetFromText( const char* text )
+{
+	std::vector<std::string> splits = SplitStringOnDelitmiter( text, "," );
+	GUARANTEE_OR_DIE( (int) splits.size() == 3, Stringf( "Vec3 SetFromText being called with %d splits", (int) splits.size() ) );
+
+	x = StringToFloat( splits[0] );
+	y = StringToFloat( splits[1] );
+	y = StringToFloat( splits[2] );
+}
 
 //--------------------------------------------------------------------------
 /**

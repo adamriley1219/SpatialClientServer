@@ -19,6 +19,7 @@ public:
 	explicit Vec3( float initialX, float initialY, float initialZ );		// explicit constructor (from x, y)
 	explicit Vec3( Vec2 vec2, float inZ );
 	explicit Vec3( Vec4 vec4 );
+	explicit Vec3( const char* text );
 	
 	const static Vec3 ZERO;
 	const static Vec3 ONE;
@@ -57,6 +58,7 @@ public:
 	void Normalize();
 	Vec3 GetNormalized() const;
 
+	void SetFromText( const char* text );
 	void SetLength( float newLength );
 
 

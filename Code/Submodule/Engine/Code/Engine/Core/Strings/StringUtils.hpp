@@ -40,6 +40,18 @@ float EquateString( std::string string );
 // For NamedProperty use.
 //--------------------------------------------------------------------------
 
+std::string ToString(bool mBool);
+std::string ToString(float mFloat);
+std::string ToString(int mInt);
+std::string ToString(const std::string& string);
+std::string ToString(void const* const ptr);
+std::string ToString(const IntVec2& vec);
+std::string ToString(const Vec2& vec);
+std::string ToString(const Vec3& vec);
+std::string ToString(const Vec4& vec);
+std::string ToString(const FloatRange& range);
+std::string ToString(const IntRange& range);
+
 #ifdef PLATFORM_WINDOWS
 std::string ToString( const Rgba& color );
 #endif

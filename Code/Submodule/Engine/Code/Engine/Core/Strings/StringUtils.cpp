@@ -551,3 +551,115 @@ float EquateString( std::string string )
 	}
 	return my_stack.top();
 }
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(const std::string& string)
+{
+	return string;
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(void const* const ptr)
+{
+	UNUSED(ptr);
+	return "";
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(const Vec2& vec)
+{
+	return Stringf("%f,%f", vec.x, vec.y);
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(const IntVec2& vec)
+{
+	return Stringf("%d,%d", vec.x, vec.y);
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(const Vec3& vec)
+{
+	return Stringf("%f,%f,%f", vec.x, vec.y, vec.z);
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(const Vec4& vec)
+{
+	return Stringf("%f,%f,%f,%f", vec.x, vec.y, vec.z, vec.w);
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+#ifdef PLATFORM_WINDOWS
+std::string ToString(const Rgba& color)
+{
+	return Stringf("%f,%f,%f,%f", color.r, color.g, color.b, color.a);
+}
+#endif
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(const FloatRange& range)
+{
+	return Stringf("%f,%f", range.min, range.max);
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(const IntRange& range)
+{
+	return Stringf("%d,%d", range.min, range.max);
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(float mFloat)
+{
+	return FloatToString(mFloat);
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(int mInt)
+{
+	return IntToString(mInt);
+}
+
+//--------------------------------------------------------------------------
+/**
+* ToString
+*/
+std::string ToString(bool mBool)
+{
+	return mBool ? "true" : "false";
+}
+

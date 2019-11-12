@@ -41,7 +41,15 @@ AABB2::AABB2( Vec2 bottomLeft, Vec2 topRight )
 	
 }
 
-//-------
+//--------------------------------------------------------------------------
+/**
+* AABB2
+*/
+AABB2::AABB2( const char* text )
+{
+	SetFromText( text );
+}
+
 //--------------------------------------------------------------------------
 /**
 * AABB2
@@ -152,6 +160,21 @@ float AABB2::GetScaleToFitWithin( float width, float height ) const
 	return scale;
 }
 
+//--------------------------------------------------------------------------
+/**
+* SetFromText
+*/
+void AABB2::SetFromText( const char* text )
+{
+	std::vector<std::string> splits = SplitStringOnDelitmiter( text, "," );
+	int size = (int) splits.size();
+	GUARANTEE_OR_DIE( size == 4, Stringf( "RGBA SetFromText being called with %d splits", size ) );
+
+	m_bottomLeft.x = StringToFloat( splits[0] );
+	m_bottomLeft.y = StringToFloat( splits[1] );
+	m_topRight.x = StringToFloat( splits[2] );
+	m_topRight.y = StringToFloat( splits[3] );
+}
 
 //--------------------------------------------------------------------------
 /**

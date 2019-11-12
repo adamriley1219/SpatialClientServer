@@ -55,6 +55,14 @@ Vec2::Vec2()
 	y = 0.0f;
 }
 
+//--------------------------------------------------------------------------
+/**
+* Vec2
+*/
+Vec2::Vec2( const char* text )
+{
+	SetFromText( text );
+}
 
 //--------------------------------------------------------------------------
 /**
@@ -357,6 +365,19 @@ void Vec2::SetPolarDegrees( float newAngleDegrees, float newLength )
 void Vec2::SetPolarRadians( float newAngleRadians, float newLength )
 {
 	SetPolarDegrees( ConvertRadiansToDegrees( newAngleRadians ), newLength );
+}
+
+//--------------------------------------------------------------------------
+/**
+* SetFromText
+*/
+void Vec2::SetFromText( const char* text )
+{
+	std::vector<std::string> splits = SplitStringOnDelitmiter( text, "," );
+	GUARANTEE_OR_DIE( (int) splits.size() == 2, Stringf( "Vec2 SetFromText being called with %d splits", (int) splits.size() ) );
+
+	x = StringToFloat( splits[0] );
+	y = StringToFloat( splits[1] );
 }
 
 //--------------------------------------------------------------------------
