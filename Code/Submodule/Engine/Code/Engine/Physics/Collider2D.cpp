@@ -2,7 +2,6 @@
 #include "Engine/Physics/Rigidbody2D.hpp"
 #include "Engine/Physics/Collision2D.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/EventSystem.hpp"
 
 
 
@@ -43,10 +42,6 @@ void Collider2D::FireHitEvent( Collider2D* colWith )
 {
 	if( m_hitEvent != "" )
 	{
-		EventArgs args;
-		args.SetValue( "other", colWith );
-		args.SetValue( "owner", this );
-		g_theEventSystem->FireEvent( m_hitEvent, args );
 	}
 }
 
@@ -58,10 +53,6 @@ void Collider2D::FireEnterEvent( Collider2D* colWith )
 {
 	if( m_onEnterEvent != "" )
 	{
-		EventArgs args;
-		args.SetValue( "other", colWith );
-		args.SetValue( "owner", this );
-		g_theEventSystem->FireEvent( m_onEnterEvent, args );
 	}
 }
 
@@ -73,10 +64,6 @@ void Collider2D::FireExitEvent( Collider2D* colWith )
 {
 	if( m_onExitEvent != "" )
 	{
-		EventArgs args;
-		args.SetValue( "other", colWith );
-		args.SetValue( "owner", this );
-		g_theEventSystem->FireEvent( m_onExitEvent, args );
 	}
 }
 
@@ -88,10 +75,6 @@ void Collider2D::FireStayEvent( Collider2D* colWith )
 {
 	if( m_onStayEvent != "" )
 	{
-		EventArgs args;
-		args.SetValue( "other", colWith );
-		args.SetValue( "owner", this );
-		g_theEventSystem->FireEvent( m_onStayEvent, args );
 	}
 }
 
