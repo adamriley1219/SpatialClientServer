@@ -1,8 +1,8 @@
 #include "Engine/Physics/PillboxCollider2D.hpp"
 #include "Engine/Physics/Rigidbody2D.hpp"
-#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 
 #ifdef PLATFORM_WINDOWS
+#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #include "Engine/Renderer/RenderContext.hpp"
 #endif // PLATFORM_WINDOWS
 

@@ -1,10 +1,10 @@
 #include "Engine/Physics/DiscCollider2D.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #include "Engine/Physics/Rigidbody2D.hpp"
 
 #ifdef PLATFORM_WINDOWS
 #include "Engine/Renderer/RenderContext.hpp"
+#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #endif
 
 

@@ -1,9 +1,9 @@
 #include "Engine/Physics/AABB2Collider2D.hpp"
 #include "Engine/Physics/Rigidbody2D.hpp"
-#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 
 #ifdef PLATFORM_WINDOWS
 #include "Engine/Renderer/RenderContext.hpp"
+#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #endif
 
 

@@ -1,6 +1,5 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Physics/Manifold2D.hpp"
 #include "Engine/Math/OBB2.hpp"
