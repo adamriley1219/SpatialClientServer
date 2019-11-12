@@ -1,9 +1,12 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Physics/Manifold2D.hpp"
 #include "Engine/Math/OBB2.hpp"
 #include "Engine/Math/Plane2.hpp"
+#include "Engine/Core/Graphics/Rgba.hpp"
+#include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
 #include "Engine/Math/RNG.hpp"
 
 #include "Engine/Math/Ray3.hpp"
@@ -315,7 +318,7 @@ bool DoesDiscOverlapLineSegment2D( const Vec2& discCenter, float discRadius, con
 	}
 	else
 	{
-
+		ERROR_AND_DIE("MathUtils - DoesDiscOverlapLineSegment2D should never get to this point.");
 		return false;
 	}
 }
@@ -953,7 +956,7 @@ float GetRayImpactFractionVsDisc2D( const Vec2& rayStart, const Vec2& rayNormali
 	float impactPoint = scOnRdLength - b;
 	float normImpactPoint = impactPoint / rayLength;
 
-
+	GUARANTEE_OR_DIE( normImpactPoint >= 0.0f && normImpactPoint <= 1.0f, "MathUtils::GetRayImpactFractionVsDisc2D gave an incorrect value" );
 
 	return normImpactPoint;
 }
@@ -1399,6 +1402,16 @@ Vec3 Lerp( const Vec3& start, const Vec3& end, float percent )
 {
 	return Vec3( Lerp( start.x, end.x, percent ), Lerp( start.y, end.y, percent ), Lerp( start.z, end.z, percent ) );
 }
+
+//--------------------------------------------------------------------------
+/**
+* Lerp
+*/
+Rgba Lerp( const Rgba& start, const Rgba& end, float percent )
+{
+	return Rgba( Lerp( start.r, end.r, percent ), Lerp( start.g, end.g, percent ), Lerp( start.b, end.b, percent ), Lerp( start.a, end.a, percent ) );
+}
+
 
 //--------------------------------------------------------------------------
 /**

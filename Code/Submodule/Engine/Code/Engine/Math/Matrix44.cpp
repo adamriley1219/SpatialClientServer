@@ -406,7 +406,7 @@ Matrix44 Matrix44::FromEuler( Vec3 euler, eRotationOrder rot )
 	else 
 	{
 		// other cases
-
+		ASSERT_RECOVERABLE(false, "Not Implemented Euler case."); // implement unknown case
 	}
 
 	return ret; 
@@ -1078,3 +1078,49 @@ void TransformPoints( uint count, Vec3* points, const Matrix44& matrix )
 	}
 }
 
+
+//--------------------------------------------------------------------------
+/**
+* GetTransfromFromString
+* Assumes that there are 3 strings within string that will represent teh state of the transform.
+* e.g. -z x -y
+*/
+Matrix44 GetTransfromFromString(const std::string& string)
+{
+	Matrix44 mat;
+	Vec4 i = mat.GetI();
+	Vec4 j = mat.GetJ();
+	Vec4 k = mat.GetK();
+
+	std::vector<std::string> splits = SplitStringOnDelitmiter(string.c_str(), " ");
+
+	for (int idx = 0; idx < 3; ++idx)
+	{
+		if (splits[idx] == "x")
+		{
+			mat.SetCol(i, idx);
+		}
+		if (splits[idx] == "y")
+		{
+			mat.SetCol(j, idx);
+		}
+		if (splits[idx] == "z")
+		{
+			mat.SetCol(k, idx);
+		}
+		if (splits[idx] == "-x")
+		{
+			mat.SetCol(i * -1.0f, idx);
+		}
+		if (splits[idx] == "-y")
+		{
+			mat.SetCol(j * -1.0f, idx);
+		}
+		if (splits[idx] == "-z")
+		{
+			mat.SetCol(k * -1.0f, idx);
+		}
+	}
+
+	return mat;
+}

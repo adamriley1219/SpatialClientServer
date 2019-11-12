@@ -215,14 +215,29 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Debug\Callstack.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Debug\DevConsole.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Debug\TextLine.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Debug\UnitTest.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Image.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Rgba.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Tags.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\Clock.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\StopWatch.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\Time.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Vertex\MeshCPU.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Vertex\VertexMaster.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Vertex\Vertex_LIT.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Vertex\Vertex_PCU.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\WindowContext.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\AABB2.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\AABB3.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\Capsule3.cpp" />
@@ -269,14 +284,29 @@
     <ClCompile Include="Zone.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Debug\Callstack.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Debug\DevConsole.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Debug\TextLine.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Debug\UnitTest.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Image.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Rgba.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Tags.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\Clock.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\StopWatch.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\Time.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Vertex\MeshCPU.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Vertex\VertexMaster.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Vertex\Vertex_LIT.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Vertex\Vertex_PCU.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\WindowContext.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\AABB2.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\AABB3.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\Capsule3.hpp" />

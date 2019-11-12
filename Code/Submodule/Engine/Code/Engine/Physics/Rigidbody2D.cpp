@@ -241,3 +241,27 @@ void Rigidbody2D::UpdateMomentOfInertia()
 {
 	m_momentOfI = m_collider->GetMomentOfInertia();
 }
+
+//--------------------------------------------------------------------------
+/**
+* GetAsXMLElement
+*/
+tinyxml2::XMLElement* Rigidbody2D::GetAsXMLElement( tinyxml2::XMLDocument* doc ) const
+{
+
+	tinyxml2::XMLElement* rbElement = doc->NewElement( "rigidbody" );
+
+	rbElement->SetAttribute( "type", Stringf( "%s", GetSimulationType() == PHYSICS_SIM_STATIC ? "static" : "dynamic" ).c_str() );
+	rbElement->SetAttribute( "mass", Stringf( "%f", GetMass() ).c_str() );
+	rbElement->SetAttribute( "velocity", Stringf( "%f,%f", GetVelocity().x, GetVelocity().y ).c_str() );
+	rbElement->SetAttribute( "angularVelocity", Stringf( "%f", GetAngularVelocity() ).c_str() );
+	rbElement->SetAttribute( "friction", Stringf( "%f", GetFriction() ).c_str() );
+	rbElement->SetAttribute( "restitution", Stringf( "%f", GetRestitution() ).c_str() );
+	rbElement->SetAttribute( "drag", Stringf( "%f", GetDrag() ).c_str() );
+	rbElement->SetAttribute( "angularDrag", Stringf( "%f", GetAngularDrag() ).c_str() );
+	rbElement->SetAttribute( "xRestricted", Stringf( "%s", IsXRestricted() ? "true" : "false" ).c_str() );
+	rbElement->SetAttribute( "yRestricted", Stringf( "%s", IsYRestricted()  ? "true" : "false" ).c_str() );
+	rbElement->SetAttribute( "rotRestricted", Stringf( "%s", IsRotRestricted() ? "true" : "false" ).c_str() );
+
+	return rbElement;
+}

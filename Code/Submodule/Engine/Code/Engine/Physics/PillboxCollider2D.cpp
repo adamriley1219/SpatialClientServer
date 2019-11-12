@@ -1,10 +1,8 @@
 #include "Engine/Physics/PillboxCollider2D.hpp"
 #include "Engine/Physics/Rigidbody2D.hpp"
-
-#ifdef PLATFORM_WINDOWS
-#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #include "Engine/Renderer/RenderContext.hpp"
-#endif // PLATFORM_WINDOWS
+#include "Engine/Core/Vertex/Vertex_PCU.hpp"
+
 
 
 
@@ -161,3 +159,18 @@ float PillboxCollider2D::GetMomentOfInertia()
 	return localInertia + mass * offset.GetLengthSquared();
 }
 
+//--------------------------------------------------------------------------
+/**
+* GetAsXMLElemnt
+*/
+tinyxml2::XMLElement* PillboxCollider2D::GetAsXMLElemnt( tinyxml2::XMLDocument* doc ) const
+{
+	tinyxml2::XMLElement* shapeColEle = doc->NewElement( "collider" );
+	
+	shapeColEle->SetAttribute( "radius", Stringf( "%f", m_localShape.m_radius ).c_str() );
+	shapeColEle->SetAttribute( "extents", Stringf( "%f,%f",		m_localShape.m_obb.m_extents.x,	m_localShape.m_obb.m_extents.y ).c_str() );
+	shapeColEle->SetAttribute( "locCenter", Stringf( "%f,%f",	m_localShape.m_obb.m_center.x,	m_localShape.m_obb.m_center.y ).c_str() );
+	shapeColEle->SetAttribute( "locRight", Stringf( "%f,%f",	m_localShape.m_obb.m_right.x,	m_localShape.m_obb.m_right.y ).c_str() );
+
+	return shapeColEle;
+}

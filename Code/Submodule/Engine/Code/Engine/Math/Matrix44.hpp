@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Math/Vec4.hpp"
+#include "Engine/Core/Strings/StringUtils.hpp"
 
 struct Vec2;
 struct Vec3;
@@ -117,3 +118,11 @@ public:
 };
 
 void TransformPoints( uint count, Vec3* points, const Matrix44& matrix );
+
+//--------------------------------------------------------------------------
+/**
+* GetTransfromFromString
+* Assumes that there are 3 strings within string that will represent teh state of the transform.
+* e.g. -z x -y
+*/
+Matrix44 GetTransfromFromString(const std::string& string);

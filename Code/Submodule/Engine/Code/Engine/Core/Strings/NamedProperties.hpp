@@ -1,5 +1,7 @@
 #pragma once
+#include "Engine/Core/Strings/StringUtils.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/XML/XMLUtils.hpp"
 #include <string>
 #include <map>
 
@@ -68,6 +70,7 @@ public:
 	NamedProperties();
 	~NamedProperties(); 
 
+	void PopulateFromXmlElementAttributes( const XmlElement& element );
 	std::string GetPropertyString( std::string const &name, std::string const &def = "" ); 
 
 public:
@@ -98,13 +101,13 @@ private:
 	float FromString( const char* str, const float& def )
 	{
 		(void)(def);
-		return 0.0f;
+		return StringToFloat(str);
 	}
 
 	int FromString( const char* str, const int& def )
 	{
 		(void)(def);
-		return 0;
+		return StringToInt(str);
 	}
 
 	std::string FromString( const char* str, const std::string& def )

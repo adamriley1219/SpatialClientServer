@@ -55,6 +55,7 @@ Vec2::Vec2()
 	y = 0.0f;
 }
 
+
 //--------------------------------------------------------------------------
 /**
 * Vec2
@@ -220,7 +221,7 @@ void Vec2::SetLength( float newLength )
 	}
 
 	float length = GetLength();
-
+	ASSERT_OR_DIE( length != 0.0f, "Deviding by 0 while attempting to call Vec2::SetLength" );
 	float toScale = newLength / length;
 	x *= toScale;
 	y *= toScale;
@@ -357,7 +358,6 @@ void Vec2::SetPolarRadians( float newAngleRadians, float newLength )
 {
 	SetPolarDegrees( ConvertRadiansToDegrees( newAngleRadians ), newLength );
 }
-
 
 //--------------------------------------------------------------------------
 /**

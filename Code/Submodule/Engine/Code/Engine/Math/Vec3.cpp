@@ -285,7 +285,7 @@ void Vec3::SetLength( float newLength )
 	}
 
 	float length = GetLength();
-
+	ASSERT_OR_DIE( length != 0.0f, "Deviding by 0 while attempting to call Vec3::SetLength" );
 	float toScale = newLength / length;
 	x *= toScale;
 	y *= toScale;

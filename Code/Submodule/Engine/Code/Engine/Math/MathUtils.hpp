@@ -13,6 +13,7 @@ struct Vertex_PCU;
 struct AABB2;
 struct AABB3;
 struct Manifold2D;
+struct Rgba;
 struct Ray3;
 struct OBB3;
 struct Capsule3;
@@ -137,6 +138,7 @@ int GetMax( int a, int b );
 float Lerp( float start, float end, float percent );
 Vec2 Lerp( const Vec2& start, const Vec2& end, float percent );
 Vec3 Lerp( const Vec3& start, const Vec3& end, float percent );
+Rgba Lerp( const Rgba& start, const Rgba& end, float percent );
 
 uint GetRandomUINTInRange( uint a, uint b );
 float GetRandomFloatInRange( float a, float b );

@@ -21,22 +21,34 @@
       <UniqueIdentifier>{db355289-f1cc-4f07-83e2-dcfffeceb7b6}</UniqueIdentifier>
     </Filter>
     <Filter Include="TempEngine">
-      <UniqueIdentifier>{886c4617-85d9-426e-823d-6c8563a46d18}</UniqueIdentifier>
+      <UniqueIdentifier>{9d2fcbcb-35ef-4ad4-9ae7-6b879ac17067}</UniqueIdentifier>
     </Filter>
     <Filter Include="TempEngine\Core">
-      <UniqueIdentifier>{95cf4b38-30c2-42b6-b0d2-9c6ec717e1f2}</UniqueIdentifier>
+      <UniqueIdentifier>{fc6c34f1-2a9f-4a98-a61b-469a0359c33c}</UniqueIdentifier>
     </Filter>
     <Filter Include="TempEngine\Math">
-      <UniqueIdentifier>{2c084542-6cc0-4420-b702-54032e99c373}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TempEngine\Core\Strings">
-      <UniqueIdentifier>{76ad653e-f6ad-476c-b64d-e3ac403f5455}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TempEngine\Core\Time">
-      <UniqueIdentifier>{1b41cbd9-3166-4051-b9aa-2e25f44588f4}</UniqueIdentifier>
+      <UniqueIdentifier>{3c4f1b7d-ec3b-4860-8591-d96e79580655}</UniqueIdentifier>
     </Filter>
     <Filter Include="TempEngine\Physics">
-      <UniqueIdentifier>{1dab7b88-6f7c-4dfd-a3b2-b921431c3260}</UniqueIdentifier>
+      <UniqueIdentifier>{ee01e1e6-64f7-481a-b07e-498e23b56d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TempEngine\Core\Debug">
+      <UniqueIdentifier>{487a8c55-c78e-4486-86a6-df9062381d04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TempEngine\Core\Graphics">
+      <UniqueIdentifier>{b55cda1d-de4d-4572-be14-50760ee353fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TempEngine\Core\Strings">
+      <UniqueIdentifier>{ac32c2ff-9627-497a-b0f8-1dcbffcace0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TempEngine\Core\Time">
+      <UniqueIdentifier>{7df3c529-7c84-400f-b3e1-34980eef8426}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TempEngine\Core\Vertex">
+      <UniqueIdentifier>{dd994c83-04e4-4085-955f-1042be2a4094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TempEngine\Core\XML">
+      <UniqueIdentifier>{7b4c8a9b-c6e1-4bf2-84a4-084fd9b63cb8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,14 +82,38 @@
     <ClCompile Include="AIController.cpp">
       <Filter>Source Files\Controllers</Filter>
     </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.cpp">
-      <Filter>TempEngine\Core</Filter>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\AABB2Collider2D.cpp">
+      <Filter>TempEngine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.cpp">
-      <Filter>TempEngine\Core</Filter>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Collider2D.cpp">
+      <Filter>TempEngine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\WindowContext.cpp">
-      <Filter>TempEngine\Core</Filter>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Collision2D.cpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\DiscCollider2D.cpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Manifold2D.cpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\PhysicsMaterial.cpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\PhysicsSystem.cpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\PillboxCollider2D.cpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Rigidbody2D.cpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Transform2D.cpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Transform3D.cpp">
+      <Filter>TempEngine\Physics</Filter>
     </ClCompile>
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\AABB2.cpp">
       <Filter>TempEngine\Math</Filter>
@@ -148,6 +184,42 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Math\Vec4.cpp">
       <Filter>TempEngine\Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.cpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.cpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.cpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.cpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Tags.cpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\WindowContext.cpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Debug\Callstack.cpp">
+      <Filter>TempEngine\Core\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Debug\DevConsole.cpp">
+      <Filter>TempEngine\Core\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Debug\TextLine.cpp">
+      <Filter>TempEngine\Core\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Debug\UnitTest.cpp">
+      <Filter>TempEngine\Core\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.cpp">
+      <Filter>TempEngine\Core\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.cpp">
+      <Filter>TempEngine\Core\Strings</Filter>
+    </ClCompile>
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\Clock.cpp">
       <Filter>TempEngine\Core\Time</Filter>
     </ClCompile>
@@ -157,44 +229,29 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\Time.cpp">
       <Filter>TempEngine\Core\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.cpp">
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Vertex\MeshCPU.cpp">
+      <Filter>TempEngine\Core\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Vertex\Vertex_LIT.cpp">
+      <Filter>TempEngine\Core\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Vertex\Vertex_PCU.cpp">
+      <Filter>TempEngine\Core\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Vertex\VertexMaster.cpp">
+      <Filter>TempEngine\Core\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.cpp">
+      <Filter>TempEngine\Core\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Image.cpp">
+      <Filter>TempEngine\Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Rgba.cpp">
+      <Filter>TempEngine\Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.cpp">
       <Filter>TempEngine\Core\Strings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.cpp">
-      <Filter>TempEngine\Core\Strings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\AABB2Collider2D.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Collider2D.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Collision2D.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\DiscCollider2D.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Manifold2D.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\PhysicsMaterial.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\PhysicsSystem.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\PillboxCollider2D.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Rigidbody2D.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Transform2D.cpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Transform3D.cpp">
-      <Filter>TempEngine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -228,14 +285,38 @@
     <ClInclude Include="AIController.hpp">
       <Filter>Source Files\Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.hpp">
-      <Filter>TempEngine\Core</Filter>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\AABB2Collider2D.hpp">
+      <Filter>TempEngine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.hpp">
-      <Filter>TempEngine\Core</Filter>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Collider2D.hpp">
+      <Filter>TempEngine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\WindowContext.hpp">
-      <Filter>TempEngine\Core</Filter>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Collision2D.hpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\DiscCollider2D.hpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Manifold2D.hpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\PhysicsMaterial.hpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\PhysicsSystem.hpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\PillboxCollider2D.hpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Rigidbody2D.hpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Transform2D.hpp">
+      <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Transform3D.hpp">
+      <Filter>TempEngine\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\AABB2.hpp">
       <Filter>TempEngine\Math</Filter>
@@ -306,6 +387,42 @@
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Math\Vec4.hpp">
       <Filter>TempEngine\Math</Filter>
     </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.hpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.hpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.hpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.hpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Tags.hpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\WindowContext.hpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Debug\Callstack.hpp">
+      <Filter>TempEngine\Core\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Debug\DevConsole.hpp">
+      <Filter>TempEngine\Core\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Debug\TextLine.hpp">
+      <Filter>TempEngine\Core\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Debug\UnitTest.hpp">
+      <Filter>TempEngine\Core\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.hpp">
+      <Filter>TempEngine\Core\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.hpp">
+      <Filter>TempEngine\Core\Strings</Filter>
+    </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\Clock.hpp">
       <Filter>TempEngine\Core\Time</Filter>
     </ClInclude>
@@ -315,44 +432,29 @@
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\Time.hpp">
       <Filter>TempEngine\Core\Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.hpp">
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Vertex\MeshCPU.hpp">
+      <Filter>TempEngine\Core\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Vertex\Vertex_LIT.hpp">
+      <Filter>TempEngine\Core\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Vertex\Vertex_PCU.hpp">
+      <Filter>TempEngine\Core\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Vertex\VertexMaster.hpp">
+      <Filter>TempEngine\Core\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.hpp">
+      <Filter>TempEngine\Core\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Image.hpp">
+      <Filter>TempEngine\Core\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Rgba.hpp">
+      <Filter>TempEngine\Core\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.hpp">
       <Filter>TempEngine\Core\Strings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.hpp">
-      <Filter>TempEngine\Core\Strings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\AABB2Collider2D.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Collider2D.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Collision2D.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\DiscCollider2D.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Manifold2D.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\PhysicsMaterial.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\PhysicsSystem.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\PillboxCollider2D.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Rigidbody2D.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Transform2D.hpp">
-      <Filter>TempEngine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Transform3D.hpp">
-      <Filter>TempEngine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

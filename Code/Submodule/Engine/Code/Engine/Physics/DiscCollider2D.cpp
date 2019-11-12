@@ -1,10 +1,10 @@
 #include "Engine/Physics/DiscCollider2D.hpp"
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #include "Engine/Physics/Rigidbody2D.hpp"
 
 #ifdef PLATFORM_WINDOWS
 #include "Engine/Renderer/RenderContext.hpp"
-#include "Engine/Core/Vertex/Vertex_PCU.hpp"
 #endif
 
 
@@ -47,6 +47,23 @@ float DiscCollider2D::GetMomentOfInertia()
 	float discMass = m_rigidbody->GetMass();
 	return 0.5f * discMass * m_localShape.m_radius * m_localShape.m_radius + m_localShape.m_center.GetLengthSquared() * discMass;
 }
+
+//--------------------------------------------------------------------------
+/**
+* GetAsXMLElemnt
+*/
+tinyxml2::XMLElement* DiscCollider2D::GetAsXMLElemnt( tinyxml2::XMLDocument* doc ) const
+{
+	tinyxml2::XMLElement* shapeColEle = doc->NewElement( "collider" );
+
+	shapeColEle->SetAttribute( "radius", Stringf( "%f", m_localShape.m_radius ).c_str() );
+	shapeColEle->SetAttribute( "extents", Stringf( "%f,%f",	0.0f, 0.0f ).c_str() );
+	shapeColEle->SetAttribute( "locCenter", Stringf( "%f,%f", m_localShape.m_center.x, m_localShape.m_center.y ).c_str() );
+	shapeColEle->SetAttribute( "locRight", Stringf( "%f,%f", 1.0f, 0.0f ).c_str() );
+
+	return shapeColEle;
+}
+
 
 //--------------------------------------------------------------------------
 /**

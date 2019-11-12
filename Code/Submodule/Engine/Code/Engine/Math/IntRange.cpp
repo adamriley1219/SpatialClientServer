@@ -13,7 +13,6 @@ IntRange::IntRange( int min, int max )
 	this->max = max; 
 }
 
-
 //--------------------------------------------------------------------------
 /**
 * IntRange

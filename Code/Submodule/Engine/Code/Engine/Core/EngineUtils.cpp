@@ -3,6 +3,15 @@
 #include <thread>
 
 
+//--------------------------------------------------------------------------
+/**
+* GetSystemCoreCount
+*/
+uint GetSystemCoreCount()
+{
+	return std::thread::hardware_concurrency();
+}
+
 
 //--------------------------------------------------------------------------
 /**
@@ -22,6 +31,7 @@ unsigned long int LoadFile(const char* filePath, char*& output)
 	}
 	else
 	{
+		ERROR_RECOVERABLE("Could not open file.");
 		return 0;
 	}
 }

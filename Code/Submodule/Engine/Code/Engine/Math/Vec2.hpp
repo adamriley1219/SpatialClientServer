@@ -63,6 +63,7 @@ public:
 	void SetPolarDegrees( float newAngleDegrees, float newLength );
 	void SetPolarRadians( float newAngleRadians, float newLength );
 
+
 	void RotateDegrees( float rotateDegrees );
 	void RotateRadians( float rotateRadians );
 	void Rotate90Degrees();

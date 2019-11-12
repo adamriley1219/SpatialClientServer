@@ -1,5 +1,6 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/Strings/NamedStrings.hpp"
+#include "Engine/Core/Graphics/Rgba.hpp"
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/IntVec2.hpp"
 #include "Engine/Math/AABB2.hpp"
@@ -29,6 +30,18 @@ NamedStrings::NamedStrings()
 NamedStrings::~NamedStrings()
 {
 
+}
+
+//--------------------------------------------------------------------------
+/**
+* PopulateFromXmlElementAttributes
+*/
+void NamedStrings::PopulateFromXmlElementAttributes( const XmlElement& element )
+{
+	for( const tinyxml2::XMLAttribute* att = element.FirstAttribute(); att; att = att->Next() )
+	{
+		SetValue( att->Name(), att->Value() );
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -75,7 +88,7 @@ int NamedStrings::GetValue( const std::string& keyName, int defaultValue ) const
 	{
 		return defaultValue;
 	}
-	return 0;
+	return StringToInt( value );
 }
 
 //--------------------------------------------------------------------------
@@ -94,7 +107,7 @@ float NamedStrings::GetValue( const std::string& keyName, float defaultValue ) c
 	{
 		return defaultValue;
 	}
-	return 0.0f;
+	return StringToFloat( value );
 }
 
 //--------------------------------------------------------------------------
@@ -130,11 +143,29 @@ std::string NamedStrings::GetValue( const std::string& keyName, const char* defa
 	}
 	else	
 	{
-		return std::string( defaultValue );
+		return Stringf( defaultValue );
 	}
 	return value;
 }
 
+//--------------------------------------------------------------------------
+/**
+* GetValue
+*/
+Rgba NamedStrings::GetValue( const std::string& keyName, const Rgba& defaultValue ) const
+{
+	auto itr = m_keyValuePairs.find( keyName );
+	std::string value;
+	if( itr != m_keyValuePairs.end() )
+	{
+		value = itr->second;
+	}
+	else	
+	{
+		return defaultValue;
+	}
+	return Rgba( value.c_str() );
+}
 
 //--------------------------------------------------------------------------
 /**

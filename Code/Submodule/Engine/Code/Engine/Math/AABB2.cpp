@@ -41,7 +41,7 @@ AABB2::AABB2( Vec2 bottomLeft, Vec2 topRight )
 	
 }
 
-
+//-------
 //--------------------------------------------------------------------------
 /**
 * AABB2
@@ -151,6 +151,7 @@ float AABB2::GetScaleToFitWithin( float width, float height ) const
 	}
 	return scale;
 }
+
 
 //--------------------------------------------------------------------------
 /**

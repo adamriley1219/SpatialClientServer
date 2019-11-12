@@ -6,12 +6,12 @@
 
 #ifdef _WIN32
 #define PLATFORM_WINDOWS
-class RenderContext;
 #endif
 
 class Rigidbody2D;
 class Collider2D;
 struct Collision2D;
+class RenderContext;
 
 class PhysicsSystem
 {
