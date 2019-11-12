@@ -6,7 +6,6 @@
 #include "Engine/Math/OBB2.hpp"
 #include "Engine/Math/Plane2.hpp"
 #include "Engine/Core/Graphics/Rgba.hpp"
-#include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
 #include "Engine/Math/RNG.hpp"
 
 #include "Engine/Math/Ray3.hpp"
