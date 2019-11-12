@@ -4,7 +4,6 @@
 #include "Engine/Physics/Manifold2D.hpp"
 #include "Engine/Math/OBB2.hpp"
 #include "Engine/Math/Plane2.hpp"
-#include "Engine/Core/Graphics/Rgba.hpp"
 #include "Engine/Math/RNG.hpp"
 
 #include "Engine/Math/Ray3.hpp"
@@ -1400,16 +1399,6 @@ Vec3 Lerp( const Vec3& start, const Vec3& end, float percent )
 {
 	return Vec3( Lerp( start.x, end.x, percent ), Lerp( start.y, end.y, percent ), Lerp( start.z, end.z, percent ) );
 }
-
-//--------------------------------------------------------------------------
-/**
-* Lerp
-*/
-Rgba Lerp( const Rgba& start, const Rgba& end, float percent )
-{
-	return Rgba( Lerp( start.r, end.r, percent ), Lerp( start.g, end.g, percent ), Lerp( start.b, end.b, percent ), Lerp( start.a, end.a, percent ) );
-}
-
 
 //--------------------------------------------------------------------------
 /**

@@ -1,6 +1,5 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/Strings/NamedStrings.hpp"
-#include "Engine/Core/Graphics/Rgba.hpp"
 #include "Engine/Math/Vec2.hpp"
 #include "Engine/Math/IntVec2.hpp"
 #include "Engine/Math/AABB2.hpp"
@@ -148,24 +147,6 @@ std::string NamedStrings::GetValue( const std::string& keyName, const char* defa
 	return value;
 }
 
-//--------------------------------------------------------------------------
-/**
-* GetValue
-*/
-Rgba NamedStrings::GetValue( const std::string& keyName, const Rgba& defaultValue ) const
-{
-	auto itr = m_keyValuePairs.find( keyName );
-	std::string value;
-	if( itr != m_keyValuePairs.end() )
-	{
-		value = itr->second;
-	}
-	else	
-	{
-		return defaultValue;
-	}
-	return Rgba( value.c_str() );
-}
 
 //--------------------------------------------------------------------------
 /**

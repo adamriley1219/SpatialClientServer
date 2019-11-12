@@ -5,7 +5,6 @@
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Math/IntRange.hpp"
 #include "Engine/Math/FloatRange.hpp"
-#include "Engine/Core/Graphics/Rgba.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "ThirdParty/TinyXML2/tinyxml2.h"
 
@@ -72,20 +71,6 @@ float ParseXmlAttribute( const XmlElement& element, const char* attributeName, f
 	return returnValue;
 }
 
-//--------------------------------------------------------------------------
-/**
-* ParseXmlAttribute
-*/
-Rgba ParseXmlAttribute( const XmlElement& element, const char* attributeName, const Rgba& defaultValue )
-{
-	const char* value = element.Attribute(attributeName);
-	Rgba returnValue = defaultValue;
-	if( value )
-	{
-		returnValue = Rgba( value );		
-	}
-	return returnValue;
-}
 
 //--------------------------------------------------------------------------
 /**
