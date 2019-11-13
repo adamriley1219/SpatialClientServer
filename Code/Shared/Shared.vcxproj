@@ -217,6 +217,7 @@
   <ItemGroup>
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.cpp" />
@@ -274,6 +275,7 @@
   <ItemGroup>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.hpp" />
