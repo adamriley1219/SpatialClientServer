@@ -2,7 +2,14 @@
 #include <fstream>
 #include <thread>
 
-
+//--------------------------------------------------------------------------
+/**
+* GetSystemCoreCount
+*/
+uint GetSystemCoreCount()
+{
+	return std::thread::hardware_concurrency();
+}
 
 //--------------------------------------------------------------------------
 /**
