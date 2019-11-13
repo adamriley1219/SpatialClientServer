@@ -199,6 +199,12 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.cpp">
       <Filter>TempEngine\Core\Strings</Filter>
     </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.cpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Tags.cpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SharedCommon.hpp">
@@ -356,6 +362,15 @@
     </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Transform3D.hpp">
       <Filter>TempEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.hpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Tags.hpp">
+      <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.hpp">
+      <Filter>TempEngine\Core\Strings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

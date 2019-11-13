@@ -217,9 +217,11 @@
   <ItemGroup>
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Tags.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\Clock.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\StopWatch.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Time\Time.cpp" />
@@ -272,8 +274,11 @@
   <ItemGroup>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineCommon.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Tags.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\Clock.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\StopWatch.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Time\Time.hpp" />
