@@ -44,6 +44,9 @@
     <Filter Include="TempEngine\Core\Graphics">
       <UniqueIdentifier>{21dafdbf-3a3f-444e-92a7-f4298f50ae0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TempEngine\ThirdParty">
+      <UniqueIdentifier>{82e5a24f-e95e-4007-ab4e-318117ddded3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AbilityBaseDefinition.cpp">
@@ -217,6 +220,12 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.cpp">
       <Filter>TempEngine\Core\XML</Filter>
     </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Rgba.cpp">
+      <Filter>TempEngine\Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Image.cpp">
+      <Filter>TempEngine\Core\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SharedCommon.hpp">
@@ -389,6 +398,18 @@
     </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.hpp">
       <Filter>TempEngine\Core\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Rgba.hpp">
+      <Filter>TempEngine\Core\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Image.hpp">
+      <Filter>TempEngine\Core\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\ThirdParty\stb\stb_image.h">
+      <Filter>TempEngine\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\ThirdParty\stb\stb_image_write.h">
+      <Filter>TempEngine\ThirdParty</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

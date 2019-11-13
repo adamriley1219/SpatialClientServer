@@ -219,6 +219,8 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Image.cpp" />
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Rgba.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.cpp" />
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.cpp" />
@@ -278,6 +280,8 @@
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EngineUtils.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\EventSystem.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Image.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Graphics\Rgba.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedProperties.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\NamedStrings.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.hpp" />
@@ -321,6 +325,8 @@
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Rigidbody2D.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Transform2D.hpp" />
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Physics\Transform3D.hpp" />
+    <ClInclude Include="..\Submodule\Engine\Code\ThirdParty\stb\stb_image.h" />
+    <ClInclude Include="..\Submodule\Engine\Code\ThirdParty\stb\stb_image_write.h" />
     <ClInclude Include="AbilityBase.hpp" />
     <ClInclude Include="AbilityBaseDefinition.hpp" />
     <ClInclude Include="ActorBase.hpp" />
