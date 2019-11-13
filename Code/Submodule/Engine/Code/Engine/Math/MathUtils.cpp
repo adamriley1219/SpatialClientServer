@@ -210,6 +210,24 @@ float GetDistanceXYSquared( const Vec3& positionA, const Vec3& positionB )
 
 //--------------------------------------------------------------------------
 /**
+* PowerOf
+*/
+float PowerOfF( float base, float power )
+{
+	return (float) PowerOfD( (double) base, (double) power );
+}
+
+//--------------------------------------------------------------------------
+/**
+* PowerOf
+*/
+double PowerOfD( double base, double power )
+{
+	return pow( base, power );
+}
+
+//--------------------------------------------------------------------------
+/**
 * GetCartesianFromSpherical
 */
 Vec3 GetCartesianFromSpherical( float radius, float theta, float phi )

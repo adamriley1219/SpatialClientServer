@@ -196,6 +196,9 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Physics\Transform3D.cpp">
       <Filter>TempEngine\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\Strings\StringUtils.cpp">
+      <Filter>TempEngine\Core\Strings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SharedCommon.hpp">

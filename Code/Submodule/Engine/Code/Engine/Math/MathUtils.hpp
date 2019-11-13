@@ -45,6 +45,9 @@ float GetDistanceSquared( const Vec3& positionA, const Vec3& positionB );
 float GetDistanceXY( const Vec3& positionA, const Vec3& positionB );
 float GetDistanceXYSquared( const Vec3& positionA, const Vec3& positionB );
 
+float PowerOfF( float base, float power );
+double PowerOfD( double base, double power );
+
 Vec3 GetCartesianFromSpherical( float radius, float theta, float phi );
 
 // Overlap
