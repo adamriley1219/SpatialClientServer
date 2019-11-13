@@ -214,6 +214,9 @@
     <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.cpp">
       <Filter>TempEngine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.cpp">
+      <Filter>TempEngine\Core\XML</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SharedCommon.hpp">
@@ -383,6 +386,9 @@
     </ClInclude>
     <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\ErrorWarningAssert.hpp">
       <Filter>TempEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Submodule\Engine\Code\Engine\Core\XML\XMLUtils.hpp">
+      <Filter>TempEngine\Core\XML</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
