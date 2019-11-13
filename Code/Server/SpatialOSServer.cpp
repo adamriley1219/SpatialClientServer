@@ -120,7 +120,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		std::cout << std::endl;
 	};
 
-	if (arguments.size() != 3 && arguments.size() != 4) {
+	if ( arguments.size() < 3 ) {
 		print_usage();
 		return;
 	}
@@ -187,16 +187,19 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 // 
 // 	RequestEntityCreation(&entity);
 
-// 	constexpr unsigned kFramesPerSecond = 60;
-// 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
-// 		1. / static_cast<double>(kFramesPerSecond) };
+	constexpr unsigned kFramesPerSecond = 60;
+	constexpr std::chrono::duration<double> kFramePeriodSeconds{
+		1. / static_cast<double>(kFramesPerSecond) };
 
 	while (connection.IsConnected() && IsRunning())
 	{
-		//auto start_time = std::chrono::steady_clock::now();
+		auto start_time = std::chrono::steady_clock::now();
 
+		std::cout << "get OptList" << std::endl;
 		auto opList = connection.GetOpList(0);
+		std::cout << "got OptList" << std::endl;
 		dispatcher.Process( opList );
+		std::cout << "Processed OptList" << std::endl;
 
  		// Temp code for testing
 // 		entity_info_t* entity;
@@ -212,9 +215,9 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 // 			connection.SendComponentUpdate<improbable::Position>( entity->id, posUpdate );
 // 		}
 
-// 		auto end_time = std::chrono::steady_clock::now();
-// 		auto wait_for = kFramePeriodSeconds - ( end_time - start_time );
-// 		std::this_thread::sleep_for( wait_for );
+		auto end_time = std::chrono::steady_clock::now();
+		auto wait_for = kFramePeriodSeconds - ( end_time - start_time );
+		std::this_thread::sleep_for( wait_for );
 	}
 
 	

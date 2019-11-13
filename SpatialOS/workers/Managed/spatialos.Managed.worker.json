@@ -26,7 +26,8 @@
         "receptionist",
         "${IMPROBABLE_RECEPTIONIST_HOST}",
         "${IMPROBABLE_RECEPTIONIST_PORT}",
-        "${IMPROBABLE_WORKER_ID}"
+        "${IMPROBABLE_WORKER_ID}",
+        "${IMPROBABLE_LOG_FILE}"
       ]
     },
     "windows": {
@@ -36,7 +37,8 @@
         "receptionist",
         "${IMPROBABLE_RECEPTIONIST_HOST}",
         "${IMPROBABLE_RECEPTIONIST_PORT}",
-        "${IMPROBABLE_WORKER_ID}"
+        "${IMPROBABLE_WORKER_ID}",
+        "${IMPROBABLE_LOG_FILE}"
       ]
     },
     "macos": {
