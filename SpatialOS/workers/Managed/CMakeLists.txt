@@ -16,7 +16,8 @@ set(WORKER_SDK_DIR "${APPLICATION_ROOT}/dependencies")
 if(MSVC)
   add_definitions(/W3)
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -lm")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #  add_definitions(-Wall -Wextra -Werror -pedantic)
 endif()
 
@@ -33,8 +34,8 @@ file(GLOB_RECURSE SOURCE_FILES
     "../../../Code/Server/*.hpp"
     "../../../Code/Server/*.cpp"
 
-    "../../../Code/Submodule/Engine/Code/*.hpp"
-    "../../../Code/Submodule/Engine/Code/*.cpp"
+#    "../../../Code/Submodule/Engine/Code/*.hpp"
+#    "../../../Code/Submodule/Engine/Code/*.cpp"
 
 #    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.hpp"
 #    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.cpp"
