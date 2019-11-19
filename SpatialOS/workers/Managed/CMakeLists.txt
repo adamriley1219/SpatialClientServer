@@ -18,7 +18,7 @@ if(MSVC)
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#  add_definitions(-Wall -Wextra -Werror -pedantic)
+  add_definitions(-Wall -Wextra -Werror -pedantic)
 endif()
 
 add_subdirectory(${WORKER_SDK_DIR} "${CMAKE_CURRENT_BINARY_DIR}/WorkerSdk")

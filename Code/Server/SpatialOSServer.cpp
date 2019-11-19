@@ -12,7 +12,7 @@ typedef unsigned int uint;
 
 // Use this to make a worker::ComponentRegistry.
 // For example use worker::Components<improbable::Position, improbable::Metadata> to track these common components
-using ComponentRegistry = worker::Components<improbable::Position, improbable::Metadata>;
+using ComponentRegistry = worker::Components<improbable::Position, improbable::EntityAcl, improbable::Metadata>;
 
 // Constants and parameters
 const int ErrorExitStatus = 1;
@@ -23,6 +23,7 @@ worker::Connection ConnectWithReceptionist(const std::string hostname,
 	const std::uint16_t port,
 	const std::string& worker_id,
 	const worker::ConnectionParameters& connection_parameters) {
+	std::cout << "Connectoing to host: " << hostname <<  " port: " << port << " id: " << worker_id;
 	auto future = worker::Connection::ConnectAsync(ComponentRegistry{}, hostname, port, worker_id, connection_parameters);
 	return future.Get();
 }
@@ -60,7 +61,7 @@ void SpatialOSServer::Startup( const std::vector<std::string>& arguments )
 void SpatialOSServer::Shutdown()
 {
 	GetInstance()->isRunning = false;
-	GetInstance()->server_thread.join();
+	//GetInstance()->server_thread.join();
 }
 uint64_t test_id;
 //--------------------------------------------------------------------------
@@ -99,6 +100,8 @@ bool SpatialOSServer::IsRunning()
 /**
 * Run
 */
+bool wait_on_update = false;
+
 void SpatialOSServer::Run( const std::vector<std::string> arguments )
 {
 	auto now = std::chrono::high_resolution_clock::now();
@@ -162,7 +165,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		improbable::EntityAcl,
 		improbable::Position> MyComponents;
 	// Register callbacks and run the worker main loop.
-	worker::Dispatcher dispatcher = worker::Dispatcher{  ComponentRegistry{} };
+	worker::Dispatcher dispatcher( ComponentRegistry{} );
 	GetInstance()->dispatcher = &dispatcher;
 	bool is_connected = connection.IsConnected();
 
@@ -185,13 +188,58 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 // 	worker::Entity entity;
 // 	entity.Add<improbable::Position>({ { 7,7,7 } });
 // 
-// 	RequestEntityCreation(&entity);
+// 
+// 	// This requirement set matches only the command caller, i.e. the worker that issued the command,
+// 	// since attribute set includes the caller's unique attribute.
+// 	// TODO: put back in for my own attrabutes
+// 	// 			improbable::WorkerAttributeSet callerWorkerAttributeSet{ {"workerId:" + op.CallerWorkerId} };
+// 	// 			improbable::WorkerRequirementSet callerWorkerRequirementSet{
+// 	// 				worker::List<improbable::WorkerAttributeSet>{callerWorkerAttributeSet} };
+// 
+// 	worker::List<std::string> simulationWorkerAttributeSet{ "simulation" };
+// 
+// 	// This requirement set matches any worker with the attribute "physics".
+// 	improbable::WorkerRequirementSet simulationWorkerRequirementSet{
+// 		worker::List<improbable::WorkerAttributeSet>{ {simulationWorkerAttributeSet}} };
+// 
+// 	// This requirement set matches any worker with the attribute "client" or "physics".
+// 	improbable::WorkerRequirementSet clientOrPhysicsRequirementSet
+// 	{
+// 		worker::List<improbable::WorkerAttributeSet>
+// 	{
+// 		improbable::WorkerAttributeSet{worker::List<std::string>{"client"}},
+// 			simulationWorkerAttributeSet
+// 	}
+// 	};
+// 
+// 	// Give authority over Position and EntityAcl to any physics worker, and over PlayerControls to
+// 	// the caller worker.
+// 	worker::Map<worker::ComponentId, improbable::WorkerRequirementSet> componentAcl
+// 	{
+// 		{
+// 			improbable::Position::ComponentId, simulationWorkerRequirementSet
+// 		},
+// 				{
+// 					improbable::EntityAcl::ComponentId, simulationWorkerRequirementSet
+// 				}
+// 		// 				,
+// 		// 				{
+// 		// 					example::PlayerControls::ComponentId, callerWorkerRequirementSet
+// 		// 				} 
+// 	};
+// 
+// 	entity.Add<improbable::EntityAcl>(
+// 		improbable::EntityAcl::Data{/* read */ clientOrPhysicsRequirementSet, /* write */ componentAcl });
+
+
+	//RequestEntityCreation(&entity);
 
 	constexpr unsigned kFramesPerSecond = 60;
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
 		1. / static_cast<double>(kFramesPerSecond) };
 
-	while (connection.IsConnected() && IsRunning())
+
+	while (is_connected && IsRunning())
 	{
 		auto start_time = std::chrono::steady_clock::now();
 
@@ -203,16 +251,17 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 
  		// Temp code for testing
 // 		entity_info_t* entity;
-// 		if( ( entity = GetInfoFromEnityId( test_id ) ) && entity->created )
+// 		if( ( entity = GetInfoFromEnityId( test_id ) ) && entity->created && !wait_on_update )
 // 		{
 // 			worker::Option<improbable::PositionData&> curPos = entity->entity->Get<improbable::Position>();
-// 			float offset = SinDegrees( GetCurrentTimeSeconds() * 300.0 );
+// 			float offset = 0.02f;
 // 			std::cout << "Set     entCords      for " << entity->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
 // 			improbable::Position::Update posUpdate;
 // 			posUpdate.set_coords( curPos->coords() );
 // 			posUpdate.coords()->set_x( 7 + offset );
 // 			std::cout << "Set     Update Corrds for " << entity->id << ":" << posUpdate.coords()->x() << "," << posUpdate.coords()->z() << "," << posUpdate.coords()->y() << std::endl;
 // 			connection.SendComponentUpdate<improbable::Position>( entity->id, posUpdate );
+// 			wait_on_update = true;
 // 		}
 
 		auto end_time = std::chrono::steady_clock::now();
@@ -434,6 +483,7 @@ void SpatialOSServer::PositionUpdated (const worker::ComponentUpdateOp<improbabl
 		curPos->coords().set_z( coords->z() );
 		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
 	}
+	wait_on_update = false;
 }
 
 //--------------------------------------------------------------------------

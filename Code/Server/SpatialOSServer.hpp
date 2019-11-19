@@ -51,7 +51,7 @@ private:
 
 private:
 	bool isRunning = false;
-	std::thread server_thread;
+	//std::thread server_thread;
 
 	worker::Dispatcher* dispatcher;
 	worker::Connection* connection;
