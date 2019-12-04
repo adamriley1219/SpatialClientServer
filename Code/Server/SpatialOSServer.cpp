@@ -137,7 +137,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 
 	// When running as an external worker using 'spatial local worker launch'
 	// The WorkerId isn't passed, so we generate a random one
-	if (arguments.size() == 4) {
+	if (arguments.size() <= 4) {
 		workerId = arguments[3];
 	}
 	else {

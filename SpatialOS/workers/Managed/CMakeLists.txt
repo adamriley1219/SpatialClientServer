@@ -12,17 +12,38 @@ set(APPLICATION_ROOT "${PROJECT_SOURCE_DIR}/../..")
 set(SCHEMA_SOURCE_DIR "${APPLICATION_ROOT}/schema")
 set(WORKER_SDK_DIR "${APPLICATION_ROOT}/dependencies")
 
+set(CODE_DIR "${APPLICATION_ROOT}/../Code")
+set(ENGINE_DIR "${APPLICATION_ROOT}/../Code/Submodule/Engine/Code")
+
 # Strict warnings.
 if(MSVC)
   add_definitions(/W3)
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -lm")
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  add_definitions(-Wall -Wextra -Werror -pedantic)
+#  add_definitions(-Wall -Wextra -Werror -pedantic)
 endif()
 
 add_subdirectory(${WORKER_SDK_DIR} "${CMAKE_CURRENT_BINARY_DIR}/WorkerSdk")
 add_subdirectory(${SCHEMA_SOURCE_DIR} "${CMAKE_CURRENT_BINARY_DIR}/Schema")
+
+
+file(GLOB_RECURSE CODE_FILES
+    "${ENGINE_DIR}/Engine/Physics/*.cpp"
+    "${ENGINE_DIR}/Engine/Math/*.cpp"
+    "${ENGINE_DIR}/Engine/Core/*.cpp"
+    "${ENGINE_DIR}/ThirdParty/TinyXML2/*.cpp" 
+    "${CODE_DIR}/Shared/*.cpp"
+
+    "${ENGINE_DIR}/Engine/Physics/*.hpp"
+    "${ENGINE_DIR}/Engine/Math/*.hpp"
+    "${ENGINE_DIR}/Engine/Core/*.hpp"
+    "${ENGINE_DIR}/ThirdParty/TinyXML2/*.h"   
+    "${CODE_DIR}/Shared/*.hpp")
+
+add_library(Code STATIC ${CODE_FILES})
+target_include_directories(Code SYSTEM PUBLIC "${CODE_DIR}")
+target_include_directories(Code SYSTEM PUBLIC "${ENGINE_DIR}")
 
 # Set the default Visual Studio startup project to the worker itself. This only has an effect from
 # CMake 3.6 onwards.
@@ -30,27 +51,14 @@ set(VS_STARTUP_PROJECT ${PROJECT_NAME})
 
 # The worker binary.
 file(GLOB_RECURSE SOURCE_FILES
-    "../../../Code/Server/*.cc"
-    "../../../Code/Server/*.hpp"
-    "../../../Code/Server/*.cpp"
-
-#    "../../../Code/Submodule/Engine/Code/*.hpp"
-#    "../../../Code/Submodule/Engine/Code/*.cpp"
-
-#    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.hpp"
-#    "../../../Code/Submodule/Engine/Code/Engine/Physics/*.cpp"
-#    "../../../Code/Submodule/Engine/Code/Engine/Math/*.hpp"
-#    "../../../Code/Submodule/Engine/Code/Engine/Math/*.cpp"
-#    "../../../Code/Submodule/Engine/Code/Engine/Core/*.hpp"
-#    "../../../Code/Submodule/Engine/Code/Engine/Core/*.cpp"
-#    "../../../Code/Submodule/Engine/Code/ThirdParty/TinyXML2/*.h"
-#    "../../../Code/Submodule/Engine/Code/ThirdParty/TinyXML2/*.cpp"
-#    "../../../Code/Shared/*.hpp"
-#    "../../../Code/Shared/*.cpp"
+    "${CODE_DIR}/Server/*.cc"
+    "${CODE_DIR}/Server/*.hpp"
+    "${CODE_DIR}/Server/*.cpp"
     )
-    
+
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} WorkerSdk Schema)
+target_link_libraries(${PROJECT_NAME} WorkerSdk Schema Code)
 
 # Set artifact subdirectories.
 # WORKER_ASSEMBLY_DIR should not be changed so that spatial local launch
