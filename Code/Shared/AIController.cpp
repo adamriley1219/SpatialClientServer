@@ -31,6 +31,7 @@ AIController::~AIController()
 */
 void AIController::Update(float deltaTime)
 {
+	UNUSED(deltaTime);
 	ActorBase* player = FindClosestPlayer();
 
 	if( player )

@@ -7,9 +7,11 @@
 #include <thread>
 
 
+class EntityBase;
+
 struct entity_info_t
 {
-	worker::Entity* entity;
+	EntityBase* entity;
 	worker::EntityId id;
 	uint64_t entity_creation_request_id;
 	uint64_t entity_deletion_request_id;
@@ -24,7 +26,7 @@ public:
 	static void Shutdown();
 
 public:
-	static void RequestEntityCreation( worker::Entity* entity );
+	static void RequestEntityCreation( EntityBase* entity );
 	static bool IsRunning();
 
 private:

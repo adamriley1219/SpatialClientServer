@@ -1,4 +1,10 @@
 #include "Server/SpatialOSServer.hpp"
+
+#include "Engine/Core/Strings/StringUtils.hpp"
+
+#include "Shared/EntityBase.hpp"
+#include "Shared/ActorBase.hpp"
+
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
@@ -68,7 +74,7 @@ uint64_t test_id;
 /**
 * RequestEntityCreation
 */
-void SpatialOSServer::RequestEntityCreation( worker::Entity* entity )
+void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 {
 	if( !IsRunning() )
 	{
@@ -78,11 +84,12 @@ void SpatialOSServer::RequestEntityCreation( worker::Entity* entity )
 	entity_info_t info;
 	// Reserve an entity ID.
 	std::cout << "Requesting (Entity Creation)" << std::endl;
-	info.entity_id_reservation_request_id =
-		GetInstance()->connection->SendReserveEntityIdsRequest(1, kGetOpListTimeoutInMilliseconds).Id;
+	info.entity_id_reservation_request_id = GetInstance()->connection->SendReserveEntityIdsRequest(1, {}).Id;
 
-	std::cout << "Request Sent (Entity Creation)" << std::endl;
-	info.entity = entity;
+	GetInstance()->connection->SendLogMessage(worker::LogLevel::kInfo, kLoggerName, Stringf( "RequestEntityCreation successfully with ID: %u", info.entity_id_reservation_request_id ) );
+
+	std::cout << "Request Sent (Entity Creation) With ResponseID: " << info.entity_id_reservation_request_id << std::endl;
+	info.entity = entity_to_create;
 
 	GetInstance()->entity_info_list.push_back( info );
 }
@@ -100,8 +107,6 @@ bool SpatialOSServer::IsRunning()
 /**
 * Run
 */
-bool wait_on_update = false;
-
 void SpatialOSServer::Run( const std::vector<std::string> arguments )
 {
 	auto now = std::chrono::high_resolution_clock::now();
@@ -137,7 +142,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 
 	// When running as an external worker using 'spatial local worker launch'
 	// The WorkerId isn't passed, so we generate a random one
-	if (arguments.size() <= 4) {
+	if (arguments.size() >= 4) {
 		workerId = arguments[3];
 	}
 	else {
@@ -184,85 +189,40 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		std::cout << "[local] Connected successfully to SpatialOS, listening to ops... " << std::endl;
 		GetInstance()->isRunning = true;
 	}
-
-// 	worker::Entity entity;
-// 	entity.Add<improbable::Position>({ { 7,7,7 } });
-// 
-// 
-// 	// This requirement set matches only the command caller, i.e. the worker that issued the command,
-// 	// since attribute set includes the caller's unique attribute.
-// 	// TODO: put back in for my own attrabutes
-// 	// 			improbable::WorkerAttributeSet callerWorkerAttributeSet{ {"workerId:" + op.CallerWorkerId} };
-// 	// 			improbable::WorkerRequirementSet callerWorkerRequirementSet{
-// 	// 				worker::List<improbable::WorkerAttributeSet>{callerWorkerAttributeSet} };
-// 
-// 	worker::List<std::string> simulationWorkerAttributeSet{ "simulation" };
-// 
-// 	// This requirement set matches any worker with the attribute "physics".
-// 	improbable::WorkerRequirementSet simulationWorkerRequirementSet{
-// 		worker::List<improbable::WorkerAttributeSet>{ {simulationWorkerAttributeSet}} };
-// 
-// 	// This requirement set matches any worker with the attribute "client" or "physics".
-// 	improbable::WorkerRequirementSet clientOrPhysicsRequirementSet
-// 	{
-// 		worker::List<improbable::WorkerAttributeSet>
-// 	{
-// 		improbable::WorkerAttributeSet{worker::List<std::string>{"client"}},
-// 			simulationWorkerAttributeSet
-// 	}
-// 	};
-// 
-// 	// Give authority over Position and EntityAcl to any physics worker, and over PlayerControls to
-// 	// the caller worker.
-// 	worker::Map<worker::ComponentId, improbable::WorkerRequirementSet> componentAcl
-// 	{
-// 		{
-// 			improbable::Position::ComponentId, simulationWorkerRequirementSet
-// 		},
-// 				{
-// 					improbable::EntityAcl::ComponentId, simulationWorkerRequirementSet
-// 				}
-// 		// 				,
-// 		// 				{
-// 		// 					example::PlayerControls::ComponentId, callerWorkerRequirementSet
-// 		// 				} 
-// 	};
-// 
-// 	entity.Add<improbable::EntityAcl>(
-// 		improbable::EntityAcl::Data{/* read */ clientOrPhysicsRequirementSet, /* write */ componentAcl });
-
-
-	//RequestEntityCreation(&entity);
+	std::cout << "Attempting to create entity" << std::endl;
+	EntityBase* entity = new ActorBase("tempName", 0);
+	std::cout << "Successfully newed off and entity" << std::endl;
+	RequestEntityCreation( entity );
 
 	constexpr unsigned kFramesPerSecond = 60;
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
 		1. / static_cast<double>(kFramesPerSecond) };
 
-
+	std::cout << "Begin running loop" << std::endl;
 	while (is_connected && IsRunning())
 	{
 		auto start_time = std::chrono::steady_clock::now();
 
-		std::cout << "before getOPlist" << std::endl;
-		auto opList = connection.GetOpList(0);
-		std::cout << "after getOPlist" << std::endl;
-		dispatcher.Process( opList );
-		std::cout << "after Process" << std::endl;
+		auto op_list = GetInstance()->connection->GetOpList(0);
+		GetInstance()->dispatcher->Process( op_list );
 
  		// Temp code for testing
-// 		entity_info_t* entity;
-// 		if( ( entity = GetInfoFromEnityId( test_id ) ) && entity->created && !wait_on_update )
-// 		{
-// 			worker::Option<improbable::PositionData&> curPos = entity->entity->Get<improbable::Position>();
-// 			float offset = 0.02f;
-// 			std::cout << "Set     entCords      for " << entity->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
-// 			improbable::Position::Update posUpdate;
-// 			posUpdate.set_coords( curPos->coords() );
-// 			posUpdate.coords()->set_x( 7 + offset );
-// 			std::cout << "Set     Update Corrds for " << entity->id << ":" << posUpdate.coords()->x() << "," << posUpdate.coords()->z() << "," << posUpdate.coords()->y() << std::endl;
-// 			connection.SendComponentUpdate<improbable::Position>( entity->id, posUpdate );
-// 			wait_on_update = true;
-// 		}
+		entity_info_t* info;
+		if( ( info = GetInfoFromEnityId( test_id ) ) && info->created )
+		{
+			Vec2 curPos = info->entity->GetPosition();
+			float offset = 0.02f;
+			std::cout << "Set     entCords      for " << info->id << ":" << curPos.x << "," << curPos.y << std::endl;
+			improbable::Position::Update posUpdate;
+			float pos_to_set = curPos.y + offset;
+			if( pos_to_set > 8 )
+			{
+				pos_to_set = 0;
+			}
+			posUpdate.set_coords( improbable::Coordinates( curPos.x, 0.0f, pos_to_set + offset ) );
+			std::cout << "Set     Update Corrds for " << info->id << " x: " << posUpdate.coords()->x() << ", y: " << posUpdate.coords()->y() << ", z: " << posUpdate.coords()->z() << std::endl;
+			connection.SendComponentUpdate<improbable::Position>( info->id, posUpdate );
+		}
 
 		auto end_time = std::chrono::steady_clock::now();
 		auto wait_for = kFramePeriodSeconds - ( end_time - start_time );
@@ -293,26 +253,26 @@ void SpatialOSServer::RegisterCallbacks( worker::Dispatcher& dispatcher )
 		std::cout << "[remote] " << op.Message << std::endl;
 		});
 
-// 	dispatcher.OnRemoveEntity([&](const worker::RemoveEntityOp& op)
-// 		{
-// 			std::cout << "Removed entity " << op.EntityId << std::endl;
-// 		});
-// 	dispatcher.OnAddEntity([&]( const worker::AddEntityOp& op )
-// 		{
-// 			std::cout << "Added entity " << op.EntityId << std::endl;
-// 		});
-// 
-// 	// When the reservation succeeds, create an entity with the reserved ID.
-// 	dispatcher.OnReserveEntityIdsResponse( ReserveEntityIdsResponse );
-// 
-// 	// When the creation succeeds, delete the entity.
-// 	dispatcher.OnCreateEntityResponse( CreateEntityResponse );
-// 
-// 	// When the deletion succeeds, we're done.
-// 	dispatcher.OnDeleteEntityResponse( DeleteEntityResponse );
-// 
-// 	// For updating components
-// 	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
+	dispatcher.OnRemoveEntity([&](const worker::RemoveEntityOp& op)
+		{
+			std::cout << "Removed entity " << op.EntityId << std::endl;
+		});
+	dispatcher.OnAddEntity([&]( const worker::AddEntityOp& op )
+		{
+			std::cout << "Added entity " << op.EntityId << std::endl;
+		});
+ 
+	// When the reservation succeeds, create an entity with the reserved ID.
+	dispatcher.OnReserveEntityIdsResponse( ReserveEntityIdsResponse );
+
+	// When the creation succeeds, delete the entity.
+	dispatcher.OnCreateEntityResponse( CreateEntityResponse );
+
+	// When the deletion succeeds, we're done.
+	dispatcher.OnDeleteEntityResponse( DeleteEntityResponse );
+
+	// For updating components
+	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
 }
 
 //--------------------------------------------------------------------------
@@ -361,7 +321,7 @@ uint64_t SpatialOSServer::CreateEntityResponse( const worker::CreateEntityRespon
 		entity_info->id = *(op.EntityId);
 		entity_info->created = true;
 		test_id = entity_info->id;
-		std::cout << "Entity creation successful with id" << test_id << std::endl;
+		std::cout << "Entity creation successful with id " << test_id << std::endl;
 	}
 	return op.RequestId.Id;
 }
@@ -373,12 +333,52 @@ uint64_t SpatialOSServer::CreateEntityResponse( const worker::CreateEntityRespon
 uint64_t SpatialOSServer::ReserveEntityIdsResponse( const worker::ReserveEntityIdsResponseOp& op )
 {
 	entity_info_t* entity_info;
-	std::cout << "ReserveEntity begin" << std::endl;
+	std::cout << "ReserveEntity begin with response ID: " << op.RequestId.Id << std::endl;
+	std::cout << "    Additionally: " << op.Message << " weith id: " << op.RequestId.Id << std::endl;
+
+	GetInstance()->connection->SendLogMessage(worker::LogLevel::kInfo, kLoggerName, Stringf("Connected %s", op.StatusCode == worker::StatusCode::kSuccess ? "successfully" : "with fault" ) );
 
 	if ( ( entity_info = GetInfoFromReserveEnityIdsRequest( op.RequestId.Id ) ) != nullptr &&
 		op.StatusCode == worker::StatusCode::kSuccess ) 
 	{
-		auto result = GetInstance()->connection->SendCreateEntityRequest( *(entity_info->entity), op.FirstEntityId, kGetOpListTimeoutInMilliseconds );
+
+		worker::Entity entity;
+		Vec2 position = entity_info->entity->GetPosition();
+		entity.Add<improbable::Position>({ { position.x,  0.0f, position.y } });
+
+		worker::List<std::string> simulationWorkerAttributeSet{ "simulation" };
+
+		// This requirement set matches any worker with the attribute "physics".
+		improbable::WorkerRequirementSet simulationWorkerRequirementSet{
+			worker::List<improbable::WorkerAttributeSet>{ {simulationWorkerAttributeSet}} };
+
+		// This requirement set matches any worker with the attribute "client" or "physics".
+		improbable::WorkerRequirementSet clientOrPhysicsRequirementSet
+		{
+			worker::List<improbable::WorkerAttributeSet>
+		{
+			improbable::WorkerAttributeSet{worker::List<std::string>{"client"}},
+				simulationWorkerAttributeSet
+		}
+		};
+
+		// Give authority over Position and EntityAcl to any physics worker, and over PlayerControls to
+		// the caller worker.
+		worker::Map<worker::ComponentId, improbable::WorkerRequirementSet> componentAcl
+		{
+			{
+				improbable::Position::ComponentId, simulationWorkerRequirementSet
+			},
+		{
+			improbable::EntityAcl::ComponentId, simulationWorkerRequirementSet
+		}
+		};
+
+		entity.Add<improbable::EntityAcl>(
+			improbable::EntityAcl::Data{/* read */ clientOrPhysicsRequirementSet, /* write */ componentAcl });
+
+
+		auto result = GetInstance()->connection->SendCreateEntityRequest( entity, op.FirstEntityId, kGetOpListTimeoutInMilliseconds );
 		// Check no errors occurred.
 		if (result) {
 			entity_info->entity_creation_request_id = (*result).Id;
@@ -472,18 +472,14 @@ void SpatialOSServer::PositionUpdated (const worker::ComponentUpdateOp<improbabl
 	const auto coords = op.Update.coords().data();
 	std::cout << "Updated position of entity " << op.EntityId << " to "
 		<< " x: " << coords->x() << " y: " << coords->y() << " z: " << coords->z() << std::endl;
-	entity_info_t* info = GetInfoFromEnityId( test_id );
+	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
 	
 	if( info && info->created )
 	{
-		worker::Option<improbable::PositionData&> curPos = info->entity->Get<improbable::Position>();
-		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
-		curPos->coords().set_x( coords->x() );
-		curPos->coords().set_y( coords->y() );
-		curPos->coords().set_z( coords->z() );
-		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().z() << "," << curPos->coords().y() << std::endl;
+		info->entity->SetPosition( coords->x(), coords->z() );
+
+		std::cout << "PosUpdate: Success" << std::endl;
 	}
-	wait_on_update = false;
 }
 
 //--------------------------------------------------------------------------

@@ -21,7 +21,7 @@ if(MSVC)
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -lm")
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#  add_definitions(-Wall -Wextra -Werror -pedantic)
+  add_definitions(-Wall -Wextra -Werror -pedantic)
 endif()
 
 add_subdirectory(${WORKER_SDK_DIR} "${CMAKE_CURRENT_BINARY_DIR}/WorkerSdk")
@@ -58,7 +58,7 @@ file(GLOB_RECURSE SOURCE_FILES
 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} WorkerSdk Schema Code)
+target_link_libraries(${PROJECT_NAME} WorkerSdk Schema Code m)
 
 # Set artifact subdirectories.
 # WORKER_ASSEMBLY_DIR should not be changed so that spatial local launch

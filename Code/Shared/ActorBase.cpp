@@ -14,12 +14,14 @@ ActorBase::ActorBase(const std::string& name, uint zone_id)
 	: EntityBase(name, zone_id)
 {
 	const ActorBaseDefinition* def = ActorBaseDefinition::GetActorDefinitionByName(name);  
+	if( def )
+	{
+		m_basic_attack = def->m_basic_attack;
+		m_possessable = def->m_possessable;
+		m_speed = def->m_speed;
 
-	m_basic_attack = def->m_basic_attack;
-	m_possessable = def->m_possessable;
-	m_speed = def->m_speed;
-
-	m_type = def->m_type;
+		m_type = def->m_type;
+	}
 }
 
 //--------------------------------------------------------------------------

@@ -18,13 +18,14 @@ public:
 
 	void ApplyForce( const Vec2& force );
 
+
 	// Getters
 	Vec2 GetPosition() const;
 	void SetPosition( const Vec2& pos );
+	void SetPosition( float x, float y );
 
 	// Game play
 	void TakeDamage(float damage);
-
 	uint GetResidingZone() const;
 	EntityType GetType() const;
 	std::string GetName() const;

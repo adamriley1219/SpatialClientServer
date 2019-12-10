@@ -42,6 +42,7 @@ void Shutdown()
 // Entry point
 int main( int argc, char** argv ) 
 {
+	std::cout << "MAIN BEGIN" << std::endl;
 	std::vector<std::string> arguments;
 
 	// if no arguments are supplied, use the defaults for a local deployment
