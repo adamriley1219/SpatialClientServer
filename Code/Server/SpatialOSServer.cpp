@@ -11,8 +11,8 @@
 #include <iostream>
 
 
-//#include "Engine/Core/EngineCommon.hpp"
-//#include "Engine/Core/Time/Time.hpp"
+#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/Time/Time.hpp"
 
 typedef unsigned int uint;
 
@@ -56,8 +56,8 @@ std::string get_random_characters(size_t count) {
 void SpatialOSServer::Startup( const std::vector<std::string>& arguments )
 {
 	GetInstance()->isRunning = true;
-	Run( arguments );
-	//GetInstance()->server_thread = std::thread( Run, arguments );
+	//Run( arguments );
+	GetInstance()->server_thread = std::thread( Run, arguments );
 }
 
 //--------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void SpatialOSServer::Startup( const std::vector<std::string>& arguments )
 void SpatialOSServer::Shutdown()
 {
 	GetInstance()->isRunning = false;
-	//GetInstance()->server_thread.join();
+	GetInstance()->server_thread.join();
 }
 uint64_t test_id;
 //--------------------------------------------------------------------------
@@ -190,7 +190,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		GetInstance()->isRunning = true;
 	}
 	std::cout << "Attempting to create entity" << std::endl;
-	EntityBase* entity = new ActorBase("tempName", 0);
+	EntityBase* entity = new ActorBase("turret", 0);
 	std::cout << "Successfully newed off and entity" << std::endl;
 	RequestEntityCreation( entity );
 

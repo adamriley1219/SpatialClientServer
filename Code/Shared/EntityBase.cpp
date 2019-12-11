@@ -16,24 +16,24 @@ EntityBase::EntityBase(  const std::string& name, uint zone_id )
 	m_name = name;
 
 	m_owning_zone = zone_id;
-//	Zone* zone = Zone::GetZone(zone_id);
-// 	ASSERT_RECOVERABLE( zone, "Adding entity to a zone that doesnt exist" );
-// 	if( zone )
-// 	{
-// 		m_rigidbody = zone->m_physics_system->CreateRigidbody( 1.0f );
-// 		m_rigidbody->SetOriginalSimulationType( ePhysicsSimulationType::PHYSICS_SIM_DYNAMIC );
-// 
-// 		m_rigidbody->SetObject( this, &m_transform );
-// 		m_rigidbody->SetPhyMaterial( 0.0f, 0.0f, 13.0f, 8.0f );
-// 
-// 		m_rigidbody->SetRestrictions( false, false, true );
-// 
-// 		m_collider = zone->m_physics_system->CreateCollider( false, Vec2::ZERO, 0.5f );
-// 		m_rigidbody->SetCollider( m_collider );
-// 
-// 		
-// 		zone->AddEntity( this );
-// 	}
+	Zone* zone = Zone::GetZone(zone_id);
+	ASSERT_RECOVERABLE( zone, "Adding entity to a zone that doesnt exist" );
+	if( zone )
+	{
+		m_rigidbody = zone->m_physics_system->CreateRigidbody( 1.0f );
+		m_rigidbody->SetOriginalSimulationType( ePhysicsSimulationType::PHYSICS_SIM_DYNAMIC );
+
+		m_rigidbody->SetObject( this, &m_transform );
+		m_rigidbody->SetPhyMaterial( 0.0f, 0.0f, 13.0f, 8.0f );
+
+		m_rigidbody->SetRestrictions( false, false, true );
+
+		m_collider = zone->m_physics_system->CreateCollider( false, Vec2::ZERO, 0.5f );
+		m_rigidbody->SetCollider( m_collider );
+
+		
+		zone->AddEntity( this );
+	}
 
 }
 

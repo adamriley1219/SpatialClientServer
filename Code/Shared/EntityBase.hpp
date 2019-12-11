@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/Physics/PhysicsSystem.hpp"
 
+#include "Engine/Physics/PhysicsSystem.hpp"
 #include "Engine/Math/Vec2.hpp"
 
 #include "Shared/EntityBaseDefinition.hpp"
@@ -49,5 +49,8 @@ protected:
 	float m_collisionDamage = 1.0f;
 
 	uint m_owning_zone = 999999;
+
+public:
+	uint64_t spatial_id = -1;
 
 };

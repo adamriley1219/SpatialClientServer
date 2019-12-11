@@ -17,6 +17,7 @@ struct entity_info_t
 	uint64_t entity_deletion_request_id;
 	uint64_t entity_id_reservation_request_id;
 	bool created = false;
+	bool updated = false;
 };
 
 class SpatialOSServer
@@ -53,7 +54,7 @@ private:
 
 private:
 	bool isRunning = false;
-	//std::thread server_thread;
+	std::thread server_thread;
 
 	worker::Dispatcher* dispatcher;
 	worker::Connection* connection;
