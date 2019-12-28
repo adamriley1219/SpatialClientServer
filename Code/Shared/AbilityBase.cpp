@@ -8,8 +8,8 @@
 /**
 * AbilityBase
 */
-AbilityBase::AbilityBase(const std::string& name, uint zone_id)
-	: EntityBase(name, zone_id)
+AbilityBase::AbilityBase( const std::string& name )
+	: EntityBase( name )
 {
 	const AbilityBaseDefinition* def = AbilityBaseDefinition::GetAbilityDefinitionByName(name);
 	m_collider->SetTrigger(def->m_isTrigger);

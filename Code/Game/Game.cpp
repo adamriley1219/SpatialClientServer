@@ -57,7 +57,8 @@ void Game::Startup()
 	m_DevColsoleCamera.SetOrthographicProjection( Vec2( -100.0f, -50.0f ), Vec2( 100.0f,  50.0f ) );
 	m_DevColsoleCamera.SetModelMatrix( Matrix44::IDENTITY );
 
-	Zone* zone = Zone::AddZone( m_currentZone );
+
+	Zone* zone = Zone::GetZone();
 	zone->m_physics_system->SetGravity( Vec2::ZERO );
 	
 	LoadAbilities();
@@ -85,7 +86,11 @@ void Game::Startup()
 */
 void Game::Shutdown()
 {
-	Zone::ClearAllZones();
+	for( ActorRenderable* actor : m_entities )
+	{
+		SAFE_DELETE(actor);
+	}
+	m_entities.clear();
 }
 
 
@@ -119,7 +124,7 @@ void Game::GameRender() const
 {
 	g_theRenderer->BindMaterial( g_theRenderer->CreateOrGetMaterialFromXML( "Data/Materials/default_unlit.mat" ) );
 
-	Zone::GetZone(m_currentZone)->m_physics_system->DebugRender(g_theRenderer, Rgba::GREEN);
+	Zone::GetZone()->m_physics_system->DebugRender(g_theRenderer, Rgba::GREEN);
 
 	auto entities = SpatialOSClient::GetEntityList();
 	for( const entity_info_t& info : entities )
@@ -152,7 +157,7 @@ void Game::GameRender() const
 */
 void Game::UpdateGame( float deltaSeconds )
 {
-	Zone::GetZone(m_currentZone)->Update( deltaSeconds );
+	Zone::GetZone()->Update( deltaSeconds );
 
 	UpdateCamera( deltaSeconds );
 }

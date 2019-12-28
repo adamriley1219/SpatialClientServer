@@ -6,11 +6,14 @@
 
 #include "Engine/Physics/PhysicsSystem.hpp"
 
+#include "Engine/Math/RNG.hpp"
+
 #include "Server/ServerApp.hpp"
 #include "Server/SpatialOSServer.hpp"
+#include "Server/ServerCommon.hpp"
+#include "Server/WorldSim.hpp"
 
 #include "Shared/Zone.hpp"
-
 
 
 
@@ -18,7 +21,8 @@
 // Global Singletons
 //--------------------------------------------------------------------------
 ServerApp* g_theServerApp = nullptr;					// Created and owned by Main_Windows.cpp
-
+WorldSim* g_theSim = nullptr;
+RNG* g_theRNG = nullptr;
 
 //--------------------------------------------------------------------------
 /**
@@ -26,10 +30,26 @@ ServerApp* g_theServerApp = nullptr;					// Created and owned by Main_Windows.cp
 */
 void ServerApp::Startup()
 {
+	g_theRNG = new RNG();
+
+	g_theEventSystem = new EventSystem();
+	g_theEventSystem->Startup();
+
+	std::cout << "Server clock startup" << std::endl;
 	ClockSystemStartup();
 	m_gameClock = new Clock(&Clock::Master);
 
+	std::cout << "Server Zone startup" << std::endl;
+	Zone::Startup();
+
+	std::cout << "World sim startup" << std::endl;
+	g_theSim = new WorldSim();
+	g_theSim->Startup();
+
+	std::cout << "Server Events startup" << std::endl;
 	RegisterEvents();
+	std::cout << "Server startup complete" << std::endl;
+
 }
 
 //--------------------------------------------------------------------------
@@ -38,7 +58,13 @@ void ServerApp::Startup()
 */
 void ServerApp::Shutdown()
 {
+	g_theSim->Shutdown();
+
+	Zone::Shutdown();
+
 	SAFE_DELETE(m_gameClock);
+	SAFE_DELETE(g_theSim);
+	SAFE_DELETE(g_theRNG);
 }
 
 //--------------------------------------------------------------------------

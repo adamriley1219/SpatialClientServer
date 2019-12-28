@@ -10,10 +10,10 @@
 /**
 * ActorBase
 */
-ActorBase::ActorBase(const std::string& name, uint zone_id)
-	: EntityBase(name, zone_id)
+ActorBase::ActorBase( const std::string& name )
+	: EntityBase( name )
 {
-	const ActorBaseDefinition* def = ActorBaseDefinition::GetActorDefinitionByName(name);  
+	const ActorBaseDefinition* def = ActorBaseDefinition::GetActorDefinitionByName( name );  
 	if( def )
 	{
 		m_basic_attack = def->m_basic_attack;
@@ -72,7 +72,7 @@ bool ActorBase::Possess(ControllerBase* controller)
 	controller->SetControlled(this);
 	m_owner = controller;
 
-	Zone::GetZone(m_owning_zone)->AddController(controller);
+	Zone::GetZone()->AddController(controller);
 	
 	return true;
 }
@@ -98,7 +98,7 @@ void ActorBase::BasicAttack( const Vec2& input_position )
 	}
 	Vec2 displacement = input_position - GetPosition();
 	displacement.Normalize();
-	AbilityBase* ability = new AbilityBase( m_basic_attack, m_owning_zone );
+	AbilityBase* ability = new AbilityBase( m_basic_attack );
 	ability->SetPosition( GetPosition() + displacement * 1.0f); // radius of actor
 	ability->SetDirection( displacement );
 

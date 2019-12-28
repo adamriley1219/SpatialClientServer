@@ -27,7 +27,6 @@ public:
 	void EndCamera();
 
 	Camera* GetCamera();
-	uint GetZoneID() const { return m_currentZone; };
 
 private:
 	void RenderDevConsole() const;
@@ -50,6 +49,5 @@ private:
 	ActorRenderable* m_clientEntity = nullptr;
 
 	std::vector<ActorRenderable*> m_entities;
-	uint m_currentZone = 0;
 
 };

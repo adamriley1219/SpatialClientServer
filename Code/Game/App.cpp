@@ -52,6 +52,8 @@ void App::Startup()
 	g_theInputSystem = new InputSystem();
 	g_theAudioSystem = new AudioSystem();
 	g_theImGUISystem = new ImGUISystem(g_theRenderer);
+	
+	Zone::Startup();
 
 	g_theGame = new Game();
 
@@ -83,6 +85,9 @@ void App::Startup()
 void App::Shutdown()
 {
 	g_theGame->Shutdown();
+
+	Zone::Shutdown();
+
 	g_theImGUISystem->Shutdown();
 	g_theConsole->Shutdown();
 	g_theDebugRenderSystem->Shutdown();

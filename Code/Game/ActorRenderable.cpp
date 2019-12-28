@@ -6,7 +6,7 @@
 * ActorRenderable
 */
 ActorRenderable::ActorRenderable( const std::string& name )
-	: ActorBase( name, g_theGame->GetZoneID() )
+	: ActorBase( name )
 {
 
 }

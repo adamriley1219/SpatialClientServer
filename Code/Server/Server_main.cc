@@ -17,6 +17,7 @@ void RunFrame()
 //-----------------------------------------------------------------------------------------------
 void Startup()
 {
+	std::cout << "Init Startup, world sim" << std::endl;
 	tinyxml2::XMLDocument config;
 	config.LoadFile("Data/GameConfig.xml");
 	XmlElement* root = config.RootElement();
@@ -24,8 +25,11 @@ void Startup()
 	{
 		g_gameConfigBlackboard.PopulateFromXmlElementAttributes(*root);
 	}
+	std::cout << "After blackboard Load" << std::endl;
 	g_theServerApp = new ServerApp();
+	std::cout << "After ServerApp New" << std::endl;
 	g_theServerApp->Startup();
+	std::cout << "After ServerApp Startup" << std::endl;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -65,11 +69,11 @@ int main( int argc, char** argv )
 	
 	SpatialOSServer::Startup( arguments );
 
-	//Startup();
+	Startup();
 	std::cout << "STARTUP COMPLETE" << std::endl;
 
     while ( SpatialOSServer::IsRunning() ) {
-		//RunFrame();
+		RunFrame();
     }
 
 	std::cout << "SHUTDOWN INIT" << std::endl;

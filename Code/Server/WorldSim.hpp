@@ -22,9 +22,6 @@ public:
 private:
 	void ResetWorldSim();
 
-	// Helper Methods
-	void ConstructWorldSim();
-	void DeconstructWorldSim();
 private:
 	bool m_isQuitting = false;
 	

@@ -27,7 +27,7 @@
 */
 WorldSim::WorldSim()
 {
-	ConstructWorldSim();
+
 }
 
 //--------------------------------------------------------------------------
@@ -36,7 +36,7 @@ WorldSim::WorldSim()
 */
 WorldSim::~WorldSim()
 {
-	DeconstructWorldSim();
+
 }
 
 //--------------------------------------------------------------------------
@@ -45,11 +45,15 @@ WorldSim::~WorldSim()
 */
 void WorldSim::Startup()
 {
-	Zone* zone = Zone::AddZone( 0 );
+	Zone* zone = Zone::GetZone();
 	zone->m_physics_system->SetGravity( Vec2::ZERO );
 	
+	std::cout << "Registering from XML" << std::endl;
+
 	LoadAbilities();
 	LoadActors();
+
+	std::cout << "Finished registering" << std::endl;
 }
 
 //--------------------------------------------------------------------------
@@ -58,7 +62,7 @@ void WorldSim::Startup()
 */
 void WorldSim::Shutdown()
 {
-	Zone::ClearAllZones();
+
 }
 
 //--------------------------------------------------------------------------
@@ -76,24 +80,5 @@ void WorldSim::UpdateWorldSim( float deltaSeconds )
 */
 void WorldSim::ResetWorldSim()
 {
-	DeconstructWorldSim();
-	ConstructWorldSim();
-}
-
-//--------------------------------------------------------------------------
-/**
-* ConstructWorldSim
-*/
-void WorldSim::ConstructWorldSim()
-{
-
-}
-
-//--------------------------------------------------------------------------
-/**
-* DeconstructWorldSim
-*/
-void WorldSim::DeconstructWorldSim()
-{
-
+	Zone::GetZone()->Clear();
 }

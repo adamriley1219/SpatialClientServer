@@ -8,7 +8,7 @@ class ControllerBase;
 class ActorBase : public EntityBase
 {
 public:
-	ActorBase( const std::string& name, uint zone_id );
+	ActorBase( const std::string& name );
 	virtual ~ActorBase();
 
 	virtual void Update( float deltaTime );

@@ -8,7 +8,7 @@ class ActorBase;
 class AbilityBase : public EntityBase
 {
 public:
-	AbilityBase(const std::string& name, uint zone_id);
+	AbilityBase( const std::string& name );
 	virtual ~AbilityBase();
 
 	virtual void Update( float deltaSeconds );

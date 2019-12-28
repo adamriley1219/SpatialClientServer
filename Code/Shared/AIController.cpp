@@ -48,7 +48,7 @@ void AIController::Update(float deltaTime)
 */
 ActorBase* AIController::FindClosestPlayer()
 {
-	Zone* zone = Zone::GetZone( m_controlled->GetResidingZone() );
+	Zone* zone = Zone::GetZone();
 	if( zone )
 	{
 		float closestDist = m_searchRange;

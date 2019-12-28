@@ -12,8 +12,7 @@
 */
 Zone::Zone()
 {
-	m_physics_system = new PhysicsSystem();
-	m_physics_system->BeginFrame();
+	
 }
 
 //--------------------------------------------------------------------------
@@ -22,8 +21,7 @@ Zone::Zone()
 */
 Zone::~Zone()
 {
-	m_physics_system->Shutdown();
-	SAFE_DELETE( m_physics_system );
+
 }
 
 //--------------------------------------------------------------------------
@@ -76,33 +74,57 @@ void Zone::RemoveEntityWithController(EntityBase* entity_to_remove, ControllerBa
 
 //--------------------------------------------------------------------------
 /**
-* BeginFrame
+* Clear
 */
-void Zone::BeginFrame()
+void Zone::Clear()
 {
-	Zones& zones = GetZones();
-	for (auto& zone : zones)
-	{
-		zone.second->m_physics_system->BeginFrame();
-	}
+	Deinit();
+	Init();
 }
 
 //--------------------------------------------------------------------------
 /**
-* AddZone
+* Init
 */
-Zone* Zone::AddZone( uint id, Zone* zone /*= nullptr*/ )
+void Zone::Init()
 {
-	Zones& zones = GetZones();
-
-	if (zones.find(id) != zones.end())
-	{
-		delete zones[id];
-	}
-	zones[id] = zone ? zone : new Zone();
-	
-	return zones[id];
+	m_physics_system = new PhysicsSystem();
 }
+
+//--------------------------------------------------------------------------
+/**
+* Deinit
+*/
+void Zone::Deinit()
+{
+	for (EntityBase* entity : m_entities)
+	{
+		SAFE_DELETE(entity);
+	}
+
+	for (ControllerBase* ctrl : m_controllers)
+	{
+		SAFE_DELETE(ctrl);
+	}
+
+	m_entities.clear();
+	m_controllers.clear();
+
+
+	m_physics_system->Shutdown();
+	SAFE_DELETE(m_physics_system);
+}
+
+//--------------------------------------------------------------------------
+/**
+* BeginFrame
+*/
+void Zone::BeginFrame()
+{
+	Zone* zone = GetZone();
+	zone->m_physics_system->BeginFrame();
+}
+
 
 //--------------------------------------------------------------------------
 /**
@@ -110,7 +132,7 @@ Zone* Zone::AddZone( uint id, Zone* zone /*= nullptr*/ )
 */
 void Zone::ClearAllZones()
 {
-	GetZones().clear();
+	GetZone()->Clear();
 }
 
 //--------------------------------------------------------------------------
@@ -195,37 +217,19 @@ void Zone::RemoveController(ControllerBase* controller)
 /**
 * GetZone
 */
-Zone* Zone::GetZone( uint zone_id )
+Zone* Zone::GetZone()
 {
-	Zones& zones = GetZones(); 
-	if (zones.find(zone_id) != zones.end())
-	{
-		return	zones[zone_id];
-	}
-	return nullptr;
-}
-
-//--------------------------------------------------------------------------
-/**
-* GetZones
-*/
-Zones& Zone::GetZones()
-{
-	static Zones s_zones;
-	return s_zones;
+	static Zone* zone = new Zone();
+	return zone;
 }
 
 //--------------------------------------------------------------------------
 /**
 * UpdateZones
 */
-void Zone::UpdateZones(float deltaTime)
+void Zone::UpdateZones( float deltaTime )
 {
-	Zones& zones = GetZones();
-	for( auto& zone : zones )
-	{
-		zone.second->Update( deltaTime );
-	}
+	GetZone()->Update( deltaTime );
 }
 
 //--------------------------------------------------------------------------
@@ -234,16 +238,35 @@ void Zone::UpdateZones(float deltaTime)
 */
 void Zone::EndFrame()
 {
-	Zones& zones = GetZones();
-	for (auto& zone : zones)
+	Zone* zone = GetZone();
+	
+	zone->m_physics_system->EndFrame();
+	for (EntityBase*& entity : zone->m_entities)
 	{
-		zone.second->m_physics_system->EndFrame();
-		for( EntityBase*& entity : zone.second->m_entities )
+		if (entity && entity->IsGarbage())
 		{
-			if( entity && entity->IsGarbage() )
-			{
-				zone.second->RemoveEntityWithController(entity);
-			}
+			zone->RemoveEntityWithController(entity);
 		}
 	}
+	
+}
+
+//--------------------------------------------------------------------------
+/**
+* Startup
+*/
+void Zone::Startup()
+{
+	GetZone()->Init();
+}
+
+//--------------------------------------------------------------------------
+/**
+* Shutdown
+*/
+void Zone::Shutdown()
+{
+	Zone* zone = GetZone();
+
+	zone->Deinit();
 }

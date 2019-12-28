@@ -8,7 +8,7 @@
 class EntityBase
 {
 public:
-	EntityBase( const std::string& name, uint zone_id );
+	EntityBase( const std::string& name );
 	virtual ~EntityBase();
 
 	virtual void Die();
@@ -26,7 +26,6 @@ public:
 
 	// Game play
 	void TakeDamage(float damage);
-	uint GetResidingZone() const;
 	EntityType GetType() const;
 	std::string GetName() const;
 
@@ -34,8 +33,8 @@ protected:
 	std::string m_name = "none";
 	EntityType m_type = ENTITY_UNKNOWN_ENTITY_TYPE;
 
-	Rigidbody2D* m_rigidbody;
-	Collider2D* m_collider;
+	Rigidbody2D* m_rigidbody = nullptr;
+	Collider2D* m_collider = nullptr;
 	Transform2D m_transform;
 
 	bool m_isAccelerating = false;
@@ -48,9 +47,5 @@ protected:
 	float m_health = 0.0f;
 	float m_collisionDamage = 1.0f;
 
-	uint m_owning_zone = 999999;
-
-public:
-	uint64_t spatial_id = -1;
 
 };

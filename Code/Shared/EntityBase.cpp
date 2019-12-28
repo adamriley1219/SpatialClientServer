@@ -11,12 +11,11 @@
 /**
 * Entity
 */
-EntityBase::EntityBase(  const std::string& name, uint zone_id )
+EntityBase::EntityBase(  const std::string& name )
 {
 	m_name = name;
 
-	m_owning_zone = zone_id;
-	Zone* zone = Zone::GetZone(zone_id);
+	Zone* zone = Zone::GetZone();
 	ASSERT_RECOVERABLE( zone, "Adding entity to a zone that doesnt exist" );
 	if( zone )
 	{
@@ -44,11 +43,14 @@ EntityBase::EntityBase(  const std::string& name, uint zone_id )
 */
 EntityBase::~EntityBase()
 {
-	Zone* zone = Zone::GetZone( m_owning_zone );
-	if (zone)
+	Zone* zone = Zone::GetZone();
+	if ( m_rigidbody && zone )
 	{
 		zone->m_physics_system->RemoveRigidbody(m_rigidbody);
 	}
+
+	m_rigidbody = nullptr;
+	m_collider = nullptr;
 }
 
 //--------------------------------------------------------------------------
@@ -136,15 +138,6 @@ void EntityBase::TakeDamage(float damage)
 	{
 		Die();
 	}
-}
-
-//--------------------------------------------------------------------------
-/**
-* GetResidingZone
-*/
-uint EntityBase::GetResidingZone() const
-{
-	return m_owning_zone;
 }
 
 //--------------------------------------------------------------------------

@@ -217,7 +217,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	Startup();
 	SpatialOSClient::Startup( arguments );
 
-	while( !g_theApp->IsQuitting() && SpatialOSClient::IsRunning() ) 
+	while( !g_theApp->IsQuitting() ) // && SpatialOSClient::IsRunning() ) 
 	{
 		RunFrame();
 		Sleep(0);

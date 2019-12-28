@@ -190,7 +190,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		GetInstance()->isRunning = true;
 	}
 	std::cout << "Attempting to create entity" << std::endl;
-	EntityBase* entity = new ActorBase("turret", 0);
+	EntityBase* entity = new ActorBase( "turret" );
 	std::cout << "Successfully newed off and entity" << std::endl;
 	RequestEntityCreation( entity );
 

@@ -6,7 +6,6 @@
 #include <map>
 
 class Zone;
-typedef std::map<uint,Zone*> Zones;
 class EntityBase;
 class PhysicsSystem;
 class ControllerBase;
@@ -23,15 +22,21 @@ public:
 	void AddEntityWithController( EntityBase* entity, ControllerBase* controller = nullptr );
 	void RemoveEntityWithController( EntityBase* entity, ControllerBase* controller = nullptr );
 
+	void Clear();
+
+private:
+	void Init();
+	void Deinit();
+
 public:
 	static void BeginFrame();
 	static void UpdateZones( float deltaTime );
 	static void EndFrame();
 
-	static Zone* GetZone( uint zone_id );
-	static Zones& GetZones(); 
-	
-	static Zone* AddZone( uint id, Zone* zone = nullptr );
+	static void Startup();
+	static void Shutdown();
+
+	static Zone* GetZone();
 	
 	static void ClearAllZones();
 
@@ -44,6 +49,6 @@ public:
 public:
 	std::vector<EntityBase*> m_entities;
 	std::vector<ControllerBase*> m_controllers;
-	PhysicsSystem* m_physics_system;
+	PhysicsSystem* m_physics_system = nullptr;
 	
 };
