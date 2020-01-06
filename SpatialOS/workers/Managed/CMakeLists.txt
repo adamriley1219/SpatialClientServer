@@ -85,5 +85,7 @@ add_custom_target(
           -o "${WORKER_ASSEMBLY_DIR}/${PROJECT_NAME}"
           --worker_platform=current
           "$<TARGET_FILE_NAME:${PROJECT_NAME}>"
+          "Data/**"
+          "Data/Gameplay/**"
   DEPENDS ${PROJECT_NAME})
 
