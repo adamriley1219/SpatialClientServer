@@ -111,7 +111,7 @@ void App::Shutdown()
 }
 
 //--------------------------------------------------------------------------
-static float fpsGroup[50] = { 60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60,60 };
+static float fpsGroup[5] = { 60,60,60,60,60 };
 static uint fpsIdx = 0;
 static float allFpsAccumilated = 60.0f * 50.0f;
 
@@ -125,7 +125,7 @@ static void addFPS( float deltaTime )
 	fpsGroup[fpsIdx] = 1.0f / deltaTime;
 	allFpsAccumilated += fpsGroup[fpsIdx];
 	fpsIdx++;
-	if( fpsIdx >= 50 )
+	if( fpsIdx >= 5 )
 	{
 		fpsIdx = 0;
 	}

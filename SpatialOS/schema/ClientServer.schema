@@ -1,0 +1,98 @@
+package siren;
+
+
+
+
+type Vector2 {
+	float x = 1;
+	float y = 2;
+}
+
+type Vector3 {
+	float x = 1;
+	float y = 2;
+	float z = 3;
+}
+
+
+type CreateClientEntityRequest {
+	EntityId id_to_create = 1;
+}
+
+type CreateClientEntityResponse {
+	EntityId id_created = 1;
+}
+
+type RequestEntityIdRequest {
+	
+}
+
+type RequestEntityIdResponse {
+	EntityId given_id_slot = 1;
+}
+
+type ClientPingRequest {
+	EntityId client_entity_id = 1;
+}
+
+type ClientPingResponse {
+	int64 server_heartbeat = 1;
+}
+
+
+type UpdateResourceRequest {
+	EntityId resource_entity_id = 1;
+	string type_id = 2;
+	bytes content = 3;
+}
+
+type UpdateResourceResponse {
+
+}
+
+/** Bootstrap component authoritative on the server worker that acts as client-facing server API. */
+component ServerAPI {
+	id = 1002;
+	/** Requests spawning of a client entity for the calling worker. */
+	command CreateClientEntityResponse create_client_entity(CreateClientEntityRequest);
+	/**
+	 * Notifies the server worker that the calling client worker is still alive.
+	 *
+	 * Every client needs to call this regularly, or the server worker will delete the client's entity.
+	 */
+	command ClientPingResponse client_ping(ClientPingRequest);
+
+	/** Requests updating a resource. */
+	command UpdateResourceResponse update_resource(UpdateResourceRequest);
+}
+
+
+/** Marks an entity as the player entity of a client playing the game. */
+component Client {
+	id = 1003;
+	/** Worker ID of the client represented by this entity. */
+	string worker_id = 1;
+}
+
+/** Server-side metadata associated with each connected client. */
+component ClientInfo {
+	id = 1004;
+	float color_hue = 1;
+	float color_saturation = 2;
+}
+
+/** Component for the server worker to keep track of the last heartbeat sent by the client represented by this entity. */
+component ClientHeartbeat {
+	id = 1005;
+	/** Unix timestamp with the last heartbeat the client sent. */
+	int64 last_server_heartbeat = 1;
+}
+
+
+
+component PlayerControls
+{
+	id = 1001;
+	float x_move = 1;
+	float y_move = 2;
+}

@@ -7,6 +7,7 @@
 #include "Engine/Core/Strings/NamedStrings.hpp"
 
 #include <iostream>
+#include <chrono>
 
 //-----------------------------------------------------------------------------------------------
 void RunFrame()
@@ -69,8 +70,12 @@ int main( int argc, char** argv )
 	
 	SpatialOSServer::Startup( arguments );
 
+	using namespace std::chrono_literals;
+	std::this_thread::sleep_for( 1s );
+
 	Startup();
 	std::cout << "STARTUP COMPLETE" << std::endl;
+
 
     while ( SpatialOSServer::IsRunning() ) {
 		RunFrame();

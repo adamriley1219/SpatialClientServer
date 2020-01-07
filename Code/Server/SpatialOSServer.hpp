@@ -4,18 +4,24 @@
 #include <improbable/worker.h>
 #include <improbable/standard_library.h>
 
-#include <thread>
+#include "ClientServer.h"
 
+#include <thread>
 
 class EntityBase;
 
+using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;
+
+
 struct entity_info_t
 {
-	EntityBase* entity;
-	worker::EntityId id;
-	uint64_t entity_creation_request_id;
-	uint64_t entity_deletion_request_id;
-	uint64_t entity_id_reservation_request_id;
+	EntityBase* entity = nullptr;
+	worker::EntityId id = 0;
+	uint64_t entity_creation_request_id = 0;
+	uint64_t entity_deletion_request_id = 0;
+	uint64_t entity_id_reservation_request_id = 0;
+	uint64_t command_response = 0;
+	std::string owner_id = "";
 	bool created = false;
 	bool updated = false;
 };
@@ -42,10 +48,12 @@ private:
 	static entity_info_t* GetInfoFromDeleteEnityRequest( uint64_t entity_deletion_request_id );
 	static entity_info_t* GetInfoFromReserveEnityIdsRequest( uint64_t entity_id_reservation_request_id );
 	static entity_info_t* GetInfoFromEnityId( const worker::EntityId& entity_id );
+	static entity_info_t* GetInfoFromEnity( EntityBase* entity_id );
 
-public:
+private:
 	// Component Updating
 	static void PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op );
+	static void PlayerCreation( const worker::CommandRequestOp<CreateClientEntity>& op ); 
 
 private:
 	static SpatialOSServer* GetInstance();
@@ -60,4 +68,5 @@ private:
 	worker::Connection* connection;
 
 	std::vector<entity_info_t> entity_info_list;
+	std::vector<EntityBase*> unclaimed_game_entities;
 };

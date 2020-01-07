@@ -5,6 +5,8 @@
 #include <improbable/standard_library.h>
 #include <improbable/view.h>
 
+#include <ClientServer.h>
+
 #include <thread>
 
 struct entity_info_t

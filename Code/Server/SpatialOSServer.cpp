@@ -5,10 +5,13 @@
 #include "Shared/EntityBase.hpp"
 #include "Shared/ActorBase.hpp"
 
+#include "Server/SelfSubActor.hpp"
+
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
+#include <mutex>
 
 
 #include "Engine/Core/EngineCommon.hpp"
@@ -16,9 +19,18 @@
 
 typedef unsigned int uint;
 
-// Use this to make a worker::ComponentRegistry.
-// For example use worker::Components<improbable::Position, improbable::Metadata> to track these common components
-using ComponentRegistry = worker::Components<improbable::Position, improbable::EntityAcl, improbable::Metadata>;
+
+
+using ComponentRegistry 
+	= worker::Components<
+	improbable::Position,
+	improbable::EntityAcl,
+	improbable::Metadata,
+	improbable::Persistence,
+	improbable::Interest,
+	siren::PlayerControls,
+	siren::ServerAPI
+	>;
 
 // Constants and parameters
 const int ErrorExitStatus = 1;
@@ -69,17 +81,21 @@ void SpatialOSServer::Shutdown()
 	GetInstance()->isRunning = false;
 	GetInstance()->server_thread.join();
 }
-uint64_t test_id;
+
 //--------------------------------------------------------------------------
 /**
 * RequestEntityCreation
 */
 void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 {
+	std::cout << "Inside RequestEntityCreation" << std::endl;
 	if( !IsRunning() )
 	{
+		std::cout << "Server not running, (SpatialOSServer::RequestEntityCreation)" << std::endl;
 		return;
 	}
+	std::cout << "Server running, (SpatialOSServer::RequestEntityCreation)" << std::endl;
+	//std::lock_guard<std::mutex> locky( creation_mutex );
 
 	entity_info_t info;
 	// Reserve an entity ID.
@@ -166,9 +182,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
 
 	std::cout << "connection done" << std::endl;
-	const worker::Components<
-		improbable::EntityAcl,
-		improbable::Position> MyComponents;
+
 	// Register callbacks and run the worker main loop.
 	worker::Dispatcher dispatcher( ComponentRegistry{} );
 	GetInstance()->dispatcher = &dispatcher;
@@ -189,9 +203,12 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		std::cout << "[local] Connected successfully to SpatialOS, listening to ops... " << std::endl;
 		GetInstance()->isRunning = true;
 	}
-	std::cout << "Attempting to create entity" << std::endl;
+	// Create a turret
+
+	std::cout << "Attempting to create a turret" << std::endl;
 	EntityBase* entity = new ActorBase( "turret" );
-	std::cout << "Successfully newed off and entity" << std::endl;
+	std::cout << "Successfully newed off " << entity->GetName() << std::endl;
+	entity->SetPosition( 4.0f, 5.0f );
 	RequestEntityCreation( entity );
 
 	constexpr unsigned kFramesPerSecond = 60;
@@ -205,24 +222,6 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 
 		auto op_list = GetInstance()->connection->GetOpList(0);
 		GetInstance()->dispatcher->Process( op_list );
-
- 		// Temp code for testing
-		entity_info_t* info;
-		if( ( info = GetInfoFromEnityId( test_id ) ) && info->created )
-		{
-			Vec2 curPos = info->entity->GetPosition();
-			float offset = 0.02f;
-			std::cout << "Set     entCords      for " << info->id << ":" << curPos.x << "," << curPos.y << std::endl;
-			improbable::Position::Update posUpdate;
-			float pos_to_set = curPos.y + offset;
-			if( pos_to_set > 8 )
-			{
-				pos_to_set = 0;
-			}
-			posUpdate.set_coords( improbable::Coordinates( curPos.x, 0.0f, pos_to_set + offset ) );
-			std::cout << "Set     Update Corrds for " << info->id << " x: " << posUpdate.coords()->x() << ", y: " << posUpdate.coords()->y() << ", z: " << posUpdate.coords()->z() << std::endl;
-			connection.SendComponentUpdate<improbable::Position>( info->id, posUpdate );
-		}
 
 		auto end_time = std::chrono::steady_clock::now();
 		auto wait_for = kFramePeriodSeconds - ( end_time - start_time );
@@ -261,6 +260,25 @@ void SpatialOSServer::RegisterCallbacks( worker::Dispatcher& dispatcher )
 		{
 			std::cout << "Added entity " << op.EntityId << std::endl;
 		});
+
+	dispatcher.OnAuthorityChange<improbable::Position>( [](const worker::AuthorityChangeOp& op )
+		{
+			std::cout << "authority change on " << op.EntityId << std::endl;
+			switch ( op.Authority )
+			{
+			case worker::Authority::kAuthoritative:
+				std::cout << "	gained authority" << op.EntityId << std::endl;
+				break;
+			case worker::Authority::kAuthorityLossImminent:
+				std::cout << "	about to loose authority" << std::endl;
+				break;
+			case worker::Authority::kNotAuthoritative:
+				std::cout << "	lost authority" << op.EntityId << std::endl;
+				break;
+			default:
+				break;
+			}
+		});
  
 	// When the reservation succeeds, create an entity with the reserved ID.
 	dispatcher.OnReserveEntityIdsResponse( ReserveEntityIdsResponse );
@@ -273,6 +291,9 @@ void SpatialOSServer::RegisterCallbacks( worker::Dispatcher& dispatcher )
 
 	// For updating components
 	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
+
+	// For requesting an entity to be created, used for client to enter.
+	dispatcher.OnCommandRequest<CreateClientEntity>( PlayerCreation );
 }
 
 //--------------------------------------------------------------------------
@@ -318,10 +339,16 @@ uint64_t SpatialOSServer::CreateEntityResponse( const worker::CreateEntityRespon
 
 	if ( entity_info && success ) 
 	{
-		entity_info->id = *(op.EntityId);
+		if( entity_info->id != 0 )
+		{
+			if( entity_info->id != *(op.EntityId) )
+			{
+				std::cout << "ID assigned to entity was not the ID returned in the callback." << std::endl;
+			}
+		}
+		entity_info->id = *(op.EntityId); // WARNING - This might be wrong
 		entity_info->created = true;
-		test_id = entity_info->id;
-		std::cout << "Entity creation successful with id " << test_id << std::endl;
+		std::cout << "Entity creation successful with id " << entity_info->id << std::endl;
 	}
 	return op.RequestId.Id;
 }
@@ -334,51 +361,72 @@ uint64_t SpatialOSServer::ReserveEntityIdsResponse( const worker::ReserveEntityI
 {
 	entity_info_t* entity_info;
 	std::cout << "ReserveEntity begin with response ID: " << op.RequestId.Id << std::endl;
-	std::cout << "    Additionally: " << op.Message << " weith id: " << op.RequestId.Id << std::endl;
+	std::cout << "    Additionally: " << op.Message << " with id: " << op.RequestId.Id << std::endl;
 
 	GetInstance()->connection->SendLogMessage(worker::LogLevel::kInfo, kLoggerName, Stringf("Connected %s", op.StatusCode == worker::StatusCode::kSuccess ? "successfully" : "with fault" ) );
-
+	
 	if ( ( entity_info = GetInfoFromReserveEnityIdsRequest( op.RequestId.Id ) ) != nullptr &&
 		op.StatusCode == worker::StatusCode::kSuccess ) 
 	{
+		// Send response back to however sent the command if triggered by a command.
+		if( entity_info->command_response )
+		{
+			worker::RequestId<worker::IncomingCommandRequest< CreateClientEntity > > command_response;
+			CreateClientEntity::Response response;
+			worker::EntityId id = *(op.FirstEntityId); // Optional but can assume there is an id because the status was successful.
+			response.set_id_created( id );
+			command_response.Id = entity_info->command_response;
+			GetInstance()->connection->SendCommandResponse<CreateClientEntity>( command_response, response );
+		}
 
-		worker::Entity entity;
+		worker::Entity clientEntity;
+
 		Vec2 position = entity_info->entity->GetPosition();
-		entity.Add<improbable::Position>({ { position.x,  0.0f, position.y } });
+		clientEntity.Add<improbable::Position>({ { position.x,  0.0f, position.y } });
 
+
+		worker::List<std::string> callerWorkerAttributeSet{ "workerId:" + entity_info->owner_id };
 		worker::List<std::string> simulationWorkerAttributeSet{ "simulation" };
+		worker::List<std::string> clientWorkerAttributeSet{ "client" };
 
-		// This requirement set matches any worker with the attribute "physics".
-		improbable::WorkerRequirementSet simulationWorkerRequirementSet{
-			worker::List<improbable::WorkerAttributeSet>{ {simulationWorkerAttributeSet}} };
-
-		// This requirement set matches any worker with the attribute "client" or "physics".
-		improbable::WorkerRequirementSet clientOrPhysicsRequirementSet
+		improbable::WorkerRequirementSet clientWorkerRequirementSet{ worker::List<improbable::WorkerAttributeSet>{ {clientWorkerAttributeSet} } };
+		improbable::WorkerRequirementSet simulationWorkerRequirementSet{ worker::List<improbable::WorkerAttributeSet>{ {simulationWorkerAttributeSet} } };
+		improbable::WorkerRequirementSet callerWorkerRequirementSet{ worker::List<improbable::WorkerAttributeSet>{ {callerWorkerAttributeSet} } };
+		improbable::WorkerRequirementSet clientOrSimRequirementSet
 		{
 			worker::List<improbable::WorkerAttributeSet>
 		{
-			improbable::WorkerAttributeSet{worker::List<std::string>{"client"}},
-				simulationWorkerAttributeSet
+			simulationWorkerAttributeSet,
+				clientWorkerAttributeSet,
+				callerWorkerAttributeSet
 		}
 		};
 
-		// Give authority over Position and EntityAcl to any physics worker, and over PlayerControls to
-		// the caller worker.
-		worker::Map<worker::ComponentId, improbable::WorkerRequirementSet> componentAcl
-		{
-			{
-				improbable::Position::ComponentId, simulationWorkerRequirementSet
-			},
-		{
-			improbable::EntityAcl::ComponentId, simulationWorkerRequirementSet
-		}
-		};
+		worker::Map<worker::ComponentId, improbable::WorkerRequirementSet> componentAcl;
+		componentAcl[improbable::Position::ComponentId] = simulationWorkerRequirementSet;
+		componentAcl[improbable::EntityAcl::ComponentId] = simulationWorkerRequirementSet;
+		componentAcl[siren::PlayerControls::ComponentId] = callerWorkerRequirementSet;
 
-		entity.Add<improbable::EntityAcl>(
-			improbable::EntityAcl::Data{/* read */ clientOrPhysicsRequirementSet, /* write */ componentAcl });
+		clientEntity.Add<improbable::EntityAcl>(
+			improbable::EntityAcl::Data{/* read */ clientOrSimRequirementSet, /* write */ componentAcl });
 
+		improbable::Metadata::Data metadata;
+		metadata.set_entity_type( entity_info->entity->GetName() );
+		clientEntity.Add<improbable::Metadata>(metadata);
 
-		auto result = GetInstance()->connection->SendCreateEntityRequest( entity, op.FirstEntityId, kGetOpListTimeoutInMilliseconds );
+		siren::PlayerControls::Data client_data;
+		clientEntity.Add<siren::PlayerControls>(client_data);
+
+		improbable::ComponentInterest::QueryConstraint relativeConstraint;
+		relativeConstraint.set_relative_box_constraint({ {{20.5, 9999, 20.5}} });
+		improbable::ComponentInterest::Query relativeQuery;
+		relativeQuery.set_constraint(relativeConstraint);
+		relativeQuery.set_full_snapshot_result({ true });
+		improbable::ComponentInterest interest{ {relativeQuery} };
+		clientEntity.Add<improbable::Interest>({ {{siren::Client::ComponentId, interest}} });
+		
+
+		auto result = GetInstance()->connection->SendCreateEntityRequest( clientEntity, op.FirstEntityId, kGetOpListTimeoutInMilliseconds );
 		// Check no errors occurred.
 		if (result) {
 			entity_info->entity_creation_request_id = (*result).Id;
@@ -464,9 +512,26 @@ entity_info_t* SpatialOSServer::GetInfoFromEnityId(const worker::EntityId& entit
 
 //--------------------------------------------------------------------------
 /**
+* GetInfoFromEnity
+*/
+entity_info_t* SpatialOSServer::GetInfoFromEnity( EntityBase* entity_id )
+{
+	for ( entity_info_t& entity : GetInstance()->entity_info_list )
+	{
+		if ( entity.entity == entity_id )
+		{
+			return &entity;
+		}
+	}
+
+	return nullptr;
+}
+
+//--------------------------------------------------------------------------
+/**
 * PositionUpdated
 */
-void SpatialOSServer::PositionUpdated (const worker::ComponentUpdateOp<improbable::Position>& op )
+void SpatialOSServer::PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op )
 {
 	std::cout << "SpatialOSServer::PositionUpdated" << std::endl;
 	const auto coords = op.Update.coords().data();
@@ -480,6 +545,30 @@ void SpatialOSServer::PositionUpdated (const worker::ComponentUpdateOp<improbabl
 
 		std::cout << "PosUpdate: Success" << std::endl;
 	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* EntityCreation
+*/
+void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClientEntity>& op )
+{
+	// ID reservation was successful - create an entity with the reserved ID.
+	//--------------------------------------------------------------------------
+	std::cout << "Received a command request from: " << op.CallerWorkerId << std::endl;
+	
+	EntityBase* base = new SelfSubBase( "player" );
+	entity_info_t* info = GetInfoFromEnity( base );
+
+	info->owner_id = op.CallerWorkerId;
+	info->id = op.EntityId;
+	info->entity->SetPosition( 1.0f, 1.0f );
+
+	std::cout << "entity sent successfully" << std::endl;
+
+	// For responding to the command when an ID has been obtained.
+	info->command_response = op.RequestId.Id;
+
 }
 
 //--------------------------------------------------------------------------

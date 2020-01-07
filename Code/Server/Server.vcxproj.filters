@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{580c7ff2-a0b3-485e-80de-0600873cafec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server_main.cc">
@@ -19,6 +22,9 @@
     <ClCompile Include="WorldSim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SelfSubActor.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerApp.hpp">
@@ -32,6 +38,9 @@
     </ClInclude>
     <ClInclude Include="WorldSim.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SelfSubActor.hpp">
+      <Filter>Source Files\Entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

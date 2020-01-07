@@ -5,22 +5,23 @@
 
 #include <algorithm>
 #include <chrono>
-#include <cstdlib>
 #include <iostream>
 
-#include <cassert>
-#include <crtdbg.h>
-
-//--------------------------------------------------------------------------
-//SpatialOS
 
 
-// Use this to make a worker::ComponentRegistry. This worker doesn't use any components yet
-// For example use worker::Components<improbable::Position, improbable::Metadata> to track these common components
-using EmptyRegistry = worker::Components<>;
+using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;
+
+worker::Components<
+	improbable::Position,
+	improbable::EntityAcl,
+	improbable::Metadata,
+	improbable::Persistence,
+	improbable::Interest,
+	siren::PlayerControls,
+	siren::ServerAPI
+> ComponentRegistry;
 
 // Constants and parameters
-const int ErrorExitStatus = 1;
 const std::string kLoggerName = "client";
 const std::uint32_t kGetOpListTimeoutInMilliseconds = 100;
 
@@ -48,7 +49,7 @@ worker::Connection ConnectWithLocator(const std::string hostname,
 		return true;
 	};
 
-	auto future = locator.ConnectAsync(EmptyRegistry{}, deployment_id, connection_parameters, queue_status_callback);
+	auto future = locator.ConnectAsync(ComponentRegistry, deployment_id, connection_parameters, queue_status_callback);
 	return future.Get();
 }
 
@@ -57,7 +58,7 @@ worker::Connection ConnectWithReceptionist(const std::string hostname,
 	const std::uint16_t port,
 	const std::string& worker_id,
 	const worker::ConnectionParameters& connection_parameters) {
-	auto future = worker::Connection::ConnectAsync(EmptyRegistry{}, hostname, port, worker_id, connection_parameters);
+	auto future = worker::Connection::ConnectAsync(ComponentRegistry, hostname, port, worker_id, connection_parameters);
 	return future.Get();
 }
 
@@ -77,6 +78,41 @@ static std::string get_random_characters(size_t count) {
 
 //-----------------------------------------------------------------------------------------------
 
+
+int CreateCleanSnapshot()
+{
+	improbable::WorkerAttributeSet clientAttributeSet({ "client" });
+	improbable::WorkerAttributeSet serverAttributeSet({ "simulation" });
+	improbable::WorkerRequirementSet clientRequirementSet({ clientAttributeSet });
+	improbable::WorkerRequirementSet serverRequirementSet({ serverAttributeSet });
+	improbable::WorkerRequirementSet clientOrServerRequirementSet({ clientAttributeSet, serverAttributeSet });
+
+	worker::Entity bootstrapEntity;
+	bootstrapEntity.Add<improbable::Metadata>({ "API" });
+	bootstrapEntity.Add<improbable::Persistence>({});
+	bootstrapEntity.Add<improbable::Position>({ {-100, -100, -100} });
+	bootstrapEntity.Add<siren::ServerAPI>({});
+	worker::Map<std::uint32_t, improbable::WorkerRequirementSet> bootstrapComponentAclMap;
+	bootstrapComponentAclMap.insert({ {siren::ServerAPI::ComponentId, serverRequirementSet} });
+	bootstrapEntity.Add<improbable::EntityAcl>({ clientOrServerRequirementSet, bootstrapComponentAclMap });
+	improbable::ComponentInterest::Query query;
+	improbable::ComponentInterest::QueryConstraint queryConstraint;
+	queryConstraint.set_component_constraint(siren::Client::ComponentId);
+	query.set_constraint(queryConstraint);
+	query.set_full_snapshot_result({ true });
+	improbable::ComponentInterest componentInterest;
+	componentInterest.set_queries({ query });
+	improbable::InterestData interestData;
+	interestData.component_interest()[siren::ServerAPI::ComponentId] = componentInterest;
+	bootstrapEntity.Add<improbable::Interest>(interestData);
+
+	worker::Result<worker::SnapshotOutputStream, worker::StreamErrorCode> outputStream = worker::SnapshotOutputStream::Create(ComponentRegistry, "D:/GitHubRepos/SpatialClientServer/SpatialOS/snapshots/CleanServerAPI.snapshot");
+	worker::Result<worker::None, worker::StreamErrorCode> entityWritten = outputStream->WriteEntity(1, bootstrapEntity);
+	if (!entityWritten) {
+		return 1;
+	}
+	return 0;
+}
 
 //--------------------------------------------------------------------------
 /**
@@ -115,7 +151,6 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 {
 	auto now = std::chrono::high_resolution_clock::now();
 	std::srand((uint)std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count());
-
 
 	auto print_usage = [&]() {
 		std::cout << "Usage: External receptionist <hostname> <port> <worker_id>" << std::endl;
@@ -160,7 +195,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
 
 	// Register callbacks and run the worker main loop.
-	worker::View view{ EmptyRegistry{} };
+	worker::View view{ ComponentRegistry };
 	GetInstance()->view = &view;
 	bool is_connected = connection.IsConnected();
 
