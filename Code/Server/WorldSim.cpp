@@ -60,6 +60,7 @@ void WorldSim::Startup()
 	std::cout << "world setup" << std::endl;
 
 	m_entities.push_back( new SelfSubBase( "turret", Vec2( 6.5f, 7.0f ) ) );
+	m_entities.push_back( new SelfSubBase( "turret", Vec2( 5.0f, 7.0f ) ) );
 
 	std::cout << "Finished world setup" << std::endl;
 }

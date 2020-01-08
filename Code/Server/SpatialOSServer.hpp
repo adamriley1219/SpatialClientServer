@@ -7,6 +7,7 @@
 #include "ClientServer.h"
 
 #include <thread>
+#include <mutex>
 
 class EntityBase;
 
@@ -66,6 +67,8 @@ private:
 
 	worker::Dispatcher* dispatcher;
 	worker::Connection* connection;
+
+	std::mutex entity_info_list_lock;
 
 	std::vector<entity_info_t> entity_info_list;
 	std::vector<EntityBase*> unclaimed_game_entities;

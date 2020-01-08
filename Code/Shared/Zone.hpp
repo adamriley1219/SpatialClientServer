@@ -51,4 +51,7 @@ public:
 	std::vector<ControllerBase*> m_controllers;
 	PhysicsSystem* m_physics_system = nullptr;
 	
+private:
+	bool initialized = false;
+
 };

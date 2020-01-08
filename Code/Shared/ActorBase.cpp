@@ -5,6 +5,7 @@
 #include "Shared/ControllerBase.hpp"
 #include "Shared/Zone.hpp"
 
+#include <iostream>
 
 //--------------------------------------------------------------------------
 /**
@@ -14,8 +15,10 @@ ActorBase::ActorBase( const std::string& name )
 	: EntityBase( name )
 {
 	const ActorBaseDefinition* def = ActorBaseDefinition::GetActorDefinitionByName( name );  
+	std::cout << "Actor base" << std::endl;
 	if( def )
 	{
+		std::cout << "Def found" << std::endl;
 		m_basic_attack = def->m_basic_attack;
 		m_possessable = def->m_possessable;
 		m_speed = def->m_speed;

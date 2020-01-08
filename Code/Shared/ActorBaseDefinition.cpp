@@ -4,6 +4,7 @@
 
 std::map< std::string, ActorBaseDefinition* > ActorBaseDefinition::s_actorDefs;
 
+#include <iostream>
 
 //--------------------------------------------------------------------------
 /**
@@ -45,7 +46,9 @@ const ActorBaseDefinition* ActorBaseDefinition::GetActorDefinitionByName(std::st
 {
 	if( s_actorDefs.find( name ) != s_actorDefs.end() )
 	{
+		std::cout << "found a def" << std::endl;
 		return s_actorDefs[name];
 	}
+	std::cout << "didnt find a def" << std::endl;
 	return nullptr;
 }

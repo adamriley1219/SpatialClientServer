@@ -89,6 +89,7 @@ void Zone::Clear()
 void Zone::Init()
 {
 	m_physics_system = new PhysicsSystem();
+	initialized = true;
 }
 
 //--------------------------------------------------------------------------

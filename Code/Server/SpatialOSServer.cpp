@@ -11,7 +11,6 @@
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
-#include <mutex>
 
 
 #include "Engine/Core/EngineCommon.hpp"
@@ -95,7 +94,7 @@ void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 		return;
 	}
 	std::cout << "Server running, (SpatialOSServer::RequestEntityCreation)" << std::endl;
-	//std::lock_guard<std::mutex> locky( creation_mutex );
+	GetInstance()->entity_info_list_lock.lock();
 
 	entity_info_t info;
 	// Reserve an entity ID.
@@ -108,6 +107,7 @@ void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 	info.entity = entity_to_create;
 
 	GetInstance()->entity_info_list.push_back( info );
+	GetInstance()->entity_info_list_lock.unlock();
 }
 
 //--------------------------------------------------------------------------
@@ -203,13 +203,6 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 		std::cout << "[local] Connected successfully to SpatialOS, listening to ops... " << std::endl;
 		GetInstance()->isRunning = true;
 	}
-	// Create a turret
-
-	std::cout << "Attempting to create a turret" << std::endl;
-	EntityBase* entity = new ActorBase( "turret" );
-	std::cout << "Successfully newed off " << entity->GetName() << std::endl;
-	entity->SetPosition( 4.0f, 5.0f );
-	RequestEntityCreation( entity );
 
 	constexpr unsigned kFramesPerSecond = 60;
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
