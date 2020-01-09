@@ -17,6 +17,8 @@ public:
 	void PreformAbility( const std::string& ability_name, const Vec2& target_position );
 	bool Possess( ControllerBase* controller );
 
+	ControllerBase* GetController() const;
+
 	float GetSpeed() const;
 
 protected:

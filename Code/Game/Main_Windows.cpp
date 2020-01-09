@@ -32,7 +32,7 @@ const char* APP_NAME = "Client";
 
 
 static std::string get_random_characters(size_t count) {
-	std::srand(GetCurrentTimeHPC());
+	std::srand((uint)GetCurrentTimeHPC());
 	const auto randchar = []() -> char {
 		const char charset[] =
 			"0123456789"
@@ -184,40 +184,14 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 		}
 	}
 
-
-// 	worker::RequestId<worker::ReserveEntityIdsRequest> entity_id_reservation_request_id =
-// 		connection.SendReserveEntityIdsRequest(1, kGetOpListTimeoutInMilliseconds);
-// 
-// 	dispatcher.OnReserveEntityIdResponse([entity_id_reservation_request_id, &connection](
-// 		const worker::ReserveEntityIdsResponseOp& op) 
-// 		{
-// 			if (op.RequestId == entity_id_reservation_request_id &&
-// 				op.StatusCode == worker::StatusCode::kSuccess) {
-// 				// ID reservation was successful - create an entity with the reserved ID.
-// 				worker::Entity entity;
-// 				entity.Add<improbable::Position>({ {1, 2, 3} });
-// 				entity.Add<ControllerData>();
-// 				auto result = connection.SendCreateEntityRequest(entity, op.FirstEntityId, kGetOpListTimeoutInMilliseconds);
-// 				// Check no errors occurred.
-// 				if (result) {
-// 					entity_creation_request_id = *result;
-// 				}
-// 				else {
-// 					connection.SendLogMessage(worker::LogLevel::kError, "CreateDeleteEntity",
-// 						result.GetErrorMessage());
-// 					std::terminate();
-// 				}
-// 			}
-// 		}
-// 	);
-
 	//--------------------------------------------------------------------------
 	// Program main loop; keep running frames until it's time to quit
 
 	SpatialOSClient::Startup( arguments );
 	Startup();
 
-	Sleep( 1000 );
+	// Only needed if spatialOS thread needs to begin, if not using a thread you can bypass the sleep
+//	Sleep( 1000 );
 
 	while( !g_theApp->IsQuitting() && SpatialOSClient::IsRunning() ) 
 	{

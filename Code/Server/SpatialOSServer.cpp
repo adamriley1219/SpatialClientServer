@@ -83,6 +83,16 @@ void SpatialOSServer::Shutdown()
 
 //--------------------------------------------------------------------------
 /**
+* Process
+*/
+void SpatialOSServer::Process()
+{
+	auto op_list = GetInstance()->connection->GetOpList(0);
+	GetInstance()->dispatcher->Process( op_list );
+}
+
+//--------------------------------------------------------------------------
+/**
 * RequestEntityCreation
 */
 void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
@@ -211,14 +221,14 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 	std::cout << "Begin running loop" << std::endl;
 	while (is_connected && IsRunning())
 	{
-		auto start_time = std::chrono::steady_clock::now();
-
-		auto op_list = GetInstance()->connection->GetOpList(0);
-		GetInstance()->dispatcher->Process( op_list );
-
-		auto end_time = std::chrono::steady_clock::now();
-		auto wait_for = kFramePeriodSeconds - ( end_time - start_time );
-		std::this_thread::sleep_for( wait_for );
+// 		auto start_time = std::chrono::steady_clock::now();
+// 
+// 		auto op_list = GetInstance()->connection->GetOpList(0);
+// 		GetInstance()->dispatcher->Process( op_list );
+// 
+// 		auto end_time = std::chrono::steady_clock::now();
+// 		auto wait_for = kFramePeriodSeconds - ( end_time - start_time );
+		std::this_thread::sleep_for( kFramePeriodSeconds );
 	}
 
 	
@@ -550,7 +560,7 @@ void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClien
 	//--------------------------------------------------------------------------
 	std::cout << "Received a command request from: " << op.CallerWorkerId << std::endl;
 	
-	EntityBase* base = new SelfSubBase( "player" );
+	EntityBase* base = new SelfSubActor( "player" );
 	entity_info_t* info = GetInfoFromEnity( base );
 
 	info->owner_id = op.CallerWorkerId;

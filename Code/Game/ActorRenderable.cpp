@@ -6,7 +6,7 @@
 * ActorRenderable
 */
 ActorRenderable::ActorRenderable( const std::string& name )
-	: ActorBase( name )
+	: SelfSubActor( name )
 {
 
 }
@@ -17,7 +17,7 @@ ActorRenderable::ActorRenderable( const std::string& name )
 */
 ActorRenderable::~ActorRenderable()
 {
-	EntityBase::~EntityBase();
+
 }
 
 //--------------------------------------------------------------------------

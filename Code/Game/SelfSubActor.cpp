@@ -1,6 +1,7 @@
-#include "Server/SelfSubActor.hpp"
+#include "Game/SelfSubActor.hpp"
+#include "Game/Game.hpp"
+#include "Game/SpatialOSClient.hpp"
 
-#include "Server/SpatialOSServer.hpp"
 
 //--------------------------------------------------------------------------
 /**
@@ -9,18 +10,18 @@
 SelfSubActor::SelfSubActor( const std::string& name )
 	: ActorBase( name )
 {
-	SpatialOSServer::RequestEntityCreation( this );
+	SpatialOSClient::RequestEntityCreation( this );
 }
 
 //--------------------------------------------------------------------------
 /**
 * SelfSubActor
 */
-SelfSubActor::SelfSubActor( const std::string& name, const Vec2& position )
-	: ActorBase( name )
+SelfSubActor::SelfSubActor(const std::string& name, const Vec2& position)
+	: ActorBase(name)
 {
 	m_transform.m_position = position;
-	SpatialOSServer::RequestEntityCreation(this);
+	SpatialOSClient::RequestEntityCreation( this );
 }
 
 //--------------------------------------------------------------------------

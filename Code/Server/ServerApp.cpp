@@ -120,8 +120,9 @@ bool ServerApp::QuitEvent( EventArgs& args )
 void ServerApp::BeginFrame()
 {
 	ClockSystemBeginFrame();
-	Zone::BeginFrame();
 
+	SpatialOSServer::Process();
+	Zone::BeginFrame();
 }
 
 

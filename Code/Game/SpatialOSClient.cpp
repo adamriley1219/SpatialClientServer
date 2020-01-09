@@ -3,13 +3,14 @@
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Memory/Debug/Log.hpp"
 
+#include "Engine/Core/EventSystem.hpp"
+
 #include <algorithm>
 #include <chrono>
 #include <iostream>
 
+#include "Shared/EntityBase.hpp"
 
-
-using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;
 
 worker::Components<
 	improbable::Position,
@@ -21,9 +22,11 @@ worker::Components<
 	siren::ServerAPI
 > ComponentRegistry;
 
+
 // Constants and parameters
 const std::string kLoggerName = "client";
 const std::uint32_t kGetOpListTimeoutInMilliseconds = 100;
+static worker::RequestId<worker::EntityQueryRequest> APIQueryRequestId;
 
 // Connection helpers
 worker::Connection ConnectWithLocator(const std::string hostname,
@@ -136,12 +139,69 @@ void SpatialOSClient::Shutdown()
 
 //--------------------------------------------------------------------------
 /**
+* Process
+*/
+void SpatialOSClient::Process()
+{
+	auto opList = GetInstance()->context.connection->GetOpList(0);
+	GetInstance()->context.dispatcher->Process(opList);
+}
+
+//--------------------------------------------------------------------------
+/**
 * IsRunning
 */
 bool SpatialOSClient::IsRunning()
 {
 	return GetInstance()->isRunning;
 }
+
+//--------------------------------------------------------------------------
+/**
+* RequestEntityCreation
+*/
+void SpatialOSClient::RequestEntityCreation( EntityBase* entity )
+{
+	std::cout << "Inside RequestEntityCreation" << std::endl;
+	if (!IsRunning())
+	{
+		std::cout << "Server not running, (SpatialOSServer::RequestEntityCreation)" << std::endl;
+		return;
+	}
+
+	entity_info_t info;
+	info.entity = entity;
+
+	worker::Result<worker::RequestId<worker::OutgoingCommandRequest<CreateClientEntity>>> createEntityRequestId = GetContext()->connection->SendCommandRequest<CreateClientEntity>(GetContext()->APIEntityId, {}, {});
+	if (!createEntityRequestId) {
+		std::cout << "Failed to send create client entity request: " << createEntityRequestId.GetErrorMessage().c_str() << std::endl;
+		return;
+	}
+
+	std::cout << "Sent create client entity request with id " << createEntityRequestId->Id << std::endl;
+	info.createEntityCommandRequestId = createEntityRequestId->Id;
+
+	GetInstance()->entity_info_list.push_back(info);
+}
+
+//--------------------------------------------------------------------------
+/**
+* UpdatePlayerControls
+*/
+void SpatialOSClient::UpdatePlayerControls( EntityBase* player, const Vec2& direction )
+{
+	entity_info_t* info = GetInfoFromEnity( player );
+
+	if( info && info->created )
+	{
+		siren::PlayerControls::Update ctrUpdate;
+		ctrUpdate.set_x_move( direction.x );
+		ctrUpdate.set_y_move( direction.y );
+		worker::UpdateParameters params;
+		GetContext()->connection->SendComponentUpdate<siren::PlayerControls>( info->id, ctrUpdate, params );
+	}
+}
+
 
 //--------------------------------------------------------------------------
 /**
@@ -191,51 +251,51 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	worker::Connection connection = use_locator
 		? ConnectWithLocator(arguments[1], arguments[2], arguments[3], arguments[4], parameters)
 		: ConnectWithReceptionist(arguments[1], (uint16_t)atoi(arguments[2].c_str()), arguments[3], parameters);
-	GetInstance()->connection = &connection;
+	GetInstance()->context.connection = &connection;
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
 
 	// Register callbacks and run the worker main loop.
-	worker::View view{ ComponentRegistry };
-	GetInstance()->view = &view;
+	worker::Dispatcher dispatcher{ ComponentRegistry };
+	GetInstance()->context.dispatcher = &dispatcher;
 	bool is_connected = connection.IsConnected();
 
-	view.OnDisconnect([&](const worker::DisconnectOp& op) {
+	dispatcher.OnDisconnect([&](const worker::DisconnectOp& op) {
 		std::cerr << "[disconnect] " << op.Reason << std::endl;
-		Logf("ClientLog", "[disconnect] %s", op.Reason.c_str() );
+		Logf("ClientLog", "[disconnect] %s", op.Reason.c_str());
 
 		is_connected = false;
 		});
 
 
-	RegisterCallbacks( view );
+	RegisterCallbacks( dispatcher );
 	
+	// Look for API
+	worker::query::EntityQuery APIEntityQuery
+	{
+		worker::query::ComponentConstraint{siren::ServerAPI::ComponentId},
+		worker::query::SnapshotResultType{{{siren::ServerAPI::ComponentId}}}
+	};
+	APIQueryRequestId = connection.SendEntityQueryRequest(APIEntityQuery, {});
+	Logf( "ClientLog", "Connected and running" );
+
 	constexpr unsigned kFramesPerSecond = 60;
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
 		1. / static_cast<double>(kFramesPerSecond) };
-	Logf( "ClientLog", "Connected and running" );
 
-	while ( GetInstance()->connection->IsConnected() && IsRunning() )
+	while ( GetInstance()->context.connection->IsConnected() && IsRunning() )
 	{
-		auto start_time = std::chrono::steady_clock::now();
-
-		auto opList = GetInstance()->connection->GetOpList(0);
-		GetInstance()->view->Process(opList);
-
-		for( auto map_ID_entity : view.Entities )
-		{
-			worker::EntityId id = map_ID_entity.first;
-			Logf( "ClientLog", "Client can see %u", id );
-			std::cout << "Client can see " << map_ID_entity.first << std::endl;
-		}
-
-		auto end_time = std::chrono::steady_clock::now();
-		auto wait_for = kFramePeriodSeconds - (end_time - start_time);
-		std::this_thread::sleep_for(wait_for);
+// 		auto start_time = std::chrono::steady_clock::now();
+// 
+// 		//Process();
+// 
+// 		auto end_time = std::chrono::steady_clock::now();
+// 		auto wait_for = kFramePeriodSeconds - (end_time - start_time);
+		std::this_thread::sleep_for(kFramePeriodSeconds);
 	}
 
 	GetInstance()->isRunning = false;
-	GetInstance()->connection = nullptr;
-	GetInstance()->view = nullptr;
+	GetInstance()->context.connection = nullptr;
+	GetInstance()->context.dispatcher = nullptr;
 }
 
 
@@ -243,10 +303,10 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 /**
 * RegisterCallbacks
 */
-void SpatialOSClient::RegisterCallbacks( worker::View& view )
+void SpatialOSClient::RegisterCallbacks( worker::Dispatcher& dispatcher )
 {
 	// Print messages received from SpatialOS
-	view.OnLogMessage([&](const worker::LogMessageOp& op) {
+	dispatcher.OnLogMessage([&](const worker::LogMessageOp& op) {
 		if (op.Level == worker::LogLevel::kFatal) {
 			std::cerr << "Fatal error: " << op.Message << std::endl;
 			Logf( "ClientLog", "Fetal error: %s", op.Message.c_str() );
@@ -255,7 +315,12 @@ void SpatialOSClient::RegisterCallbacks( worker::View& view )
 		std::cout << "Connection: " << op.Message << std::endl;
 		Logf("ClientLog", "Connection: %s", op.Message.c_str());
 		});
+
+	dispatcher.OnEntityQueryResponse( EntityQueryResponse );
+
+	dispatcher.OnCommandResponse<CreateClientEntity>( ClientCreationResponse );
 }
+
 
 //--------------------------------------------------------------------------
 /**
@@ -263,11 +328,28 @@ void SpatialOSClient::RegisterCallbacks( worker::View& view )
 */
 entity_info_t* SpatialOSClient::GetInfoFromEnityId( const worker::EntityId& entity_id )
 {
-	for (entity_info_t& entity : GetInstance()->entity_info_list)
+	for (entity_info_t& info : GetInstance()->entity_info_list)
 	{
-		if (entity.id == entity_id)
+		if (info.id == entity_id)
 		{
-			return &entity;
+			return &info;
+		}
+	}
+
+	return nullptr;
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetInfoFromEnity
+*/
+entity_info_t* SpatialOSClient::GetInfoFromEnity( EntityBase* entity_id )
+{
+	for (entity_info_t& info : GetInstance()->entity_info_list)
+	{
+		if (info.entity == entity_id)
+		{
+			return &info;
 		}
 	}
 
@@ -283,11 +365,57 @@ void SpatialOSClient::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
 	if ( info && info->created )
 	{
-		worker::Option<improbable::PositionData&> curPos = info->entity->Get<improbable::Position>();
-		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->coords().x() << "," << curPos->coords().y() << "," << curPos->coords().z() << std::endl;
-		Logf("ClientLog", "PosUpdate: entCords for %u:%.03f,%.03f,%.03f %s", info->id, curPos->coords().x(), curPos->coords().y(), curPos->coords().z() );
-
+		auto curPos = op.Update.coords();
+		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->x() << "," << curPos->y() << "," << curPos->y() << std::endl;
+		Logf("ClientLog", "PosUpdate: entCords for %u:%.03f,%.03f,%.03f %s", info->id, curPos->x(), curPos->y(), curPos->z() );
+		info->entity->SetPosition( (float)curPos->x(), (float)curPos->z() );
 	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* EntityQueryResponse
+*/
+void SpatialOSClient::EntityQueryResponse( const worker::EntityQueryResponseOp& op )
+{
+	std::cout << "Received entity query response for request " << op.RequestId.Id << " with status code " << (int)(op.StatusCode) << std::endl;
+	if (op.RequestId == APIQueryRequestId && !op.Result.empty()) {
+		GetInstance()->context.APIEntityId = op.Result.begin()->first;
+		g_theEventSystem->FireEvent("API_connection_made");
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* ClientCreationResponse
+*/
+void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<CreateClientEntity>& op )
+{
+	if( op.StatusCode == worker::StatusCode::kSuccess )
+	{
+		entity_info_t* info = GetInfoFromCreateEntityCommandRequestId( op.RequestId.Id );
+		if( info )
+		{
+			info->created = true;
+			info->id = op.Response->id_created();
+		}
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetInfoFromCreateEntityCommandRequestId
+*/
+entity_info_t* SpatialOSClient::GetInfoFromCreateEntityCommandRequestId( uint64_t request_id )
+{
+	for (entity_info_t& entity : GetInstance()->entity_info_list)
+	{
+		if (entity.createEntityCommandRequestId == request_id)
+		{
+			return &entity;
+		}
+	}
+	return nullptr;
 }
 
 //--------------------------------------------------------------------------
@@ -301,11 +429,11 @@ const std::vector<entity_info_t>& SpatialOSClient::GetEntityList()
 
 //--------------------------------------------------------------------------
 /**
-* GetView
+* GetDispatcher
 */
-worker::View* SpatialOSClient::GetView()
+worker::Dispatcher* SpatialOSClient::GetDispatcher()
 {
-	return GetInstance()->view;
+	return GetInstance()->context.dispatcher;
 }
 
 //--------------------------------------------------------------------------
@@ -320,14 +448,11 @@ SpatialOSClient* SpatialOSClient::GetInstance()
 
 //--------------------------------------------------------------------------
 /**
-* MyComponents
+* GetContext
 */
-const worker::ComponentRegistry& SpatialOSClient::MyComponents()
+ClientContext* SpatialOSClient::GetContext()
 {
-	static const worker::Components<
-		improbable::EntityAcl,
-		improbable::Position > components;
-	return components;
+	return &GetInstance()->context;
 }
 
 //--------------------------------------------------------------------------

@@ -20,7 +20,9 @@
 
 #include "Engine/Renderer/RenderContext.hpp"
 #include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
+
 #include "Game/GameCommon.hpp"
+#include "Game/SpatialOSClient.hpp"
 
 #include "Shared/Zone.hpp"
 
@@ -356,6 +358,7 @@ void App::BeginFrame()
 	g_theAudioSystem->		BeginFrame();
 	g_theDebugRenderSystem->BeginFrame();
 
+	SpatialOSClient::Process();
 	Zone::BeginFrame();
 }
 

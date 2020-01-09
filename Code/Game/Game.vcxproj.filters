@@ -16,6 +16,9 @@
     <Filter Include="Network">
       <UniqueIdentifier>{1921b216-12cc-4016-866d-5e5a1d0b566d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Gameplay\Entity">
+      <UniqueIdentifier>{529e244e-639a-4eb3-950b-a53b6ddf5b0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -30,14 +33,17 @@
     <ClCompile Include="PlayerController.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
-    <ClCompile Include="ActorRenderable.cpp">
-      <Filter>Gameplay</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
     <ClCompile Include="SpatialOSClient.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorRenderable.cpp">
+      <Filter>Gameplay\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="SelfSubActor.cpp">
+      <Filter>Gameplay\Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,14 +62,17 @@
     <ClInclude Include="PlayerController.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="ActorRenderable.hpp">
-      <Filter>Gameplay</Filter>
-    </ClInclude>
     <ClInclude Include="Game.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
     <ClInclude Include="SpatialOSClient.hpp">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorRenderable.hpp">
+      <Filter>Gameplay\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="SelfSubActor.hpp">
+      <Filter>Gameplay\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

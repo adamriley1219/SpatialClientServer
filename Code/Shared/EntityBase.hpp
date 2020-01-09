@@ -47,5 +47,4 @@ protected:
 	float m_health = 0.0f;
 	float m_collisionDamage = 1.0f;
 
-
 };

@@ -82,6 +82,15 @@ bool ActorBase::Possess(ControllerBase* controller)
 
 //--------------------------------------------------------------------------
 /**
+* GetController
+*/
+ControllerBase* ActorBase::GetController() const
+{
+	return m_owner;
+}
+
+//--------------------------------------------------------------------------
+/**
 * GetSpeed
 */
 float ActorBase::GetSpeed() const

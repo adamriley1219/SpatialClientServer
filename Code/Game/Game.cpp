@@ -1,5 +1,4 @@
 #include "Engine/Core/Debug/DevConsole.hpp"
-#include "Engine/Core/EventSystem.hpp"
 
 #include "Engine/Physics/PhysicsSystem.hpp"
 #include "Engine/Input/InputSystem.hpp"
@@ -22,6 +21,7 @@
 #include "Game/App.hpp"
 #include "Game/ActorRenderable.hpp"
 #include "Game/PlayerController.hpp"
+#include "Game/SpatialOSClient.hpp"
 
 #include "Shared/AbilityBaseDefinition.hpp"
 #include "Shared/Zone.hpp"
@@ -64,20 +64,20 @@ void Game::Startup()
 	LoadAbilities();
 	LoadActors();
 
-	m_clientController = new PlayerController();
-	m_clientEntity = new ActorRenderable( "player" );
-	m_clientEntity->Possess( m_clientController );
 
-	ActorRenderable* ai_one = new ActorRenderable( "turret" );
-	ai_one->Possess( new AIController() );
-	ai_one->SetPosition( Vec2( 5.0f, 5.0f ) );
 
-	ActorRenderable* ai_two = new ActorRenderable( "crawler" );
-	ai_two->Possess( new AIController() );
-	ai_two->SetPosition( Vec2( -5.0f, 5.0f ) );
+// 	ActorRenderable* ai_one = new ActorRenderable( "turret" );
+// 	ai_one->Possess( new AIController() );
+// 	ai_one->SetPosition( Vec2( 5.0f, 5.0f ) );
+// 
+// 	ActorRenderable* ai_two = new ActorRenderable( "crawler" );
+// 	ai_two->Possess( new AIController() );
+// 	ai_two->SetPosition( Vec2( -5.0f, 5.0f ) );
 
 	m_curentCamera.SetModelMatrix( Matrix44::IDENTITY );
 	m_curentCamera.SetOrthographicProjection( Vec2( -25.0f, -12.5f ), Vec2( 25.0f, 12.5f ) );	
+
+	g_theEventSystem->SubscribeEventCallbackFunction( "API_connection_made", EventFunction( this, &Game::OnServerConnection ) );
 }
 
 //--------------------------------------------------------------------------
@@ -115,7 +115,6 @@ bool Game::HandleKeyReleased( unsigned char keyCode )
 }
 
 
-#include "Game/SpatialOSClient.hpp"
 //--------------------------------------------------------------------------
 /**
 * GameRender
@@ -125,23 +124,6 @@ void Game::GameRender() const
 	g_theRenderer->BindMaterial( g_theRenderer->CreateOrGetMaterialFromXML( "Data/Materials/default_unlit.mat" ) );
 
 	Zone::GetZone()->m_physics_system->DebugRender(g_theRenderer, Rgba::GREEN);
-
-	auto entities = SpatialOSClient::GetEntityList();
-	for( const entity_info_t& info : entities )
-	{
-		auto option = info.entity->Get<improbable::Position>();
-		DebugRenderScreenPoint( 0.0f, Vec2( option->coords().x(), option->coords().y() ) );
-	}
-
-	worker::View* view = SpatialOSClient::GetView();
-	if( view )
-	{
-		for (auto itrPair : view->Entities)
-		{
-			auto options = itrPair.second.Get<improbable::Position>();
-			DebugRenderScreenPoint(0.0f, Vec2(options->coords().x(), options->coords().y()));
-		}
-	}
 
 	std::vector<Vertex_PCU> verts;
 	AddVertsForRing2D(verts, Vec2::ZERO, 5.0f, 0.5f, Rgba::CYAN);
@@ -158,7 +140,7 @@ void Game::GameRender() const
 void Game::UpdateGame( float deltaSeconds )
 {
 	Zone::GetZone()->Update( deltaSeconds );
-
+	SpatialOSClient::UpdatePlayerControls( m_clientEntity, m_clientController->GetMoveDirection() );
 	UpdateCamera( deltaSeconds );
 }
 
@@ -211,6 +193,22 @@ void Game::UpdateCamera( float deltaSeconds )
 {
 	UNUSED( deltaSeconds );
 	
+}
+
+//--------------------------------------------------------------------------
+/**
+* OnServerConnection
+*/
+bool Game::OnServerConnection(EventArgs& args)
+{
+	UNUSED(args);
+	// add player character
+	m_clientController = new PlayerController();
+	m_clientEntity = new ActorRenderable("player");
+	m_clientEntity->Possess(m_clientController);
+
+
+	return true;
 }
 
 //--------------------------------------------------------------------------

@@ -3,11 +3,11 @@
 
 #include "Game/GameCommon.hpp"
 
-#include "Shared/ActorBase.hpp"
+#include "Game/SelfSubActor.hpp"
 
 
 
-class ActorRenderable : public ActorBase
+class ActorRenderable : public SelfSubActor
 {
 public:
 	ActorRenderable( const std::string& name );

@@ -33,31 +33,31 @@ PlayerController::~PlayerController()
 */
 void PlayerController::Update( float deltaTime )
 {
-	Vec2 moveDir = Vec2::ZERO;
+	m_moveDir = Vec2::ZERO;
 
 	if( g_theInputSystem->KeyIsDown( KEY_W ) )
 	{
-		moveDir += Vec2::UP;
+		m_moveDir += Vec2::UP;
 	}
 	if ( g_theInputSystem->KeyIsDown(KEY_D) )
 	{
-		moveDir += Vec2::RIGHT;
+		m_moveDir += Vec2::RIGHT;
 	}
 	if ( g_theInputSystem->KeyIsDown(KEY_A) )
 	{
-		moveDir += Vec2::LEFT;
+		m_moveDir += Vec2::LEFT;
 	}
 	if ( g_theInputSystem->KeyIsDown(KEY_S) )
 	{
-		moveDir += Vec2::DOWN;
+		m_moveDir += Vec2::DOWN;
 	}
 
 	bool basic_attack_pressed = false;
 	for( uint id = 0; id < MAX_XBOX_CONTROLLERS; ++id )
 	{
-		if( moveDir == Vec2::ZERO && g_theInputSystem->GetControllerByID(id).IsConnected() )
+		if( m_moveDir == Vec2::ZERO && g_theInputSystem->GetControllerByID(id).IsConnected() )
 		{
-			moveDir = g_theInputSystem->GetControllerByID(id).m_leftJoystick.GetPosition();
+			m_moveDir = g_theInputSystem->GetControllerByID(id).m_leftJoystick.GetPosition();
 			if( g_theInputSystem->GetControllerByID(id).GetButtonState( XBOX_BUTTON_ID_A ).WasJustPressed() )
 			{
 				basic_attack_pressed = true;
@@ -70,8 +70,17 @@ void PlayerController::Update( float deltaTime )
 		m_controlled->PreformAbility( "basic_attack", GetScreenMousePos() );
 	}
 
-	moveDir.Normalize();
-	m_controlled->ApplyForce( moveDir * m_controlled->GetSpeed() );
+	m_moveDir.Normalize();
+	m_controlled->ApplyForce( m_moveDir * m_controlled->GetSpeed() );
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetMoveDirection
+*/
+const Vec2& PlayerController::GetMoveDirection() const
+{
+	return m_moveDir;
 }
 
 //--------------------------------------------------------------------------

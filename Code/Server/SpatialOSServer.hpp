@@ -33,6 +33,8 @@ public:
 	static void Startup( const std::vector<std::string>& args );
 	static void Shutdown();
 
+	static void Process();
+
 public:
 	static void RequestEntityCreation( EntityBase* entity );
 	static bool IsRunning();

@@ -2,6 +2,8 @@
 #include "Game/GameCommon.hpp"
 
 #include "Engine/Renderer/Camera.hpp"
+#include "Engine/Core/EventSystem.hpp"
+
 
 class ActorRenderable;
 class PlayerController;
@@ -32,6 +34,8 @@ private:
 	void RenderDevConsole() const;
 
 	void UpdateCamera( float deltaSeconds );
+
+	bool OnServerConnection( EventArgs& args );
 
 private:
 	void ResetGame();

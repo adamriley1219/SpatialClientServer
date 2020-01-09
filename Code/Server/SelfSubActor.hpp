@@ -5,11 +5,11 @@
 
 class ControllerBase;
 
-class SelfSubBase : public ActorBase
+class SelfSubActor : public ActorBase
 {
 public:
-	SelfSubBase( const std::string& name );
-	SelfSubBase( const std::string& name, const Vec2& position );
-	virtual ~SelfSubBase();
+	SelfSubActor( const std::string& name );
+	SelfSubActor( const std::string& name, const Vec2& position );
+	virtual ~SelfSubActor();
 
 };
