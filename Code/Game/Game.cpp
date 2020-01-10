@@ -140,7 +140,7 @@ void Game::GameRender() const
 void Game::UpdateGame( float deltaSeconds )
 {
 	Zone::GetZone()->Update( deltaSeconds );
-	SpatialOSClient::UpdatePlayerControls( m_clientEntity, m_clientController->GetMoveDirection() );
+	SpatialOSClient::UpdatePlayerControls( m_clientEntity, m_clientController->GetMoveDirection() * m_clientEntity->GetSpeed() );
 	UpdateCamera( deltaSeconds );
 }
 

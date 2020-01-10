@@ -67,12 +67,16 @@ void ServerApp::Shutdown()
 	SAFE_DELETE(g_theRNG);
 }
 
+static constexpr std::chrono::duration<double> kFramePeriodSeconds{
+	1. / static_cast<double>(60) };
+
 //--------------------------------------------------------------------------
 /**
 * RunFrame
 */
 void ServerApp::RunFrame()
 {
+	auto start_time = std::chrono::steady_clock::now();
 	if (m_isSlowMo)
 	{
 		m_gameClock->Dilate(0.1f);
@@ -90,6 +94,10 @@ void ServerApp::RunFrame()
 	BeginFrame();
 	Update( (float)m_gameClock->GetFrameTime() );
 	EndFrame();
+
+	auto end_time = std::chrono::steady_clock::now();
+	auto wait_for = kFramePeriodSeconds - (end_time - start_time);
+	std::this_thread::sleep_for(wait_for);
 }
 
 //--------------------------------------------------------------------------

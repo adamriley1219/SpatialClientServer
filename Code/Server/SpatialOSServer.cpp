@@ -4,8 +4,10 @@
 
 #include "Shared/EntityBase.hpp"
 #include "Shared/ActorBase.hpp"
+#include "Shared/Zone.hpp"
 
 #include "Server/SelfSubActor.hpp"
+#include "Server/SimController.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -118,6 +120,25 @@ void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 
 	GetInstance()->entity_info_list.push_back( info );
 	GetInstance()->entity_info_list_lock.unlock();
+}
+
+//--------------------------------------------------------------------------
+/**
+* UpdatePosition
+*/
+void SpatialOSServer::UpdatePosition( EntityBase* entity )
+{
+	entity_info_t* info = GetInfoFromEnity( entity );
+
+	if( info && info->created )
+	{
+		improbable::Position::Update posUpdate;
+		Vec2 position = entity->GetPosition();
+		posUpdate.coords()->set_x( position.x );
+		posUpdate.coords()->set_z( position.y );
+		worker::UpdateParameters params;
+		GetInstance()->connection->SendComponentUpdate<improbable::Position>( info->id, posUpdate, params );
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -295,6 +316,8 @@ void SpatialOSServer::RegisterCallbacks( worker::Dispatcher& dispatcher )
 	// For updating components
 	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
 
+	dispatcher.OnComponentUpdate<siren::PlayerControls>( PlayerControlsUpdate );
+
 	// For requesting an entity to be created, used for client to enter.
 	dispatcher.OnCommandRequest<CreateClientEntity>( PlayerCreation );
 }
@@ -372,13 +395,14 @@ uint64_t SpatialOSServer::ReserveEntityIdsResponse( const worker::ReserveEntityI
 		op.StatusCode == worker::StatusCode::kSuccess ) 
 	{
 		// Send response back to however sent the command if triggered by a command.
-		if( entity_info->command_response )
+		if( entity_info->command_response_id != (uint64_t)-1 )
 		{
+			std::cout << "Sending back response with ID" << entity_info->command_response_id << std::endl;
 			worker::RequestId<worker::IncomingCommandRequest< CreateClientEntity > > command_response;
 			CreateClientEntity::Response response;
 			worker::EntityId id = *(op.FirstEntityId); // Optional but can assume there is an id because the status was successful.
 			response.set_id_created( id );
-			command_response.Id = entity_info->command_response;
+			command_response.Id = entity_info->command_response_id;
 			GetInstance()->connection->SendCommandResponse<CreateClientEntity>( command_response, response );
 		}
 
@@ -552,6 +576,23 @@ void SpatialOSServer::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 
 //--------------------------------------------------------------------------
 /**
+* PlayerControlsUpdate
+*/
+void SpatialOSServer::PlayerControlsUpdate( const worker::ComponentUpdateOp<siren::PlayerControls>& op )
+{
+	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
+	std::cout << "recieved updates form player controls: " <<  op.EntityId << std::endl;
+	if ( info && info->created )
+	{
+	std::cout << "	found info for update" << std::endl;
+		const auto data_x = op.Update.x_move();
+		Vec2 direction( *data_x, *( op.Update.y_move() ) );
+		info->entity->ApplyForce( direction );
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
 * EntityCreation
 */
 void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClientEntity>& op )
@@ -560,7 +601,12 @@ void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClien
 	//--------------------------------------------------------------------------
 	std::cout << "Received a command request from: " << op.CallerWorkerId << std::endl;
 	
-	EntityBase* base = new SelfSubActor( "player" );
+	ActorBase* base = new SelfSubActor( "player" );
+	base->Possess( new SimController() );
+	base->SetPosition( Vec2( -1.0f, 0.0f ) );
+
+	Zone::GetZone()->AddEntityWithController( base, base->GetController() );
+
 	entity_info_t* info = GetInfoFromEnity( base );
 
 	info->owner_id = op.CallerWorkerId;
@@ -570,8 +616,8 @@ void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClien
 	std::cout << "entity sent successfully" << std::endl;
 
 	// For responding to the command when an ID has been obtained.
-	info->command_response = op.RequestId.Id;
-
+	info->command_response_id = op.RequestId.Id;
+	std::cout << "player creation command response id: " << op.RequestId.Id << std::endl;
 }
 
 //--------------------------------------------------------------------------

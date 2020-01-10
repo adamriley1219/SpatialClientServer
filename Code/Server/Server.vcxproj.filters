@@ -8,6 +8,9 @@
     <Filter Include="Source Files\Entity">
       <UniqueIdentifier>{580c7ff2-a0b3-485e-80de-0600873cafec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Controllers">
+      <UniqueIdentifier>{1165a27a-5952-41b3-a52a-023e7795eacf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server_main.cc">
@@ -25,6 +28,9 @@
     <ClCompile Include="SelfSubActor.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
+    <ClCompile Include="SimController.cpp">
+      <Filter>Source Files\Controllers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerApp.hpp">
@@ -41,6 +47,9 @@
     </ClInclude>
     <ClInclude Include="SelfSubActor.hpp">
       <Filter>Source Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="SimController.hpp">
+      <Filter>Source Files\Controllers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

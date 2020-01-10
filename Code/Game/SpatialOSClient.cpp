@@ -143,8 +143,11 @@ void SpatialOSClient::Shutdown()
 */
 void SpatialOSClient::Process()
 {
-	auto opList = GetInstance()->context.connection->GetOpList(0);
-	GetInstance()->context.dispatcher->Process(opList);
+	if( IsRunning() )
+	{
+		auto opList = GetInstance()->context.connection->GetOpList(0);
+		GetInstance()->context.dispatcher->Process(opList);
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -154,6 +157,15 @@ void SpatialOSClient::Process()
 bool SpatialOSClient::IsRunning()
 {
 	return GetInstance()->isRunning;
+}
+
+//--------------------------------------------------------------------------
+/**
+* IsConnected
+*/
+bool SpatialOSClient::IsConnected()
+{
+	return GetInstance()->context.connection && GetInstance()->context.connection->IsConnected();
 }
 
 //--------------------------------------------------------------------------
@@ -172,7 +184,7 @@ void SpatialOSClient::RequestEntityCreation( EntityBase* entity )
 	entity_info_t info;
 	info.entity = entity;
 
-	worker::Result<worker::RequestId<worker::OutgoingCommandRequest<CreateClientEntity>>> createEntityRequestId = GetContext()->connection->SendCommandRequest<CreateClientEntity>(GetContext()->APIEntityId, {}, {});
+	worker::Result<worker::RequestId<worker::OutgoingCommandRequest<CreateClientEntity>>> createEntityRequestId = GetContext()->connection->SendCommandRequest<CreateClientEntity>(GetContext()->APIEntityId, 30000, {});
 	if (!createEntityRequestId) {
 		std::cout << "Failed to send create client entity request: " << createEntityRequestId.GetErrorMessage().c_str() << std::endl;
 		return;
@@ -282,7 +294,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
 		1. / static_cast<double>(kFramesPerSecond) };
 
-	while ( GetInstance()->context.connection->IsConnected() && IsRunning() )
+	while ( is_connected && IsRunning() )
 	{
 // 		auto start_time = std::chrono::steady_clock::now();
 // 

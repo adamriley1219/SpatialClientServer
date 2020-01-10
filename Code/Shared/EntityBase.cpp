@@ -112,7 +112,7 @@ void EntityBase::Update(float deltaSeconds)
 */
 void EntityBase::ApplyForce(const Vec2& force)
 {
-	m_rigidbody->AddForce( force * 10.0f );
+	m_rigidbody->AddForce( force * 1000.0f );
 }
 
 //--------------------------------------------------------------------------

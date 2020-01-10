@@ -13,6 +13,7 @@
 #include "Server/ServerCommon.hpp"
 #include "Server/ServerApp.hpp"
 #include "Server/SelfSubActor.hpp"
+#include "Server/SpatialOSServer.hpp"
 
 #include "Shared/AbilityBaseDefinition.hpp"
 #include "Shared/Zone.hpp"
@@ -58,9 +59,9 @@ void WorldSim::Startup()
 
 
 	std::cout << "world setup" << std::endl;
-
-	m_entities.push_back( new SelfSubActor( "turret", Vec2( 6.5f, 7.0f ) ) );
-	m_entities.push_back( new SelfSubActor( "turret", Vec2( 5.0f, 7.0f ) ) );
+	
+	zone->AddEntity( new SelfSubActor( "turret", Vec2( 6.5f, 7.0f ) ) );
+	zone->AddEntity( new SelfSubActor( "turret", Vec2( 5.0f, 7.0f ) ) );
 
 	std::cout << "Finished world setup" << std::endl;
 }
@@ -81,6 +82,10 @@ void WorldSim::Shutdown()
 void WorldSim::UpdateWorldSim( float deltaSeconds )
 {
 	Zone::UpdateZones( deltaSeconds );
+	for( EntityBase* entity : Zone::GetZone()->m_entities )
+	{
+		SpatialOSServer::UpdatePosition( entity );
+	}
 }
 
 //--------------------------------------------------------------------------

@@ -24,7 +24,7 @@ PlayerController::PlayerController()
 */
 PlayerController::~PlayerController()
 {
-	ControllerBase::~ControllerBase();
+
 }
 
 //--------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void PlayerController::Update( float deltaTime )
 	}
 
 	m_moveDir.Normalize();
-	m_controlled->ApplyForce( m_moveDir * m_controlled->GetSpeed() );
+	m_controlled->ApplyForce( m_moveDir * m_controlled->GetSpeed() * deltaTime );
 }
 
 //--------------------------------------------------------------------------

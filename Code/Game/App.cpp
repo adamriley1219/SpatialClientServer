@@ -138,6 +138,8 @@ static float getAvgFPS()
 	return allFpsAccumilated / 50.0f;
 }
 //--------------------------------------------------------------------------
+static constexpr std::chrono::duration<double> kFramePeriodSeconds{
+	1. / static_cast<double>(60) };
 
 //--------------------------------------------------------------------------
 /**
@@ -146,6 +148,7 @@ static float getAvgFPS()
 void App::RunFrame()
 {
 	ProfilerBeginFrame();
+	auto start_time = std::chrono::steady_clock::now();
 	if (m_isSlowMo)
 	{
 		m_gameClock->Dilate(0.1f);
@@ -167,6 +170,10 @@ void App::RunFrame()
 	Update( (float)m_gameClock->GetFrameTime() );
 	Render();
 	EndFrame();
+
+	auto end_time = std::chrono::steady_clock::now();
+	auto wait_for = kFramePeriodSeconds - (end_time - start_time);
+	std::this_thread::sleep_for(wait_for);
 
 	ProfilerEndFrame();
 }

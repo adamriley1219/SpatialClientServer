@@ -21,7 +21,7 @@ struct entity_info_t
 	uint64_t entity_creation_request_id = 0;
 	uint64_t entity_deletion_request_id = 0;
 	uint64_t entity_id_reservation_request_id = 0;
-	uint64_t command_response = 0;
+	uint64_t command_response_id = (uint64_t)-1;
 	std::string owner_id = "";
 	bool created = false;
 	bool updated = false;
@@ -37,6 +37,7 @@ public:
 
 public:
 	static void RequestEntityCreation( EntityBase* entity );
+	static void UpdatePosition( EntityBase *entity );
 	static bool IsRunning();
 
 private:
@@ -56,6 +57,7 @@ private:
 private:
 	// Component Updating
 	static void PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op );
+	static void PlayerControlsUpdate( const worker::ComponentUpdateOp<siren::PlayerControls>& op );
 	static void PlayerCreation( const worker::CommandRequestOp<CreateClientEntity>& op ); 
 
 private:

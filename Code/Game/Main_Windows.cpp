@@ -188,7 +188,13 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	// Program main loop; keep running frames until it's time to quit
 
 	SpatialOSClient::Startup( arguments );
+
 	Startup();
+
+	while ( !SpatialOSClient::IsConnected() )
+	{
+		Sleep(0);
+	}
 
 	// Only needed if spatialOS thread needs to begin, if not using a thread you can bypass the sleep
 //	Sleep( 1000 );

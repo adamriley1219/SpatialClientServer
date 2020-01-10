@@ -25,6 +25,4 @@ private:
 private:
 	bool m_isQuitting = false;
 	
-	std::vector<ActorBase*> m_entities;
-
 };

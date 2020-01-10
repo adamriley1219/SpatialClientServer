@@ -46,6 +46,7 @@ public:
 
 public:
 	static bool IsRunning(); 
+	static bool IsConnected();
 	static void RequestEntityCreation( EntityBase* entity );
 	static void UpdatePlayerControls( EntityBase* player, const Vec2& direction );
 
