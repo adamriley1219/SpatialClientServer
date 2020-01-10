@@ -123,8 +123,11 @@ int CreateCleanSnapshot()
 */
 void SpatialOSClient::Startup(const std::vector<std::string>& args)
 {
-	GetInstance()->isRunning = true;
 	GetInstance()->client_thread = std::thread( Run, args );
+	while (!GetInstance()->IsRunning())
+	{
+		std::this_thread::yield();
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -290,10 +293,11 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	APIQueryRequestId = connection.SendEntityQueryRequest(APIEntityQuery, {});
 	Logf( "ClientLog", "Connected and running" );
 
-	constexpr unsigned kFramesPerSecond = 60;
+	constexpr unsigned kFramesPerSecond = 30;
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
 		1. / static_cast<double>(kFramesPerSecond) };
 
+	GetInstance()->isRunning = true;
 	while ( is_connected && IsRunning() )
 	{
 // 		auto start_time = std::chrono::steady_clock::now();

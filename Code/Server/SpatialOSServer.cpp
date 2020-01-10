@@ -68,9 +68,11 @@ std::string get_random_characters(size_t count) {
 */
 void SpatialOSServer::Startup( const std::vector<std::string>& arguments )
 {
-	GetInstance()->isRunning = true;
-	//Run( arguments );
 	GetInstance()->server_thread = std::thread( Run, arguments );
+	while (!GetInstance()->IsRunning())
+	{
+		std::this_thread::yield();
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -239,6 +241,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{
 		1. / static_cast<double>(kFramesPerSecond) };
 
+	GetInstance()->isRunning = true;
 	std::cout << "Begin running loop" << std::endl;
 	while (is_connected && IsRunning())
 	{
