@@ -140,7 +140,7 @@ void ServerApp::BeginFrame()
 */
 void ServerApp::Update( float deltaSeconds )
 {
-	Zone::UpdateZones( deltaSeconds );
+	g_theSim->UpdateWorldSim( deltaSeconds );
 }
 
 

@@ -16,7 +16,7 @@ public:
 	~SimController();
 
 	virtual void Update( float deltaTime );
-	void GetMoveDirection( const Vec2& direction );
+	void SetMoveDirection( const Vec2& direction );
 
 private:
 	Vec2 m_moveDir = Vec2::ZERO;

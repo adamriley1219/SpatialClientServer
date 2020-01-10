@@ -130,15 +130,21 @@ void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 */
 void SpatialOSServer::UpdatePosition( EntityBase* entity )
 {
+	std::cout << "SpatialOSServer::UpdatePosition" << std::endl;
 	entity_info_t* info = GetInfoFromEnity( entity );
 
 	if( info && info->created )
 	{
+		std::cout << "Creation of update" << std::endl;
 		improbable::Position::Update posUpdate;
+		std::cout << "update made" << std::endl;
 		Vec2 position = entity->GetPosition();
-		posUpdate.coords()->set_x( position.x );
-		posUpdate.coords()->set_z( position.y );
+		std::cout << "position obtained" << std::endl;
+		improbable::Coordinates coords( position.x, 0.0f,  position.y );
+		posUpdate.set_coords( coords );
+		std::cout << "coords set" << std::endl;
 		worker::UpdateParameters params;
+		std::cout << "sending update with: " << position.x << ", " << position.y << std::endl;  
 		GetInstance()->connection->SendComponentUpdate<improbable::Position>( info->id, posUpdate, params );
 	}
 }
@@ -587,10 +593,10 @@ void SpatialOSServer::PlayerControlsUpdate( const worker::ComponentUpdateOp<sire
 	std::cout << "recieved updates form player controls: " <<  op.EntityId << std::endl;
 	if ( info && info->created )
 	{
-	std::cout << "	found info for update" << std::endl;
 		const auto data_x = op.Update.x_move();
 		Vec2 direction( *data_x, *( op.Update.y_move() ) );
-		info->entity->ApplyForce( direction );
+		std::cout << "	found info for update: " << direction.x << ", " << direction.y << std::endl;
+		( (SimController*)( (ActorBase*)info->entity )->GetController() )->SetMoveDirection( direction );
 	}
 }
 
@@ -607,8 +613,6 @@ void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClien
 	ActorBase* base = new SelfSubActor( "player" );
 	base->Possess( new SimController() );
 	base->SetPosition( Vec2( -1.0f, 0.0f ) );
-
-	Zone::GetZone()->AddEntityWithController( base, base->GetController() );
 
 	entity_info_t* info = GetInfoFromEnity( base );
 

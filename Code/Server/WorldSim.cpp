@@ -60,8 +60,11 @@ void WorldSim::Startup()
 
 	std::cout << "world setup" << std::endl;
 	
-	zone->AddEntity( new SelfSubActor( "turret", Vec2( 6.5f, 7.0f ) ) );
-	zone->AddEntity( new SelfSubActor( "turret", Vec2( 5.0f, 7.0f ) ) );
+	SelfSubActor* turret = new SelfSubActor( "turret", Vec2( 6.5f, 7.0f ) );
+	turret->Possess( new AIController() );
+
+	turret = new SelfSubActor( "turret", Vec2( 5.0f, 7.0f ) );
+	turret->Possess( new AIController() );
 
 	std::cout << "Finished world setup" << std::endl;
 }
@@ -82,10 +85,17 @@ void WorldSim::Shutdown()
 void WorldSim::UpdateWorldSim( float deltaSeconds )
 {
 	Zone::UpdateZones( deltaSeconds );
+	std::cout << "begin sending updates" << std::endl;
+	uint count = 0;
 	for( EntityBase* entity : Zone::GetZone()->m_entities )
 	{
-		SpatialOSServer::UpdatePosition( entity );
+		std::cout << "Iteration: " << count++ << std::endl;
+		if( entity )
+		{
+			SpatialOSServer::UpdatePosition( entity );
+		}
 	}
+	std::cout << "end sending updates" << std::endl;
 }
 
 //--------------------------------------------------------------------------

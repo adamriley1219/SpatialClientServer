@@ -33,15 +33,15 @@ void SimController::Update( float deltaTime )
 // 	{
 // 		m_controlled->PreformAbility( "basic_attack", GetScreenMousePos() );
 // 	}
-	std::cout << "applying force" << std::endl;
+	std::cout << "applying force: " << m_moveDir.x << ", " << m_moveDir.y << "scaled by " << deltaTime << std::endl;
 	m_controlled->ApplyForce( m_moveDir * deltaTime );
 }
 
 //--------------------------------------------------------------------------
 /**
-* GetMoveDirection
+* SetMoveDirection
 */
-void SimController::GetMoveDirection( const Vec2& direction )
+void SimController::SetMoveDirection( const Vec2& direction )
 {
 	m_moveDir = direction;
 }

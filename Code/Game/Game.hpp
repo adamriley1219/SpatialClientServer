@@ -52,6 +52,4 @@ private:
 	PlayerController* m_clientController = nullptr;
 	ActorRenderable* m_clientEntity = nullptr;
 
-	std::vector<ActorRenderable*> m_entities;
-
 };

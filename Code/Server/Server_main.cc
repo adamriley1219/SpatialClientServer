@@ -75,9 +75,12 @@ int main( int argc, char** argv )
 
     while ( SpatialOSServer::IsRunning() ) {
 		RunFrame();
+		std::this_thread::yield();
     }
 
 	std::cout << "SHUTDOWN INIT" << std::endl;
+
+	Shutdown();
 
 	SpatialOSServer::Shutdown();
 

@@ -16,6 +16,8 @@
 #include "Engine/Renderer/SpriteAnimDefinition.hpp"
 #include "Engine/Renderer/Debug/DebugRenderSystem.hpp"
 
+#include "Engine/Memory/Debug/Log.hpp"
+
 #include "Game/Game.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/App.hpp"
@@ -54,25 +56,15 @@ Game::~Game()
 */
 void Game::Startup()
 {
+	Logf( "Game", "startup" );
 	m_DevColsoleCamera.SetOrthographicProjection( Vec2( -100.0f, -50.0f ), Vec2( 100.0f,  50.0f ) );
 	m_DevColsoleCamera.SetModelMatrix( Matrix44::IDENTITY );
-
 
 	Zone* zone = Zone::GetZone();
 	zone->m_physics_system->SetGravity( Vec2::ZERO );
 	
 	LoadAbilities();
 	LoadActors();
-
-
-
-// 	ActorRenderable* ai_one = new ActorRenderable( "turret" );
-// 	ai_one->Possess( new AIController() );
-// 	ai_one->SetPosition( Vec2( 5.0f, 5.0f ) );
-// 
-// 	ActorRenderable* ai_two = new ActorRenderable( "crawler" );
-// 	ai_two->Possess( new AIController() );
-// 	ai_two->SetPosition( Vec2( -5.0f, 5.0f ) );
 
 	m_curentCamera.SetModelMatrix( Matrix44::IDENTITY );
 	m_curentCamera.SetOrthographicProjection( Vec2( -25.0f, -12.5f ), Vec2( 25.0f, 12.5f ) );	
@@ -86,11 +78,7 @@ void Game::Startup()
 */
 void Game::Shutdown()
 {
-	for( ActorRenderable* actor : m_entities )
-	{
-		SAFE_DELETE(actor);
-	}
-	m_entities.clear();
+
 }
 
 

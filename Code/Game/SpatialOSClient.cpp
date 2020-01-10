@@ -90,14 +90,14 @@ int CreateCleanSnapshot()
 	improbable::WorkerRequirementSet serverRequirementSet({ serverAttributeSet });
 	improbable::WorkerRequirementSet clientOrServerRequirementSet({ clientAttributeSet, serverAttributeSet });
 
-	worker::Entity bootstrapEntity;
-	bootstrapEntity.Add<improbable::Metadata>({ "API" });
-	bootstrapEntity.Add<improbable::Persistence>({});
-	bootstrapEntity.Add<improbable::Position>({ {-100, -100, -100} });
-	bootstrapEntity.Add<siren::ServerAPI>({});
+	worker::Entity apiEntity;
+	apiEntity.Add<improbable::Metadata>({ "API" });
+	apiEntity.Add<improbable::Persistence>({});
+	apiEntity.Add<improbable::Position>({ {-100, -100, -100} });
+	apiEntity.Add<siren::ServerAPI>({});
 	worker::Map<std::uint32_t, improbable::WorkerRequirementSet> bootstrapComponentAclMap;
 	bootstrapComponentAclMap.insert({ {siren::ServerAPI::ComponentId, serverRequirementSet} });
-	bootstrapEntity.Add<improbable::EntityAcl>({ clientOrServerRequirementSet, bootstrapComponentAclMap });
+	apiEntity.Add<improbable::EntityAcl>({ clientOrServerRequirementSet, bootstrapComponentAclMap });
 	improbable::ComponentInterest::Query query;
 	improbable::ComponentInterest::QueryConstraint queryConstraint;
 	queryConstraint.set_component_constraint(siren::Client::ComponentId);
@@ -107,10 +107,10 @@ int CreateCleanSnapshot()
 	componentInterest.set_queries({ query });
 	improbable::InterestData interestData;
 	interestData.component_interest()[siren::ServerAPI::ComponentId] = componentInterest;
-	bootstrapEntity.Add<improbable::Interest>(interestData);
+	apiEntity.Add<improbable::Interest>(interestData);
 
 	worker::Result<worker::SnapshotOutputStream, worker::StreamErrorCode> outputStream = worker::SnapshotOutputStream::Create(ComponentRegistry, "D:/GitHubRepos/SpatialClientServer/SpatialOS/snapshots/CleanServerAPI.snapshot");
-	worker::Result<worker::None, worker::StreamErrorCode> entityWritten = outputStream->WriteEntity(1, bootstrapEntity);
+	worker::Result<worker::None, worker::StreamErrorCode> entityWritten = outputStream->WriteEntity(1, apiEntity);
 	if (!entityWritten) {
 		return 1;
 	}
@@ -335,6 +335,8 @@ void SpatialOSClient::RegisterCallbacks( worker::Dispatcher& dispatcher )
 	dispatcher.OnEntityQueryResponse( EntityQueryResponse );
 
 	dispatcher.OnCommandResponse<CreateClientEntity>( ClientCreationResponse );
+
+	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
 }
 
 
@@ -383,7 +385,7 @@ void SpatialOSClient::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 	{
 		auto curPos = op.Update.coords();
 		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->x() << "," << curPos->y() << "," << curPos->y() << std::endl;
-		Logf("ClientLog", "PosUpdate: entCords for %u:%.03f,%.03f,%.03f %s", info->id, curPos->x(), curPos->y(), curPos->z() );
+		Logf("ClientLog", "PosUpdate: entCords for %u:%.03f,%.03f,%.03f ", info->id, curPos->x(), curPos->y(), curPos->z() );
 		info->entity->SetPosition( (float)curPos->x(), (float)curPos->z() );
 	}
 }
