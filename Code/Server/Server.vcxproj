@@ -171,18 +171,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SelfSubActor.cpp" />
     <ClCompile Include="ServerApp.cpp" />
     <ClCompile Include="Server_main.cc" />
-    <ClCompile Include="SimController.cpp" />
     <ClCompile Include="SpatialOSServer.cpp" />
     <ClCompile Include="WorldSim.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SelfSubActor.hpp" />
     <ClInclude Include="ServerApp.hpp" />
     <ClInclude Include="ServerCommon.hpp" />
-    <ClInclude Include="SimController.hpp" />
     <ClInclude Include="SpatialOSServer.hpp" />
     <ClInclude Include="WorldSim.hpp" />
   </ItemGroup>

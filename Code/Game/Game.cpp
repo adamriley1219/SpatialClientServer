@@ -78,7 +78,7 @@ void Game::Startup()
 */
 void Game::Shutdown()
 {
-
+	Zone::Shutdown();
 }
 
 
@@ -166,6 +166,37 @@ Camera* Game::GetCamera()
 
 //--------------------------------------------------------------------------
 /**
+* AddEntity
+*/
+void Game::AddEntity( EntityBase* entity )
+{
+	switch ( entity->GetType() )
+	{
+	case (ENTITY_ABILITY):
+		Zone::GetZone()->AddEntity( entity );
+		break;
+	case (ENTITY_ACTOR):
+		Zone::GetZone()->AddEntityWithController( entity, ( (ActorBase*)entity )->GetController() );
+		break;
+	default:
+		break;
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* RemoveEntity
+*/
+void Game::RemoveEntity( EntityBase* entity )
+{
+	if( entity )
+	{
+		entity->Die();
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
 * RenderDevConsole
 */
 void Game::RenderDevConsole() const
@@ -195,6 +226,7 @@ bool Game::OnServerConnection(EventArgs& args)
 	m_clientEntity = new ActorRenderable("player");
 	m_clientEntity->Possess(m_clientController);
 
+	SpatialOSClient::RequestEntityCreation( m_clientEntity );
 
 	return true;
 }

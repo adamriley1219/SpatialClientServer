@@ -1,5 +1,6 @@
 #include "Shared/Zone.hpp"
 #include "Shared/EntityBase.hpp"
+#include "Shared/ActorBase.hpp"
 #include "Shared/ControllerBase.hpp"
 
 #include "Engine/Core/EngineCommon.hpp"
@@ -98,12 +99,12 @@ void Zone::Init()
 */
 void Zone::Deinit()
 {
-	for (EntityBase* entity : m_entities)
+	for (EntityBase*& entity : m_entities)
 	{
 		SAFE_DELETE(entity);
 	}
 
-	for (ControllerBase* ctrl : m_controllers)
+	for (ControllerBase*& ctrl : m_controllers)
 	{
 		SAFE_DELETE(ctrl);
 	}
@@ -168,8 +169,7 @@ void Zone::RemoveEntity( EntityBase* entity_to_remove )
 	{
 		if (entity == entity_to_remove)
 		{
-			delete entity;
-			entity = nullptr;
+			SAFE_DELETE( entity );
 			return;
 		}
 	}
@@ -246,7 +246,7 @@ void Zone::EndFrame()
 	{
 		if (entity && entity->IsGarbage())
 		{
-			zone->RemoveEntityWithController(entity);
+			zone->RemoveEntityWithController(entity, ((ActorBase*)entity)->GetController() );
 		}
 	}
 	

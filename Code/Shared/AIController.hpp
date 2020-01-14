@@ -20,4 +20,7 @@ protected:
 	StopWatch* m_attack_timer;
 	float m_searchRange = 5.0f;
 
+private:
+	float m_current_deltatime = 0.0f;
+
 };

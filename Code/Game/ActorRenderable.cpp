@@ -6,9 +6,9 @@
 * ActorRenderable
 */
 ActorRenderable::ActorRenderable( const std::string& name )
-	: SelfSubActor( name )
+	: ActorBase( name )
 {
-
+	
 }
 
 //--------------------------------------------------------------------------

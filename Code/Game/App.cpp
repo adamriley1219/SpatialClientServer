@@ -88,8 +88,6 @@ void App::Shutdown()
 {
 	g_theGame->Shutdown();
 
-	Zone::Shutdown();
-
 	g_theImGUISystem->Shutdown();
 	g_theConsole->Shutdown();
 	g_theDebugRenderSystem->Shutdown();

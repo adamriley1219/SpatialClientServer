@@ -42,9 +42,6 @@
     <ClCompile Include="ActorRenderable.cpp">
       <Filter>Gameplay\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="SelfSubActor.cpp">
-      <Filter>Gameplay\Entity</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -69,9 +66,6 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="ActorRenderable.hpp">
-      <Filter>Gameplay\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="SelfSubActor.hpp">
       <Filter>Gameplay\Entity</Filter>
     </ClInclude>
   </ItemGroup>

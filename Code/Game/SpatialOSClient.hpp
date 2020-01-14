@@ -29,6 +29,7 @@ struct entity_info_t
 	EntityBase* entity = nullptr;
 	worker::EntityId id = 0;
 	uint64_t createEntityCommandRequestId = 0;
+	int64_t newEntityQueryId = -1;
 	bool created = false;
 	bool updated = false;
 };
@@ -60,12 +61,20 @@ public:
 	static void EntityQueryResponse( const worker::EntityQueryResponseOp& op );
 	static void ClientCreationResponse( const worker::CommandResponseOp<CreateClientEntity>& op );
 
+	static void AddEntity( const worker::AddEntityOp op );
+	static void RemoveEntity( const worker::RemoveEntityOp op );
+
 	static entity_info_t* GetInfoFromCreateEntityCommandRequestId( uint64_t request_id );
-	static entity_info_t* GetInfoFromEnityId( const worker::EntityId& entity_id );
-	static entity_info_t* GetInfoFromEnity( EntityBase* entity_id );
+	static entity_info_t* GetInfoFromEntityId( const worker::EntityId& entity_id );
+	static entity_info_t* GetInfoFromEntityQueryId( int64_t id );
+	static entity_info_t* GetInfoFromEntity( EntityBase* entity_id );
+
+	static void RemoveInfoFromEnityId( const worker::EntityId& entity_id );
 
 	static const std::vector<entity_info_t>& GetEntityList();
 	static worker::Dispatcher* GetDispatcher();
+
+	static void AddEntityInfo( const entity_info_t& to_add );
 
 private:
 	static SpatialOSClient* GetInstance();

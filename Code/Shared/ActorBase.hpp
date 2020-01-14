@@ -9,6 +9,7 @@ class ActorBase : public EntityBase
 {
 public:
 	ActorBase( const std::string& name );
+	ActorBase( const std::string& name, const Vec2& position );
 	virtual ~ActorBase();
 
 	virtual void Update( float deltaTime );
@@ -30,5 +31,9 @@ protected:
 	ControllerBase* m_owner = nullptr;
 
 	float m_speed = 0.0f;
+
+private:
+	// Used through creation
+	void DefineThroughName( const std::string& name );
 
 };

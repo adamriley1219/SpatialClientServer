@@ -6,6 +6,7 @@
 
 
 class ActorRenderable;
+class EntityBase;
 class PlayerController;
 class Shader;
 
@@ -29,6 +30,10 @@ public:
 	void EndCamera();
 
 	Camera* GetCamera();
+	
+public:
+	void AddEntity( EntityBase* entity );
+	void RemoveEntity( EntityBase* entity );
 
 private:
 	void RenderDevConsole() const;
@@ -36,6 +41,7 @@ private:
 	void UpdateCamera( float deltaSeconds );
 
 	bool OnServerConnection( EventArgs& args );
+
 
 private:
 	void ResetGame();

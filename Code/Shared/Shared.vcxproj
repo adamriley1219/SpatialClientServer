@@ -224,6 +224,7 @@
     <ClCompile Include="EntityBase.cpp" />
     <ClCompile Include="EntityBaseDefinition.cpp" />
     <ClCompile Include="SharedCommon.cpp" />
+    <ClCompile Include="SimController.cpp" />
     <ClCompile Include="Zone.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -236,6 +237,7 @@
     <ClInclude Include="EntityBase.hpp" />
     <ClInclude Include="EntityBaseDefinition.hpp" />
     <ClInclude Include="SharedCommon.hpp" />
+    <ClInclude Include="SimController.hpp" />
     <ClInclude Include="Zone.hpp" />
   </ItemGroup>
   <ItemGroup>

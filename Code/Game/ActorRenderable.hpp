@@ -3,11 +3,11 @@
 
 #include "Game/GameCommon.hpp"
 
-#include "Game/SelfSubActor.hpp"
+#include "Shared/Actorbase.hpp"
 
 
 
-class ActorRenderable : public SelfSubActor
+class ActorRenderable : public ActorBase
 {
 public:
 	ActorRenderable( const std::string& name );
@@ -17,10 +17,7 @@ public:
 
 	Rgba GetTint() const;
 
-
 protected:
-	
-
 	Rgba m_tint;
 };
 

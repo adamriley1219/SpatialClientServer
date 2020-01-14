@@ -14,17 +14,18 @@
 ActorBase::ActorBase( const std::string& name )
 	: EntityBase( name )
 {
-	const ActorBaseDefinition* def = ActorBaseDefinition::GetActorDefinitionByName( name );  
-	std::cout << "Actor base" << std::endl;
-	if( def )
-	{
-		std::cout << "Def found" << std::endl;
-		m_basic_attack = def->m_basic_attack;
-		m_possessable = def->m_possessable;
-		m_speed = def->m_speed;
+	DefineThroughName(name);
+}
 
-		m_type = def->m_type;
-	}
+//--------------------------------------------------------------------------
+/**
+* ActorBase
+*/
+ActorBase::ActorBase(const std::string& name, const Vec2& position)
+	: EntityBase( name )
+{
+	m_transform.m_position = position;
+	DefineThroughName(name);
 }
 
 //--------------------------------------------------------------------------
@@ -114,4 +115,23 @@ void ActorBase::BasicAttack( const Vec2& input_position )
 	ability->SetPosition( GetPosition() + displacement * 1.0f); // radius of actor
 	ability->SetDirection( displacement );
 
+}
+
+//--------------------------------------------------------------------------
+/**
+* DefineThroughName
+*/
+void ActorBase::DefineThroughName(const std::string& name)
+{
+	const ActorBaseDefinition* def = ActorBaseDefinition::GetActorDefinitionByName(name);
+	std::cout << "Actor base" << std::endl;
+	if (def)
+	{
+		std::cout << "Def found" << std::endl;
+		m_basic_attack = def->m_basic_attack;
+		m_possessable = def->m_possessable;
+		m_speed = def->m_speed;
+
+		m_type = def->m_type;
+	}
 }

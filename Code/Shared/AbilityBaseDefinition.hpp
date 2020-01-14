@@ -9,7 +9,7 @@ class AbilityBaseDefinition
 {
 	friend class AbilityBase;
 protected:
-	AbilityBaseDefinition(const XmlElement& element);
+	AbilityBaseDefinition( const XmlElement& element );
 	~AbilityBaseDefinition();
 
 	static std::map< std::string, AbilityBaseDefinition* > s_abilityDefs;
@@ -21,6 +21,7 @@ protected:
 
 public:
 	static void AddAbilityDefinition(const XmlElement& element);
-	static const AbilityBaseDefinition* GetAbilityDefinitionByName(std::string name);
+	static const AbilityBaseDefinition* GetAbilityDefinitionByName( const std::string& name );
+	static bool DoesDefExist( const std::string& name );
 
 };

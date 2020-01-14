@@ -1,4 +1,4 @@
-#include "Server/SimController.hpp"
+#include "Shared/SimController.hpp"
 
 #include "Shared/ActorBase.hpp"
 
@@ -33,7 +33,7 @@ void SimController::Update( float deltaTime )
 // 	{
 // 		m_controlled->PreformAbility( "basic_attack", GetScreenMousePos() );
 // 	}
-	std::cout << "applying force: " << m_moveDir.x << ", " << m_moveDir.y << "scaled by " << deltaTime << std::endl;
+//	std::cout << "applying force: " << m_moveDir.x << ", " << m_moveDir.y << "scaled by " << deltaTime << std::endl;
 	m_controlled->ApplyForce( m_moveDir * deltaTime );
 }
 

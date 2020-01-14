@@ -5,9 +5,7 @@
 #include "Shared/EntityBase.hpp"
 #include "Shared/ActorBase.hpp"
 #include "Shared/Zone.hpp"
-
-#include "Server/SelfSubActor.hpp"
-#include "Server/SimController.hpp"
+#include "Shared/SimController.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -42,7 +40,7 @@ worker::Connection ConnectWithReceptionist(const std::string hostname,
 	const std::uint16_t port,
 	const std::string& worker_id,
 	const worker::ConnectionParameters& connection_parameters) {
-	std::cout << "Connectoing to host: " << hostname <<  " port: " << port << " id: " << worker_id;
+	std::cout << "Connecting to host: " << hostname <<  " port: " << port << " id: " << worker_id;
 	auto future = worker::Connection::ConnectAsync(ComponentRegistry{}, hostname, port, worker_id, connection_parameters);
 	return future.Get();
 }
@@ -130,21 +128,17 @@ void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 */
 void SpatialOSServer::UpdatePosition( EntityBase* entity )
 {
-	std::cout << "SpatialOSServer::UpdatePosition" << std::endl;
+//	std::cout << "SpatialOSServer::UpdatePosition" << std::endl;
 	entity_info_t* info = GetInfoFromEnity( entity );
 
 	if( info && info->created )
 	{
-		std::cout << "Creation of update" << std::endl;
 		improbable::Position::Update posUpdate;
-		std::cout << "update made" << std::endl;
 		Vec2 position = entity->GetPosition();
-		std::cout << "position obtained" << std::endl;
 		improbable::Coordinates coords( position.x, 0.0f,  position.y );
 		posUpdate.set_coords( coords );
-		std::cout << "coords set" << std::endl;
 		worker::UpdateParameters params;
-		std::cout << "sending update with: " << position.x << ", " << position.y << std::endl;  
+//		std::cout << "sending update with: " << position.x << ", " << position.y << std::endl;  
 		GetInstance()->connection->SendComponentUpdate<improbable::Position>( info->id, posUpdate, params );
 	}
 }
@@ -342,8 +336,7 @@ uint64_t SpatialOSServer::DeleteEntityResponse( const worker::DeleteEntityRespon
 		op.StatusCode == worker::StatusCode::kSuccess ) 
 	{
 		entity_info->created = false;
-		delete( entity_info->entity );
-		entity_info->entity = nullptr;
+		entity_info->entity->Die();
 	}
 	return op.RequestId.Id;
 }
@@ -569,17 +562,17 @@ entity_info_t* SpatialOSServer::GetInfoFromEnity( EntityBase* entity_id )
 */
 void SpatialOSServer::PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op )
 {
-	std::cout << "SpatialOSServer::PositionUpdated" << std::endl;
+//	std::cout << "SpatialOSServer::PositionUpdated" << std::endl;
 	const auto coords = op.Update.coords().data();
-	std::cout << "Updated position of entity " << op.EntityId << " to "
-		<< " x: " << coords->x() << " y: " << coords->y() << " z: " << coords->z() << std::endl;
+//	std::cout << "Updated position of entity " << op.EntityId << " to "
+//		<< " x: " << coords->x() << " y: " << coords->y() << " z: " << coords->z() << std::endl;
 	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
 	
 	if( info && info->created )
 	{
 		info->entity->SetPosition( coords->x(), coords->z() );
 
-		std::cout << "PosUpdate: Success" << std::endl;
+//		std::cout << "PosUpdate: Success" << std::endl;
 	}
 }
 
@@ -590,12 +583,12 @@ void SpatialOSServer::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 void SpatialOSServer::PlayerControlsUpdate( const worker::ComponentUpdateOp<siren::PlayerControls>& op )
 {
 	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
-	std::cout << "recieved updates form player controls: " <<  op.EntityId << std::endl;
+//	std::cout << "recieved updates form player controls: " <<  op.EntityId << std::endl;
 	if ( info && info->created )
 	{
 		const auto data_x = op.Update.x_move();
 		Vec2 direction( *data_x, *( op.Update.y_move() ) );
-		std::cout << "	found info for update: " << direction.x << ", " << direction.y << std::endl;
+		//std::cout << "	found info for update: " << direction.x << ", " << direction.y << std::endl;
 		( (SimController*)( (ActorBase*)info->entity )->GetController() )->SetMoveDirection( direction );
 	}
 }
@@ -610,21 +603,29 @@ void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClien
 	//--------------------------------------------------------------------------
 	std::cout << "Received a command request from: " << op.CallerWorkerId << std::endl;
 	
-	ActorBase* base = new SelfSubActor( "player" );
+	ActorBase* base = new ActorBase( "player" );
 	base->Possess( new SimController() );
 	base->SetPosition( Vec2( -1.0f, 0.0f ) );
+	SpatialOSServer::RequestEntityCreation( base );
 
 	entity_info_t* info = GetInfoFromEnity( base );
 
-	info->owner_id = op.CallerWorkerId;
-	info->id = op.EntityId;
-	info->entity->SetPosition( 1.0f, 1.0f );
+	if( info )
+	{
+		info->owner_id = op.CallerWorkerId;
+		info->id = op.EntityId;
+		info->entity->SetPosition( 1.0f, 1.0f );
 
-	std::cout << "entity sent successfully" << std::endl;
+		std::cout << "entity sent successfully" << std::endl;
 
-	// For responding to the command when an ID has been obtained.
-	info->command_response_id = op.RequestId.Id;
-	std::cout << "player creation command response id: " << op.RequestId.Id << std::endl;
+		// For responding to the command when an ID has been obtained.
+		info->command_response_id = op.RequestId.Id;
+		std::cout << "player creation command response id: " << op.RequestId.Id << std::endl;
+	}
+	else
+	{
+		std::cout << "Warning: SpatialOSServer::PlayerCreation failed to create the info for the player." << std::endl;
+	}
 }
 
 //--------------------------------------------------------------------------

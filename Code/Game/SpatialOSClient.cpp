@@ -10,7 +10,16 @@
 #include <iostream>
 
 #include "Shared/EntityBase.hpp"
+#include "Shared/EntityBaseDefinition.hpp"
+#include "Shared/AbilityBase.hpp"
+#include "Shared/AbilityBaseDefinition.hpp"
+#include "Shared/ActorBase.hpp"
+#include "Shared/ActorBaseDefinition.hpp"
+#include "Shared/AIController.hpp"
+#include "Shared/SimController.hpp"
 
+#include "Game/GameCommon.hpp"
+#include "Game/Game.hpp"
 
 worker::Components<
 	improbable::Position,
@@ -196,7 +205,7 @@ void SpatialOSClient::RequestEntityCreation( EntityBase* entity )
 	std::cout << "Sent create client entity request with id " << createEntityRequestId->Id << std::endl;
 	info.createEntityCommandRequestId = createEntityRequestId->Id;
 
-	GetInstance()->entity_info_list.push_back(info);
+	AddEntityInfo( info );
 }
 
 //--------------------------------------------------------------------------
@@ -205,7 +214,7 @@ void SpatialOSClient::RequestEntityCreation( EntityBase* entity )
 */
 void SpatialOSClient::UpdatePlayerControls( EntityBase* player, const Vec2& direction )
 {
-	entity_info_t* info = GetInfoFromEnity( player );
+	entity_info_t* info = GetInfoFromEntity( player );
 
 	if( info && info->created )
 	{
@@ -326,7 +335,6 @@ void SpatialOSClient::RegisterCallbacks( worker::Dispatcher& dispatcher )
 		if (op.Level == worker::LogLevel::kFatal) {
 			std::cerr << "Fatal error: " << op.Message << std::endl;
 			Logf( "ClientLog", "Fetal error: %s", op.Message.c_str() );
-			std::terminate();
 		}
 		std::cout << "Connection: " << op.Message << std::endl;
 		Logf("ClientLog", "Connection: %s", op.Message.c_str());
@@ -337,6 +345,10 @@ void SpatialOSClient::RegisterCallbacks( worker::Dispatcher& dispatcher )
 	dispatcher.OnCommandResponse<CreateClientEntity>( ClientCreationResponse );
 
 	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
+
+	dispatcher.OnAddEntity( AddEntity );
+
+	dispatcher.OnRemoveEntity( RemoveEntity );
 }
 
 
@@ -344,11 +356,28 @@ void SpatialOSClient::RegisterCallbacks( worker::Dispatcher& dispatcher )
 /**
 * GetInfoFromEnityId
 */
-entity_info_t* SpatialOSClient::GetInfoFromEnityId( const worker::EntityId& entity_id )
+entity_info_t* SpatialOSClient::GetInfoFromEntityId( const worker::EntityId& entity_id )
 {
 	for (entity_info_t& info : GetInstance()->entity_info_list)
 	{
-		if (info.id == entity_id)
+		if ( info.id == entity_id )
+		{
+			return &info;
+		}
+	}
+
+	return nullptr;
+}
+
+//--------------------------------------------------------------------------
+/**
+* GetInfoFromEnityQueryId
+*/
+entity_info_t* SpatialOSClient::GetInfoFromEntityQueryId(int64_t id)
+{
+	for (entity_info_t& info : GetInstance()->entity_info_list)
+	{
+		if ( info.newEntityQueryId == id )
 		{
 			return &info;
 		}
@@ -361,11 +390,11 @@ entity_info_t* SpatialOSClient::GetInfoFromEnityId( const worker::EntityId& enti
 /**
 * GetInfoFromEnity
 */
-entity_info_t* SpatialOSClient::GetInfoFromEnity( EntityBase* entity_id )
+entity_info_t* SpatialOSClient::GetInfoFromEntity( EntityBase* entity_id )
 {
 	for (entity_info_t& info : GetInstance()->entity_info_list)
 	{
-		if (info.entity == entity_id)
+		if ( info.entity && info.entity == entity_id)
 		{
 			return &info;
 		}
@@ -376,17 +405,37 @@ entity_info_t* SpatialOSClient::GetInfoFromEnity( EntityBase* entity_id )
 
 //--------------------------------------------------------------------------
 /**
+* RemoveInfoFromEnityId
+*/
+void SpatialOSClient::RemoveInfoFromEnityId( const worker::EntityId& entity_id )
+{
+	for ( entity_info_t& info : GetInstance()->entity_info_list )
+	{
+		if ( info.id == entity_id)
+		{
+			// Clears the location for reuse later
+			info = entity_info_t();
+		}
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
 * PositionUpdated
 */
 void SpatialOSClient::PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op )
 {
-	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
+	entity_info_t* info = GetInfoFromEntityId( op.EntityId );
 	if ( info && info->created )
 	{
 		auto curPos = op.Update.coords();
-		std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->x() << "," << curPos->y() << "," << curPos->y() << std::endl;
-		Logf("ClientLog", "PosUpdate: entCords for %u:%.03f,%.03f,%.03f ", info->id, curPos->x(), curPos->y(), curPos->z() );
+		//std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->x() << "," << curPos->y() << "," << curPos->y() << std::endl;
+		//Logf("ClientLog", "PosUpdate: entCords for %u:%.03f,%.03f,%.03f ", info->id, curPos->x(), curPos->y(), curPos->z() );
 		info->entity->SetPosition( (float)curPos->x(), (float)curPos->z() );
+	}
+	else
+	{
+		Logf("Warning", "Getting updates from %u and it doesn't exist in game.", op.EntityId );
 	}
 }
 
@@ -397,9 +446,50 @@ void SpatialOSClient::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 void SpatialOSClient::EntityQueryResponse( const worker::EntityQueryResponseOp& op )
 {
 	std::cout << "Received entity query response for request " << op.RequestId.Id << " with status code " << (int)(op.StatusCode) << std::endl;
+	entity_info_t* info = GetInfoFromEntityQueryId( op.RequestId.Id ); 
+
+
 	if (op.RequestId == APIQueryRequestId && !op.Result.empty()) {
 		GetInstance()->context.APIEntityId = op.Result.begin()->first;
 		g_theEventSystem->FireEvent("API_connection_made");
+	}
+	else if( info && op.RequestId.Id == info->newEntityQueryId )
+	{
+		// Working on getting an entity into the game from the server
+		worker::Entity worker_entity = op.Result.begin()->second;
+		worker::Option<improbable::MetadataData&> data = worker_entity.Get<improbable::Metadata>();
+		if( data )
+		{
+			std::string name = data->entity_type();
+			if( EntityBaseDefinition::IsGameType( name ) )
+			{
+				info->entity = nullptr;
+				if( AbilityBaseDefinition::DoesDefExist( name ) )
+				{
+					info->entity = new AbilityBase( name );
+				}
+				else if( ActorBaseDefinition::DoesDefExist( name ) )
+				{
+					info->entity = new ActorBase( name );
+					if( name == "player" )
+					{
+						( (ActorBase*)info->entity )->Possess( new SimController() );
+					}
+					else
+					{
+						( (ActorBase*)info->entity )->Possess( new AIController() );
+					}
+				}
+				if( info->entity )
+				{
+					worker::Option<improbable::PositionData&> pos = worker_entity.Get<improbable::Position>();
+					if( pos )
+					{
+						info->entity->SetPosition( pos->coords().x(), pos->coords().z() );
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -412,6 +502,10 @@ void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<Cr
 	if( op.StatusCode == worker::StatusCode::kSuccess )
 	{
 		entity_info_t* info = GetInfoFromCreateEntityCommandRequestId( op.RequestId.Id );
+		if( !info->entity )
+		{
+			Logf( "Warning", "Improper creation given within SpatialOSClient::ClientCreationResponse" );
+		}
 		if( info )
 		{
 			info->created = true;
@@ -422,13 +516,56 @@ void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<Cr
 
 //--------------------------------------------------------------------------
 /**
+* AddEntity
+*/
+void SpatialOSClient::AddEntity( const worker::AddEntityOp op )
+{
+	entity_info_t* info = GetInfoFromEntityId( op.EntityId );
+	if( !info )
+	{
+		// info not established yet
+		worker::query::EntityQuery entityQuery
+		{
+			worker::query::ComponentConstraint{improbable::Metadata::ComponentId},
+			worker::query::SnapshotResultType{{{improbable::Metadata::ComponentId}}}
+		};
+		
+		// Place info to grab
+		entity_info_t info;
+		info.newEntityQueryId = GetContext()->connection->SendEntityQueryRequest( entityQuery, {} ).Id;
+		info.id = op.EntityId;
+		AddEntityInfo( info );
+	}
+	else
+	{
+		// Already established the entity. Possibly already created by this worker or bug occurred.
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* RemoveEntity
+*/
+void SpatialOSClient::RemoveEntity( const worker::RemoveEntityOp op )
+{
+	entity_info_t* info = GetInfoFromEntityId( op.EntityId );
+	if( info )
+	{
+		g_theGame->RemoveEntity( info->entity );
+		*info = entity_info_t();
+	}
+}
+
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+/**
 * GetInfoFromCreateEntityCommandRequestId
 */
 entity_info_t* SpatialOSClient::GetInfoFromCreateEntityCommandRequestId( uint64_t request_id )
 {
 	for (entity_info_t& entity : GetInstance()->entity_info_list)
 	{
-		if (entity.createEntityCommandRequestId == request_id)
+		if ( entity.createEntityCommandRequestId == request_id )
 		{
 			return &entity;
 		}
@@ -452,6 +589,24 @@ const std::vector<entity_info_t>& SpatialOSClient::GetEntityList()
 worker::Dispatcher* SpatialOSClient::GetDispatcher()
 {
 	return GetInstance()->context.dispatcher;
+}
+
+//--------------------------------------------------------------------------
+/**
+* AddEntityInfo
+*/
+void SpatialOSClient::AddEntityInfo( const entity_info_t& to_add )
+{
+	for (entity_info_t& info_old : GetInstance()->entity_info_list)
+	{
+		if (info_old.entity == nullptr)
+		{
+			info_old = to_add;
+			return;
+		}
+	}
+
+	GetInstance()->entity_info_list.push_back( to_add );
 }
 
 //--------------------------------------------------------------------------

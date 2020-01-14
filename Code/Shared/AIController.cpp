@@ -31,7 +31,7 @@ AIController::~AIController()
 */
 void AIController::Update(float deltaTime)
 {
-	UNUSED(deltaTime);
+	m_current_deltatime = deltaTime;
 	ActorBase* player = FindClosestPlayer();
 
 	if( player )
@@ -80,7 +80,7 @@ void AIController::MoveTowardPlayer( ActorBase* player )
 	Vec2 disp = player->GetPosition() - m_controlled->GetPosition();
 	disp.Normalize();
 
-	m_controlled->ApplyForce( disp * m_controlled->GetSpeed() );
+	m_controlled->ApplyForce( disp * m_controlled->GetSpeed() * m_current_deltatime );
 }
 
 //--------------------------------------------------------------------------

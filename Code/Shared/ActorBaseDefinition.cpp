@@ -42,13 +42,22 @@ void ActorBaseDefinition::AddActorDefinition(const XmlElement& element)
 /**
 * GetActorDefinitionByName
 */
-const ActorBaseDefinition* ActorBaseDefinition::GetActorDefinitionByName(std::string name)
+const ActorBaseDefinition* ActorBaseDefinition::GetActorDefinitionByName( const std::string& name )
 {
 	if( s_actorDefs.find( name ) != s_actorDefs.end() )
 	{
 		std::cout << "found a def" << std::endl;
 		return s_actorDefs[name];
 	}
-	std::cout << "didnt find a def" << std::endl;
+	std::cout << "didn't find a def" << std::endl;
 	return nullptr;
+}
+
+//--------------------------------------------------------------------------
+/**
+* DoesDefExist
+*/
+bool ActorBaseDefinition::DoesDefExist(const std::string& name)
+{
+	return s_actorDefs.find( name ) != s_actorDefs.end();
 }

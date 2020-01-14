@@ -52,6 +52,9 @@
     <ClCompile Include="AIController.cpp">
       <Filter>Source Files\Controllers</Filter>
     </ClCompile>
+    <ClCompile Include="SimController.cpp">
+      <Filter>Source Files\Controllers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SharedCommon.hpp">
@@ -82,6 +85,9 @@
       <Filter>Source Files\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="AIController.hpp">
+      <Filter>Source Files\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="SimController.hpp">
       <Filter>Source Files\Controllers</Filter>
     </ClInclude>
   </ItemGroup>

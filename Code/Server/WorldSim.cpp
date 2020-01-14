@@ -12,7 +12,6 @@
 #include "Server/WorldSim.hpp"
 #include "Server/ServerCommon.hpp"
 #include "Server/ServerApp.hpp"
-#include "Server/SelfSubActor.hpp"
 #include "Server/SpatialOSServer.hpp"
 
 #include "Shared/AbilityBaseDefinition.hpp"
@@ -60,11 +59,17 @@ void WorldSim::Startup()
 
 	std::cout << "world setup" << std::endl;
 	
-	SelfSubActor* turret = new SelfSubActor( "turret", Vec2( 6.5f, 7.0f ) );
+	ActorBase* turret = new ActorBase( "turret", Vec2( 6.5f, 7.0f ) );
 	turret->Possess( new AIController() );
+	SpatialOSServer::RequestEntityCreation( turret );
 
-	turret = new SelfSubActor( "turret", Vec2( 5.0f, 7.0f ) );
+	turret = new ActorBase( "turret", Vec2( 5.0f, 7.0f ) );
 	turret->Possess( new AIController() );
+	SpatialOSServer::RequestEntityCreation( turret );
+
+	turret = new ActorBase("crawler", Vec2(-5.0f, 7.0f));
+	turret->Possess(new AIController());
+	SpatialOSServer::RequestEntityCreation(turret);
 
 	std::cout << "Finished world setup" << std::endl;
 }
@@ -85,17 +90,17 @@ void WorldSim::Shutdown()
 void WorldSim::UpdateWorldSim( float deltaSeconds )
 {
 	Zone::UpdateZones( deltaSeconds );
-	std::cout << "begin sending updates" << std::endl;
+	//std::cout << "begin sending updates" << std::endl;
 	uint count = 0;
 	for( EntityBase* entity : Zone::GetZone()->m_entities )
 	{
-		std::cout << "Iteration: " << count++ << std::endl;
+		//std::cout << "Iteration: " << count++ << std::endl;
 		if( entity )
 		{
 			SpatialOSServer::UpdatePosition( entity );
 		}
 	}
-	std::cout << "end sending updates" << std::endl;
+	//std::cout << "end sending updates" << std::endl;
 }
 
 //--------------------------------------------------------------------------

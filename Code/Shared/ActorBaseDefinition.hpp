@@ -21,6 +21,7 @@ protected:
 
 public:
 	static void AddActorDefinition(const XmlElement& element);
-	static const ActorBaseDefinition* GetActorDefinitionByName(std::string name);
+	static const ActorBaseDefinition* GetActorDefinitionByName( const std::string& name );
+	static bool DoesDefExist( const std::string& name );
 
 };

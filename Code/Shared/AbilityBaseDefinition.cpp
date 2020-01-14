@@ -29,7 +29,7 @@ AbilityBaseDefinition::~AbilityBaseDefinition()
 /**
 * AddAbilityDefinition
 */
-void AbilityBaseDefinition::AddAbilityDefinition(const XmlElement& element)
+void AbilityBaseDefinition::AddAbilityDefinition( const XmlElement& element )
 {
 	std::string name = ParseXmlAttribute( element, "name", "none" );
 	s_abilityDefs[name] = new AbilityBaseDefinition(element);
@@ -39,11 +39,20 @@ void AbilityBaseDefinition::AddAbilityDefinition(const XmlElement& element)
 /**
 * GetAbilityDefinitionByName
 */
-const AbilityBaseDefinition* AbilityBaseDefinition::GetAbilityDefinitionByName(std::string name)
+const AbilityBaseDefinition* AbilityBaseDefinition::GetAbilityDefinitionByName( const std::string& name )
 {
 	if( s_abilityDefs.find( name ) != s_abilityDefs.end() )
 	{
 		return s_abilityDefs[name];
 	}
 	return nullptr;
+}
+
+//--------------------------------------------------------------------------
+/**
+* DoesDefExist
+*/
+bool AbilityBaseDefinition::DoesDefExist( const std::string& name )
+{
+	return s_abilityDefs.find( name ) != s_abilityDefs.end();
 }
