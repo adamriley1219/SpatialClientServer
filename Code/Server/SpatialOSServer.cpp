@@ -116,7 +116,7 @@ void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 	GetInstance()->connection->SendLogMessage(worker::LogLevel::kInfo, kLoggerName, Stringf( "RequestEntityCreation successfully with ID: %u", info.entity_id_reservation_request_id ) );
 
 	std::cout << "Request Sent (Entity Creation) With ResponseID: " << info.entity_id_reservation_request_id << std::endl;
-	info.entity = entity_to_create;
+	info.game_entity = entity_to_create;
 
 	GetInstance()->entity_info_list.push_back( info );
 	GetInstance()->entity_info_list_lock.unlock();
@@ -336,7 +336,7 @@ uint64_t SpatialOSServer::DeleteEntityResponse( const worker::DeleteEntityRespon
 		op.StatusCode == worker::StatusCode::kSuccess ) 
 	{
 		entity_info->created = false;
-		entity_info->entity->Die();
+		entity_info->game_entity->Die();
 	}
 	return op.RequestId.Id;
 }
@@ -410,7 +410,7 @@ uint64_t SpatialOSServer::ReserveEntityIdsResponse( const worker::ReserveEntityI
 
 		worker::Entity clientEntity;
 
-		Vec2 position = entity_info->entity->GetPosition();
+		Vec2 position = entity_info->game_entity->GetPosition();
 		clientEntity.Add<improbable::Position>({ { position.x,  0.0f, position.y } });
 
 
@@ -440,7 +440,7 @@ uint64_t SpatialOSServer::ReserveEntityIdsResponse( const worker::ReserveEntityI
 			improbable::EntityAcl::Data{/* read */ clientOrSimRequirementSet, /* write */ componentAcl });
 
 		improbable::Metadata::Data metadata;
-		metadata.set_entity_type( entity_info->entity->GetName() );
+		metadata.set_entity_type( entity_info->game_entity->GetName() );
 		clientEntity.Add<improbable::Metadata>(metadata);
 
 		siren::PlayerControls::Data client_data;
@@ -547,7 +547,7 @@ entity_info_t* SpatialOSServer::GetInfoFromEnity( EntityBase* entity_id )
 {
 	for ( entity_info_t& entity : GetInstance()->entity_info_list )
 	{
-		if ( entity.entity == entity_id )
+		if ( entity.game_entity == entity_id )
 		{
 			return &entity;
 		}
@@ -570,7 +570,7 @@ void SpatialOSServer::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 	
 	if( info && info->created )
 	{
-		info->entity->SetPosition( coords->x(), coords->z() );
+		info->game_entity->SetPosition( coords->x(), coords->z() );
 
 //		std::cout << "PosUpdate: Success" << std::endl;
 	}
@@ -589,7 +589,7 @@ void SpatialOSServer::PlayerControlsUpdate( const worker::ComponentUpdateOp<sire
 		const auto data_x = op.Update.x_move();
 		Vec2 direction( *data_x, *( op.Update.y_move() ) );
 		//std::cout << "	found info for update: " << direction.x << ", " << direction.y << std::endl;
-		( (SimController*)( (ActorBase*)info->entity )->GetController() )->SetMoveDirection( direction );
+		( (SimController*)( (ActorBase*)info->game_entity )->GetController() )->SetMoveDirection( direction );
 	}
 }
 
@@ -614,7 +614,7 @@ void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClien
 	{
 		info->owner_id = op.CallerWorkerId;
 		info->id = op.EntityId;
-		info->entity->SetPosition( 1.0f, 1.0f );
+		info->game_entity->SetPosition( 1.0f, 1.0f );
 
 		std::cout << "entity sent successfully" << std::endl;
 

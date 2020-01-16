@@ -16,7 +16,7 @@ using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;
 
 struct entity_info_t
 {
-	EntityBase* entity = nullptr;
+	EntityBase* game_entity = nullptr;
 	worker::EntityId id = 0;
 	uint64_t entity_creation_request_id = 0;
 	uint64_t entity_deletion_request_id = 0;

@@ -102,7 +102,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)SpatialOS\dependencies\worker_sdk\headers\include;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\include;%(AdditionalLibraryDirectories);$(SolutionDir)SpatialOS\generated_code\cpp</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -130,7 +130,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)Code/Submodule/Engine/Code/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)SpatialOS\dependencies\worker_sdk\headers\include;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\include;%(AdditionalLibraryDirectories);$(SolutionDir)SpatialOS\generated_code\cpp</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -160,7 +160,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)SpatialOS\dependencies\worker_sdk\headers\include;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\include;%(AdditionalLibraryDirectories);$(SolutionDir)SpatialOS\generated_code\cpp</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -192,7 +192,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)Code/Submodule/Engine/Code/;$(SolutionDir)SpatialOS\dependencies\worker_sdk\headers\include;$(SolutionDir)SpatialOS\dependencies\worker_sdk\win32\debug\include;%(AdditionalLibraryDirectories);$(SolutionDir)SpatialOS\generated_code\cpp</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -225,6 +225,7 @@
     <ClCompile Include="EntityBaseDefinition.cpp" />
     <ClCompile Include="SharedCommon.cpp" />
     <ClCompile Include="SimController.cpp" />
+    <ClCompile Include="View.cpp" />
     <ClCompile Include="Zone.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -238,6 +239,7 @@
     <ClInclude Include="EntityBaseDefinition.hpp" />
     <ClInclude Include="SharedCommon.hpp" />
     <ClInclude Include="SimController.hpp" />
+    <ClInclude Include="View.hpp" />
     <ClInclude Include="Zone.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -26,10 +26,10 @@ struct ClientContext {
 
 struct entity_info_t
 {
-	EntityBase* entity = nullptr;
+	EntityBase* game_entity = nullptr;
+	worker::Entity worker_entity;
 	worker::EntityId id = 0;
 	uint64_t createEntityCommandRequestId = 0;
-	int64_t newEntityQueryId = -1;
 	bool created = false;
 	bool updated = false;
 };
@@ -66,7 +66,6 @@ public:
 
 	static entity_info_t* GetInfoFromCreateEntityCommandRequestId( uint64_t request_id );
 	static entity_info_t* GetInfoFromEntityId( const worker::EntityId& entity_id );
-	static entity_info_t* GetInfoFromEntityQueryId( int64_t id );
 	static entity_info_t* GetInfoFromEntity( EntityBase* entity_id );
 
 	static void RemoveInfoFromEnityId( const worker::EntityId& entity_id );
@@ -90,5 +89,5 @@ private:
 
 	ClientContext context;
 	std::vector<entity_info_t> entity_info_list;	
-
+	
 };

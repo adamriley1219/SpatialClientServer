@@ -91,7 +91,7 @@ void WorldSim::UpdateWorldSim( float deltaSeconds )
 {
 	Zone::UpdateZones( deltaSeconds );
 	//std::cout << "begin sending updates" << std::endl;
-	uint count = 0;
+	//uint count = 0;
 	for( EntityBase* entity : Zone::GetZone()->m_entities )
 	{
 		//std::cout << "Iteration: " << count++ << std::endl;
