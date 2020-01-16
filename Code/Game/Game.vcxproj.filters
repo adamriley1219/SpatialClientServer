@@ -42,6 +42,9 @@
     <ClCompile Include="ActorRenderable.cpp">
       <Filter>Gameplay\Entity</Filter>
     </ClCompile>
+    <ClCompile Include="View.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="ActorRenderable.hpp">
       <Filter>Gameplay\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="View.hpp">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,10 +11,11 @@
 #include <mutex>
 
 class EntityBase;
+class View;
 
 struct ClientContext {
 	worker::Connection* connection = nullptr;
-	worker::Dispatcher* dispatcher = nullptr;
+	View* view = nullptr;
 	worker::EntityId APIEntityId;
 	worker::EntityId clientEntityId;
 	bool absoluteInterest;
@@ -27,11 +28,9 @@ struct ClientContext {
 struct entity_info_t
 {
 	EntityBase* game_entity = nullptr;
-	worker::Entity worker_entity;
 	worker::EntityId id = 0;
 	uint64_t createEntityCommandRequestId = 0;
 	bool created = false;
-	bool updated = false;
 };
 
 using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;
@@ -53,25 +52,23 @@ public:
 
 private:
 	static void Run( std::vector<std::string> arguments );
-	static void RegisterCallbacks( worker::Dispatcher& dispatcher );
+	static void RegisterCallbacks( View& view );
 
-public:
+private:
+	void Update();
+	static void UpdateEntityWithWorkerEntity( EntityBase& entity, worker::Entity& worker_entity );
+
 	// Component Updating
-	static void PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op );
 	static void EntityQueryResponse( const worker::EntityQueryResponseOp& op );
 	static void ClientCreationResponse( const worker::CommandResponseOp<CreateClientEntity>& op );
-
-	static void AddEntity( const worker::AddEntityOp op );
-	static void RemoveEntity( const worker::RemoveEntityOp op );
-
+	
 	static entity_info_t* GetInfoFromCreateEntityCommandRequestId( uint64_t request_id );
 	static entity_info_t* GetInfoFromEntityId( const worker::EntityId& entity_id );
 	static entity_info_t* GetInfoFromEntity( EntityBase* entity_id );
 
 	static void RemoveInfoFromEnityId( const worker::EntityId& entity_id );
 
-	static const std::vector<entity_info_t>& GetEntityList();
-	static worker::Dispatcher* GetDispatcher();
+	static const std::vector<entity_info_t>& GetInfoList();
 
 	static void AddEntityInfo( const entity_info_t& to_add );
 

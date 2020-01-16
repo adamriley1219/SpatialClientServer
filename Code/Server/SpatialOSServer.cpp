@@ -434,6 +434,7 @@ uint64_t SpatialOSServer::ReserveEntityIdsResponse( const worker::ReserveEntityI
 		worker::Map<worker::ComponentId, improbable::WorkerRequirementSet> componentAcl;
 		componentAcl[improbable::Position::ComponentId] = simulationWorkerRequirementSet;
 		componentAcl[improbable::EntityAcl::ComponentId] = simulationWorkerRequirementSet;
+		componentAcl[improbable::Metadata::ComponentId] = simulationWorkerRequirementSet;
 		componentAcl[siren::PlayerControls::ComponentId] = callerWorkerRequirementSet;
 
 		clientEntity.Add<improbable::EntityAcl>(

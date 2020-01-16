@@ -11,9 +11,6 @@
     <Filter Include="Data\Gameplay">
       <UniqueIdentifier>{a762e598-b832-40f5-98f8-d98fc49b1285}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Network">
-      <UniqueIdentifier>{599d1365-df0b-44c9-b4f2-a5c5fedeec50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Game">
       <UniqueIdentifier>{9f6d5271-bebb-43fd-948d-4a9a1d316723}</UniqueIdentifier>
     </Filter>
@@ -55,9 +52,6 @@
     <ClCompile Include="SimController.cpp">
       <Filter>Source Files\Game\Controllers</Filter>
     </ClCompile>
-    <ClCompile Include="View.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
     <ClCompile Include="SharedCommon.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
@@ -92,9 +86,6 @@
     </ClInclude>
     <ClInclude Include="SimController.hpp">
       <Filter>Source Files\Game\Controllers</Filter>
-    </ClInclude>
-    <ClInclude Include="View.hpp">
-      <Filter>Source Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="SharedCommon.hpp">
       <Filter>Source Files\Game</Filter>

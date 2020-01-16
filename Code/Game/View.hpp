@@ -24,7 +24,6 @@ public:
 	{
 		worker::Entity worker_entity;
 		bool updated = false;
-		bool created = true;
 	};
 
 	worker::Map<worker::EntityId, entity_tracker_t> m_entities;
@@ -57,17 +56,6 @@ private:
 					entity_tracker_t& tracker = it->second;
 					tracker.worker_entity.Remove<T>();
 					tracker.updated = true;
-				}
-			});
-
-			view.OnAddComponent<improbable::Metadata>([&view](const worker::AddComponentOp<improbable::Metadata> op)
-			{
-				auto it = view.m_entities.find(op.EntityId);
-				if (it != view.m_entities.end()) {
-					entity_tracker_t& tracker = it->second;
-					tracker.worker_entity.Remove<T>();
-					tracker.updated = true;
-					tracker.created = true;
 				}
 			});
 

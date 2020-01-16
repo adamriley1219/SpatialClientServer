@@ -18,6 +18,7 @@
 #include "Shared/AIController.hpp"
 #include "Shared/SimController.hpp"
 
+#include "Game/View.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/Game.hpp"
 
@@ -158,7 +159,9 @@ void SpatialOSClient::Process()
 	if( IsRunning() )
 	{
 		auto opList = GetInstance()->context.connection->GetOpList(0);
-		GetInstance()->context.dispatcher->Process(opList);
+		GetInstance()->context.view->Process(opList);
+
+		GetInstance()->Update();
 	}
 }
 
@@ -279,19 +282,18 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
 
 	// Register callbacks and run the worker main loop.
-	worker::Dispatcher dispatcher{ ComponentRegistry };
-	GetInstance()->context.dispatcher = &dispatcher;
+	View view{ ComponentRegistry };
+	GetInstance()->context.view = &view;
 	bool is_connected = connection.IsConnected();
 
-	dispatcher.OnDisconnect([&](const worker::DisconnectOp& op) {
-		std::cerr << "[disconnect] " << op.Reason << std::endl;
+	view.OnDisconnect([&](const worker::DisconnectOp& op) {
 		Logf("ClientLog", "[disconnect] %s", op.Reason.c_str());
-
+		ERROR_RECOVERABLE( Stringf( "Disconnected from teh server : %s", op.Reason.c_str() ).c_str() );
 		is_connected = false;
 		});
 
 
-	RegisterCallbacks( dispatcher );
+	RegisterCallbacks( view );
 	
 	// Look for API
 	worker::query::EntityQuery APIEntityQuery
@@ -320,7 +322,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 
 	GetInstance()->isRunning = false;
 	GetInstance()->context.connection = nullptr;
-	GetInstance()->context.dispatcher = nullptr;
+	GetInstance()->context.view = nullptr;
 }
 
 
@@ -328,10 +330,10 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 /**
 * RegisterCallbacks
 */
-void SpatialOSClient::RegisterCallbacks( worker::Dispatcher& dispatcher )
+void SpatialOSClient::RegisterCallbacks( View& view )
 {
 	// Print messages received from SpatialOS
-	dispatcher.OnLogMessage([&](const worker::LogMessageOp& op) {
+	view.OnLogMessage([&](const worker::LogMessageOp& op) {
 		if (op.Level == worker::LogLevel::kFatal) {
 			std::cerr << "Fatal error: " << op.Message << std::endl;
 			Logf( "ClientLog", "Fetal error: %s", op.Message.c_str() );
@@ -340,17 +342,80 @@ void SpatialOSClient::RegisterCallbacks( worker::Dispatcher& dispatcher )
 		Logf("ClientLog", "Connection: %s", op.Message.c_str());
 		});
 
-	dispatcher.OnEntityQueryResponse( EntityQueryResponse );
+	view.OnEntityQueryResponse( EntityQueryResponse );
 
-	dispatcher.OnCommandResponse<CreateClientEntity>( ClientCreationResponse );
+	view.OnCommandResponse<CreateClientEntity>( ClientCreationResponse );
 
-	dispatcher.OnComponentUpdate<improbable::Position>( PositionUpdated );
-
-	dispatcher.OnAddEntity( AddEntity );
-
-	dispatcher.OnRemoveEntity( RemoveEntity );
 }
 
+
+//--------------------------------------------------------------------------
+/**
+* Update
+*/
+void SpatialOSClient::Update()
+{
+	for( auto& ent_pair : context.view->m_entities )
+	{
+		View::entity_tracker_t& tracker = ent_pair.second;
+		if( !tracker.updated )
+		{
+			// Entity wasn't updated so there's nothing to tell the client
+			continue;
+		}
+		entity_info_t* info = GetInfoFromEntityId( ent_pair.first );
+		if( info )
+		{
+			if( info->game_entity )
+			{
+				UpdateEntityWithWorkerEntity( *(info->game_entity), tracker.worker_entity );
+			}
+			else
+			{
+				// should never get here.
+				Logf("ERROR", "SpatialOSClient::Update - info and worker entity found but no game entity to update");
+			}
+		}
+		else
+		{
+			// Game doesn't know about the instance from the server yet.
+			
+			//	Working on getting an entity into the game from the server
+			Logf("SpatialOSClient::Update", "can't find info");
+			worker::Option<improbable::MetadataData&> data = tracker.worker_entity.Get<improbable::Metadata>();
+			worker::Option<improbable::InterestData&> intrest = tracker.worker_entity.Get<improbable::Interest>();
+			if (data)
+			{
+				Logf("SpatialOSClient::Update", "Making from data");
+				entity_info_t new_info;
+				std::string name = data->entity_type();
+				new_info.game_entity = g_theGame->CreateSimulatedEntity( name );
+				if( new_info.game_entity )
+				{
+					UpdateEntityWithWorkerEntity( *(new_info.game_entity), tracker.worker_entity );
+					new_info.id = ent_pair.first;
+					new_info.created = true;
+					AddEntityInfo( new_info );
+				}
+			}
+		}
+		tracker.updated = false;
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* UpdateEntityWithWorkerEntity
+*/
+void SpatialOSClient::UpdateEntityWithWorkerEntity( EntityBase& entity, worker::Entity& worker_entity )
+{
+	
+	worker::Option<improbable::PositionData&> pos = worker_entity.Get<improbable::Position>();
+	if (pos)
+	{
+		entity.SetPosition((float)pos->coords().x(), (float)pos->coords().z());
+	}	
+}
 
 //--------------------------------------------------------------------------
 /**
@@ -405,26 +470,6 @@ void SpatialOSClient::RemoveInfoFromEnityId( const worker::EntityId& entity_id )
 
 //--------------------------------------------------------------------------
 /**
-* PositionUpdated
-*/
-void SpatialOSClient::PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op )
-{
-	entity_info_t* info = GetInfoFromEntityId( op.EntityId );
-	if ( info && info->created )
-	{
-		auto curPos = op.Update.coords();
-		//std::cout << "PosUpdate: entCords for " << info->id << ":" << curPos->x() << "," << curPos->y() << "," << curPos->y() << std::endl;
-		//Logf("ClientLog", "PosUpdate: entCords for %u:%.03f,%.03f,%.03f ", info->id, curPos->x(), curPos->y(), curPos->z() );
-		info->game_entity->SetPosition( (float)curPos->x(), (float)curPos->z() );
-	}
-	else
-	{
-		//Logf("Warning", "Getting updates from %u and it doesn't exist in game.", op.EntityId );
-	}
-}
-
-//--------------------------------------------------------------------------
-/**
 * EntityQueryResponse
 */
 void SpatialOSClient::EntityQueryResponse( const worker::EntityQueryResponseOp& op )
@@ -436,47 +481,6 @@ void SpatialOSClient::EntityQueryResponse( const worker::EntityQueryResponseOp& 
 		GetInstance()->context.APIEntityId = op.Result.begin()->first;
 		g_theEventSystem->FireEvent("API_connection_made");
 	}
-// 	else if( info && op.RequestId.Id == info->newEntityQueryId )
-// 	{
-// 		Logf("SpatialOSClient::EntityQueryResponse", "Creating entity for %u with requestID: %u", info->id, op.RequestId.Id );
-// 
-// 		// Working on getting an entity into the game from the server
-// 		worker::Entity worker_entity = op.Result.begin()->second;
-// 		worker::Option<improbable::MetadataData&> data = worker_entity.Get<improbable::Metadata>();
-// 		if( data )
-// 		{
-// 			std::string name = data->entity_type();
-// 			if( EntityBaseDefinition::IsGameType( name ) )
-// 			{
-// 				info->game_entity = nullptr;
-// 				if( AbilityBaseDefinition::DoesDefExist( name ) )
-// 				{
-// 					info->game_entity = new AbilityBase( name );
-// 				}
-// 				else if( ActorBaseDefinition::DoesDefExist( name ) )
-// 				{
-// 					info->game_entity = new ActorBase( name );
-// 					if( name == "player" )
-// 					{
-// 						( (ActorBase*)info->game_entity )->Possess( new SimController() );
-// 					}
-// 					else
-// 					{
-// 						( (ActorBase*)info->game_entity )->Possess( new AIController() );
-// 					}
-// 				}
-// 				if( info->game_entity )
-// 				{
-// 					worker::Option<improbable::PositionData&> pos = worker_entity.Get<improbable::Position>();
-// 					if( pos )
-// 					{
-// 						info->game_entity->SetPosition( pos->coords().x(), pos->coords().z() );
-// 					}
-// 					info->created = true;
-// 				}
-// 			}
-// 		}
-// 	}
 }
 
 //--------------------------------------------------------------------------
@@ -501,43 +505,6 @@ void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<Cr
 }
 
 //--------------------------------------------------------------------------
-/**
-* AddEntity
-*/
-void SpatialOSClient::AddEntity( const worker::AddEntityOp op )
-{
-	entity_info_t* info = GetInfoFromEntityId( op.EntityId );
-	std::cout << "Recieved add entity for " << op.EntityId << std::endl;
-	Logf( "SpatialOSClient::AddEntity", "Recieved entity added with ID: %u", op.EntityId );
-	if( !info )
-	{
-		// Place info to grab
-		entity_info_t new_info;
-		new_info.id = op.EntityId;
-		AddEntityInfo( new_info );
-	}
-	else
-	{
-		Logf( "SpatialOSClient::AddEntity", "Already have info for %u", op.EntityId );
-		// Already established the entity. Possibly already created by this worker or bug occurred.
-	}
-}
-
-//--------------------------------------------------------------------------
-/**
-* RemoveEntity
-*/
-void SpatialOSClient::RemoveEntity( const worker::RemoveEntityOp op )
-{
-	entity_info_t* info = GetInfoFromEntityId( op.EntityId );
-	if( info )
-	{
-		g_theGame->RemoveEntity( info->game_entity );
-		*info = entity_info_t();
-	}
-}
-
-//--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 /**
 * GetInfoFromCreateEntityCommandRequestId
@@ -556,20 +523,11 @@ entity_info_t* SpatialOSClient::GetInfoFromCreateEntityCommandRequestId( uint64_
 
 //--------------------------------------------------------------------------
 /**
-* GetEntityList
+* GetInfoList
 */
-const std::vector<entity_info_t>& SpatialOSClient::GetEntityList()
+const std::vector<entity_info_t>& SpatialOSClient::GetInfoList()
 {
 	return GetInstance()->entity_info_list;
-}
-
-//--------------------------------------------------------------------------
-/**
-* GetDispatcher
-*/
-worker::Dispatcher* SpatialOSClient::GetDispatcher()
-{
-	return GetInstance()->context.dispatcher;
 }
 
 //--------------------------------------------------------------------------

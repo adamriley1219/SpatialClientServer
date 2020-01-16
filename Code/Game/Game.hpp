@@ -35,13 +35,15 @@ public:
 	void AddEntity( EntityBase* entity );
 	void RemoveEntity( EntityBase* entity );
 
+	EntityBase* CreateSimulatedEntity( const std::string& name );
+
+
 private:
 	void RenderDevConsole() const;
 
 	void UpdateCamera( float deltaSeconds );
 
 	bool OnServerConnection( EventArgs& args );
-
 
 private:
 	void ResetGame();

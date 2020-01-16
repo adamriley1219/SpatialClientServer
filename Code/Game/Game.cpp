@@ -26,8 +26,12 @@
 #include "Game/SpatialOSClient.hpp"
 
 #include "Shared/AbilityBaseDefinition.hpp"
+#include "Shared/AbilityBase.hpp"
+#include "Shared/ActorBase.hpp"
+#include "Shared/ActorBaseDefinition.hpp"
 #include "Shared/Zone.hpp"
 #include "Shared/AIController.hpp"
+#include "Shared/SimController.hpp"
 
 #include <vector>
 
@@ -229,6 +233,35 @@ bool Game::OnServerConnection(EventArgs& args)
 	SpatialOSClient::RequestEntityCreation( m_clientEntity );
 
 	return true;
+}
+
+//--------------------------------------------------------------------------
+/**
+* CreateSimulatedEntity
+*/
+EntityBase* Game::CreateSimulatedEntity( const std::string& name )
+{
+	if (EntityBaseDefinition::IsGameType(name))
+	{
+		if (AbilityBaseDefinition::DoesDefExist(name))
+		{
+			return new AbilityBase(name);
+		}
+		else if (ActorBaseDefinition::DoesDefExist(name))
+		{
+			ActorRenderable* actor = new ActorRenderable(name);
+			if (name == "player")
+			{
+				actor->Possess( new SimController() );
+			}
+			else
+			{
+				actor->Possess( new AIController() );
+			}
+			return actor;
+		}
+	}
+	return nullptr;
 }
 
 //--------------------------------------------------------------------------
