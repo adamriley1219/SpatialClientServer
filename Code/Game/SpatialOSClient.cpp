@@ -217,7 +217,7 @@ void SpatialOSClient::RequestEntityCreation( EntityBase* entity )
 */
 void SpatialOSClient::UpdatePlayerControls( EntityBase* player, const Vec2& direction )
 {
-	entity_info_t* info = GetInfoFromEntity( player );
+	entity_info_t* info = GetInfoWithEntity( player );
 
 	if( info && info->created )
 	{
@@ -363,7 +363,7 @@ void SpatialOSClient::Update()
 			// Entity wasn't updated so there's nothing to tell the client
 			continue;
 		}
-		entity_info_t* info = GetInfoFromEntityId( ent_pair.first );
+		entity_info_t* info = GetInfoWithEntityId( ent_pair.first );
 		if( info )
 		{
 			if( info->game_entity )
@@ -401,6 +401,18 @@ void SpatialOSClient::Update()
 		}
 		tracker.updated = false;
 	}
+
+	// Check for deleted entities
+	for( entity_info_t& info : entity_info_list )
+	{
+		// See if we can no longer see an entity that has been created
+		if( context.view->m_entities.find( info.id ) == context.view->m_entities.end() && info.created )
+		{
+			// Tell the entity to die and then erase knowledge of entity
+			info.game_entity->Die();
+			info = entity_info_t();
+		}
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -409,7 +421,6 @@ void SpatialOSClient::Update()
 */
 void SpatialOSClient::UpdateEntityWithWorkerEntity( EntityBase& entity, worker::Entity& worker_entity )
 {
-	
 	worker::Option<improbable::PositionData&> pos = worker_entity.Get<improbable::Position>();
 	if (pos)
 	{
@@ -421,7 +432,7 @@ void SpatialOSClient::UpdateEntityWithWorkerEntity( EntityBase& entity, worker::
 /**
 * GetInfoFromEnityId
 */
-entity_info_t* SpatialOSClient::GetInfoFromEntityId( const worker::EntityId& entity_id )
+entity_info_t* SpatialOSClient::GetInfoWithEntityId( const worker::EntityId& entity_id )
 {
 	for (entity_info_t& info : GetInstance()->entity_info_list)
 	{
@@ -439,7 +450,7 @@ entity_info_t* SpatialOSClient::GetInfoFromEntityId( const worker::EntityId& ent
 /**
 * GetInfoFromEnity
 */
-entity_info_t* SpatialOSClient::GetInfoFromEntity( EntityBase* entity_id )
+entity_info_t* SpatialOSClient::GetInfoWithEntity( EntityBase* entity_id )
 {
 	for (entity_info_t& info : GetInstance()->entity_info_list)
 	{
@@ -452,21 +463,6 @@ entity_info_t* SpatialOSClient::GetInfoFromEntity( EntityBase* entity_id )
 	return nullptr;
 }
 
-//--------------------------------------------------------------------------
-/**
-* RemoveInfoFromEnityId
-*/
-void SpatialOSClient::RemoveInfoFromEnityId( const worker::EntityId& entity_id )
-{
-	for ( entity_info_t& info : GetInstance()->entity_info_list )
-	{
-		if ( info.id == entity_id)
-		{
-			// Clears the location for reuse later
-			info = entity_info_t();
-		}
-	}
-}
 
 //--------------------------------------------------------------------------
 /**
@@ -491,7 +487,7 @@ void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<Cr
 {
 	if( op.StatusCode == worker::StatusCode::kSuccess )
 	{
-		entity_info_t* info = GetInfoFromCreateEntityCommandRequestId( op.RequestId.Id );
+		entity_info_t* info = GetInfoWithCreateEntityCommandRequestId( op.RequestId.Id );
 		if( !info->game_entity )
 		{
 			Logf( "Warning", "Improper creation given within SpatialOSClient::ClientCreationResponse" );
@@ -507,9 +503,9 @@ void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<Cr
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 /**
-* GetInfoFromCreateEntityCommandRequestId
+* GetInfoWithCreateEntityCommandRequestId
 */
-entity_info_t* SpatialOSClient::GetInfoFromCreateEntityCommandRequestId( uint64_t request_id )
+entity_info_t* SpatialOSClient::GetInfoWithCreateEntityCommandRequestId( uint64_t request_id )
 {
 	for (entity_info_t& entity : GetInstance()->entity_info_list)
 	{

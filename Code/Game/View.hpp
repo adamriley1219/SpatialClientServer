@@ -24,6 +24,7 @@ public:
 	{
 		worker::Entity worker_entity;
 		bool updated = false;
+		bool garbage = false;
 	};
 
 	worker::Map<worker::EntityId, entity_tracker_t> m_entities;

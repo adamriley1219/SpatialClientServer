@@ -31,6 +31,7 @@ struct entity_info_t
 	worker::EntityId id = 0;
 	uint64_t createEntityCommandRequestId = 0;
 	bool created = false;
+	bool garbage = false;
 };
 
 using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;
@@ -62,11 +63,9 @@ private:
 	static void EntityQueryResponse( const worker::EntityQueryResponseOp& op );
 	static void ClientCreationResponse( const worker::CommandResponseOp<CreateClientEntity>& op );
 	
-	static entity_info_t* GetInfoFromCreateEntityCommandRequestId( uint64_t request_id );
-	static entity_info_t* GetInfoFromEntityId( const worker::EntityId& entity_id );
-	static entity_info_t* GetInfoFromEntity( EntityBase* entity_id );
-
-	static void RemoveInfoFromEnityId( const worker::EntityId& entity_id );
+	static entity_info_t* GetInfoWithCreateEntityCommandRequestId( uint64_t request_id );
+	static entity_info_t* GetInfoWithEntityId( const worker::EntityId& entity_id );
+	static entity_info_t* GetInfoWithEntity( EntityBase* entity_id );
 
 	static const std::vector<entity_info_t>& GetInfoList();
 
