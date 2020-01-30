@@ -163,6 +163,7 @@ void SpatialOSServer::Run( const std::vector<std::string> arguments )
 
 	std::cout << "[local] Worker started " << std::endl << std::flush;
 
+	worker::alpha::PlayerIdentityTokenResponse player_response;
 
 
 	auto print_usage = [&]() {

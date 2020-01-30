@@ -54,6 +54,7 @@ worker::Connection ConnectWithLocator(const std::string hostname,
 	auto queue_status_callback = [&](const worker::QueueStatus& queue_status) {
 		if (!queue_status.Error.empty()) {
 			std::cerr << "Error while queueing: " << *queue_status.Error << std::endl;
+			ERROR_RECOVERABLE( Stringf("Error while queueing: %s", queue_status.Error->c_str()).c_str() );
 			return false;
 		}
 		std::cout << "Worker of type '" << connection_parameters.WorkerType
@@ -239,6 +240,12 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	auto now = std::chrono::high_resolution_clock::now();
 	std::srand((uint)std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count());
 
+
+	constexpr unsigned kFramesPerSecond = 30;
+	constexpr std::chrono::duration<double> kFramePeriodSeconds{
+		1. / static_cast<double>(kFramesPerSecond) };
+
+
 	auto print_usage = [&]() {
 		std::cout << "Usage: External receptionist <hostname> <port> <worker_id>" << std::endl;
 		std::cout << "       External locator <hostname> <project_name> <deployment_id> <login_token>";
@@ -256,11 +263,6 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	};
 
 
-	worker::ConnectionParameters parameters;
-	parameters.WorkerType = "External";
-	parameters.Network.ConnectionType = worker::NetworkConnectionType::kTcp;
-	parameters.Network.UseExternalIp = true;
-
 	const std::string connection_type = arguments[0];
 	if (connection_type != "receptionist" && connection_type != "locator") {
 		print_usage();
@@ -269,14 +271,60 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 
 	const bool use_locator = connection_type == "locator";
 
-	if ((use_locator && arguments.size() != 5) || (!use_locator && arguments.size() != 4)) {
-		print_usage();
-		return;
+	worker::alpha::LoginTokenDetails login_details;
+	if( use_locator )
+	{
+		worker::alpha::PlayerIdentityTokenRequest player_identok_request;
+		player_identok_request.DevelopmentAuthenticationToken = arguments[5];
+		player_identok_request.DisplayName = "player_login_display_name";
+		player_identok_request.PlayerId = "5d38e5af-369a-4471-9d2b-83ee9f0c24ff";
+		player_identok_request.UseInsecureConnection = false;
+		player_identok_request.Metadata = "{username:bob, password:asdf}";
+		auto future_player_ident = worker::alpha::CreateDevelopmentPlayerIdentityTokenAsync(  arguments[1], (uint16_t)atoi(arguments[2].c_str()), player_identok_request );
+		worker::alpha::PlayerIdentityTokenResponse player_iden_response = future_player_ident.Get();
+
+		if(  player_iden_response.Status.Code == worker::ConnectionStatusCode::kSuccess )
+		{
+			worker::alpha::LoginTokensRequest request;
+			request.WorkerType = "Managed";
+			request.UseInsecureConnection = false;
+			request.PlayerIdentityToken = player_iden_response.PlayerIdentityToken;
+			auto future = worker::alpha::CreateDevelopmentLoginTokensAsync( arguments[1], (uint16_t)atoi(arguments[2].c_str()), request );
+			worker::alpha::LoginTokensResponse response = future.Get();
+			if( response.Status.Code == worker::ConnectionStatusCode::kSuccess && response.LoginTokens.size() > 0 )
+			{
+				login_details = response.LoginTokens[0];
+			}
+			else
+			{
+				if( response.Status.Code == worker::ConnectionStatusCode::kSuccess )
+				{
+					Logf("ClientLog", "[FAILED LOGIN] Success but no login tokens given");
+					ERROR_AND_DIE("Failed to log into the server : Success but no login tokens given");
+				}
+				else
+				{
+					Logf("ClientLog", "[FAILED LOGIN] %s", response.Status.Detail.c_str());
+					ERROR_AND_DIE(Stringf("Failed to log into the server : %s", response.Status.Detail.c_str()));
+				}
+			}
+		}
+		else
+		{
+			Logf("ClientLog", "[FAILED LOGIN] %s", player_iden_response.Status.Detail.c_str() );
+			ERROR_AND_DIE(Stringf("Failed to log into the server : %s", player_iden_response.Status.Detail.c_str() ) );
+		}
+
 	}
+
+	worker::ConnectionParameters parameters;
+	parameters.WorkerType = "External";
+	parameters.Network.ConnectionType = worker::NetworkConnectionType::kTcp;
+	parameters.Network.UseExternalIp = true;
 
 	// Connect with locator or receptionist
 	worker::Connection connection = use_locator
-		? ConnectWithLocator(arguments[1], arguments[2], arguments[3], arguments[4], parameters)
+		? ConnectWithLocator(arguments[1], login_details.DeploymentName, login_details.DeploymentId, login_details.LoginToken, parameters )
 		: ConnectWithReceptionist(arguments[1], (uint16_t)atoi(arguments[2].c_str()), arguments[3], parameters);
 	GetInstance()->context.connection = &connection;
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
@@ -304,9 +352,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	APIQueryRequestId = connection.SendEntityQueryRequest(APIEntityQuery, {});
 	Logf( "ClientLog", "Connected and running" );
 
-	constexpr unsigned kFramesPerSecond = 30;
-	constexpr std::chrono::duration<double> kFramePeriodSeconds{
-		1. / static_cast<double>(kFramesPerSecond) };
+
 
 	GetInstance()->isRunning = true;
 	while ( is_connected && IsRunning() )

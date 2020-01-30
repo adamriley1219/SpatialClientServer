@@ -173,11 +173,20 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 
 	std::vector<std::string> arguments;
 
+	bool use_cloud = true;
+
 	// if no arguments are supplied, use the defaults for a local deployment
-	if (argc == 1) {
-		arguments = { "receptionist", "localhost", "7777", "External_" + get_random_characters(4) };
+	if( use_cloud )
+	{
+					//	type,	hostname,  port,      project name,        deployment name, login token 
+		arguments = { "locator", "locator.improbable.io", "443", "beta_cat_grey_781", "origin_build", "NWQzOGU1YWYtMzY5YS00NDcxLTlkMmItODNlZTlmMGMyNGZmOjo3ZjNmNzJmOS1kZDcxLTQyZjQtYWZmZS03OTNjZWNkOTI1ZWI=" };
+	} 
+	else if (argc == 1) 
+	{
+		arguments = { "receptionist", "localhost", "7790", "External_" + get_random_characters(4) };
 	}
-	else {
+	else 
+	{
 		for( uint i = 1; i < (uint)argc; ++i )
 		{
 			arguments.push_back( std::string( (char*)argv[i] ) );
