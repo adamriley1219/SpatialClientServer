@@ -179,7 +179,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	if( use_cloud )
 	{
 					//	type,	hostname,  port,      project name,        deployment name, login token 
-		arguments = { "locator", "locator.improbable.io", "443", "beta_cat_grey_781", "origin_build", "NWQzOGU1YWYtMzY5YS00NDcxLTlkMmItODNlZTlmMGMyNGZmOjo3ZjNmNzJmOS1kZDcxLTQyZjQtYWZmZS03OTNjZWNkOTI1ZWI=" };
+		arguments = { "locator", "locator.improbable.io", "443", "beta_cat_grey_781", "origin_build", "YjhhMzdhZGYtNjZiOC00MTVlLTkwOGMtNjExZjA4ZmIzZTdjOjowZTA1NzczYS05ZDJiLTRmYjQtYTY0Ny1mMGE0ZjNjZWU5OTg=" };
 	} 
 	else if (argc == 1) 
 	{

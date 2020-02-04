@@ -41,7 +41,7 @@ static worker::RequestId<worker::EntityQueryRequest> APIQueryRequestId;
 // Connection helpers
 worker::Connection ConnectWithLocator(const std::string hostname,
 	const std::string project_name,
-	const std::string deployment_id,
+	const std::string deployment_name,
 	const std::string login_token,
 	const worker::ConnectionParameters& connection_parameters) {
 	worker::LocatorParameters locator_parameters;
@@ -63,7 +63,7 @@ worker::Connection ConnectWithLocator(const std::string hostname,
 		return true;
 	};
 
-	auto future = locator.ConnectAsync(ComponentRegistry, deployment_id, connection_parameters, queue_status_callback);
+	auto future = locator.ConnectAsync(ComponentRegistry, deployment_name, connection_parameters, queue_status_callback);
 	return future.Get();
 }
 
@@ -277,9 +277,9 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 		worker::alpha::PlayerIdentityTokenRequest player_identok_request;
 		player_identok_request.DevelopmentAuthenticationToken = arguments[5];
 		player_identok_request.DisplayName = "player_login_display_name";
-		player_identok_request.PlayerId = "5d38e5af-369a-4471-9d2b-83ee9f0c24ff";
+		player_identok_request.PlayerId = "useless";
 		player_identok_request.UseInsecureConnection = false;
-		player_identok_request.Metadata = "{username:bob, password:asdf}";
+		player_identok_request.Metadata = "{username:bob, password:password}";
 		auto future_player_ident = worker::alpha::CreateDevelopmentPlayerIdentityTokenAsync(  arguments[1], (uint16_t)atoi(arguments[2].c_str()), player_identok_request );
 		worker::alpha::PlayerIdentityTokenResponse player_iden_response = future_player_ident.Get();
 
@@ -324,7 +324,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 
 	// Connect with locator or receptionist
 	worker::Connection connection = use_locator
-		? ConnectWithLocator(arguments[1], login_details.DeploymentName, login_details.DeploymentId, login_details.LoginToken, parameters )
+		? ConnectWithLocator(arguments[1], arguments[3], login_details.DeploymentName, login_details.LoginToken, parameters )
 		: ConnectWithReceptionist(arguments[1], (uint16_t)atoi(arguments[2].c_str()), arguments[3], parameters);
 	GetInstance()->context.connection = &connection;
 	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
