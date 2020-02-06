@@ -53,13 +53,13 @@ worker::Connection ConnectWithLocator(const std::string hostname,
 
 	auto queue_status_callback = [&](const worker::QueueStatus& queue_status) {
 		if (!queue_status.Error.empty()) {
-			std::cerr << "Error while queueing: " << *queue_status.Error << std::endl;
+			std::cerr << "Error while queuing: " << *queue_status.Error << std::endl;
 			ERROR_RECOVERABLE( Stringf("Error while queueing: %s", queue_status.Error->c_str()).c_str() );
 			return false;
 		}
 		std::cout << "Worker of type '" << connection_parameters.WorkerType
-			<< "' connecting through locator: queueing." << std::endl;
-		Logf( "ClientLog", "Worker of type '%s' connecting through locator: queueing.", connection_parameters.WorkerType.c_str() );
+			<< "' connecting through locator: queuing." << std::endl;
+		Logf( "ClientLog", "Worker of type '%s' connecting through locator: queuing.", connection_parameters.WorkerType.c_str() );
 		return true;
 	};
 
@@ -147,6 +147,10 @@ void SpatialOSClient::Startup(const std::vector<std::string>& args)
 */
 void SpatialOSClient::Shutdown()
 {
+	for( entity_info_t*& info : GetInstance()->entity_info_list )
+	{
+		SAFE_DELETE(info);
+	}
 	GetInstance()->isRunning = false;
 	GetInstance()->client_thread.join();
 }
@@ -197,18 +201,19 @@ void SpatialOSClient::RequestEntityCreation( EntityBase* entity )
 		return;
 	}
 
-	entity_info_t info;
-	info.game_entity = entity;
+	entity_info_t* info = new entity_info_t();
+	info->game_entity = entity;
 
 	worker::Result<worker::RequestId<worker::OutgoingCommandRequest<CreateClientEntity>>> createEntityRequestId = GetContext()->connection->SendCommandRequest<CreateClientEntity>(GetContext()->APIEntityId, 30000, {});
 	if (!createEntityRequestId) {
 		std::cout << "Failed to send create client entity request: " << createEntityRequestId.GetErrorMessage().c_str() << std::endl;
+		ERROR_RECOVERABLE( "Failed to send create client entity" );
+		SAFE_DELETE( info );
 		return;
 	}
 
 	std::cout << "Sent create client entity request with id " << createEntityRequestId->Id << std::endl;
-	info.createEntityCommandRequestId = createEntityRequestId->Id;
-
+	info->createEntityCommandRequestId = createEntityRequestId->Id;
 	AddEntityInfo( info );
 }
 
@@ -216,17 +221,28 @@ void SpatialOSClient::RequestEntityCreation( EntityBase* entity )
 /**
 * UpdatePlayerControls
 */
-void SpatialOSClient::UpdatePlayerControls( EntityBase* player, const Vec2& direction )
+void SpatialOSClient::UpdatePlayerControls( EntityBase* player, const Vec2& force_vec )
 {
 	entity_info_t* info = GetInfoWithEntity( player );
+
+	if( force_vec.GetLengthSquared() > 500.0f )
+	{
+		LogFlush();
+		ERROR_RECOVERABLE( "Yeah, not meant to be going this far." );
+	}
 
 	if( info && info->created )
 	{
 		siren::PlayerControls::Update ctrUpdate;
-		ctrUpdate.set_x_move( direction.x );
-		ctrUpdate.set_y_move( direction.y );
+		ctrUpdate.set_x_move( force_vec.x );
+		ctrUpdate.set_y_move( force_vec.y );
 		worker::UpdateParameters params;
+		Logf( "", "	Sending intent x: %.04f y:%.04f ", force_vec.x, force_vec.y );
 		GetContext()->connection->SendComponentUpdate<siren::PlayerControls>( info->id, ctrUpdate, params );
+	}
+	else
+	{
+		Logf("WARNING", "Failed to send input", force_vec.x, force_vec.y);
 	}
 }
 
@@ -327,7 +343,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 		? ConnectWithLocator(arguments[1], arguments[3], login_details.DeploymentName, login_details.LoginToken, parameters )
 		: ConnectWithReceptionist(arguments[1], (uint16_t)atoi(arguments[2].c_str()), arguments[3], parameters);
 	GetInstance()->context.connection = &connection;
-	connection.SendLogMessage(worker::LogLevel::kInfo, kLoggerName, "Connected successfully");
+	connection.SendLogMessage( worker::LogLevel::kInfo, kLoggerName, "Connected successfully" );
 
 	// Register callbacks and run the worker main loop.
 	View view{ ComponentRegistry };
@@ -336,7 +352,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 
 	view.OnDisconnect([&](const worker::DisconnectOp& op) {
 		Logf("ClientLog", "[disconnect] %s", op.Reason.c_str());
-		ERROR_RECOVERABLE( Stringf( "Disconnected from teh server : %s", op.Reason.c_str() ).c_str() );
+		ERROR_RECOVERABLE( Stringf( "Disconnected from the server : %s", op.Reason.c_str() ).c_str() );
 		is_connected = false;
 		});
 
@@ -409,6 +425,7 @@ void SpatialOSClient::Update()
 			// Entity wasn't updated so there's nothing to tell the client
 			continue;
 		}
+		
 		entity_info_t* info = GetInfoWithEntityId( ent_pair.first );
 		if( info )
 		{
@@ -433,15 +450,20 @@ void SpatialOSClient::Update()
 			if (data)
 			{
 				Logf("SpatialOSClient::Update", "Making from data");
-				entity_info_t new_info;
+				entity_info_t* new_info = new entity_info_t();
 				std::string name = data->entity_type();
-				new_info.game_entity = g_theGame->CreateSimulatedEntity( name );
-				if( new_info.game_entity )
+				new_info->game_entity = g_theGame->CreateSimulatedEntity( name );
+				if( new_info->game_entity )
 				{
-					UpdateEntityWithWorkerEntity( *(new_info.game_entity), tracker.worker_entity );
-					new_info.id = ent_pair.first;
-					new_info.created = true;
+					UpdateEntityWithWorkerEntity( *(new_info->game_entity), tracker.worker_entity );
+					new_info->id = ent_pair.first;
+					new_info->created = true;
 					AddEntityInfo( new_info );
+					Logf("SpatialOSClient::Update", "Success in creation of entity");
+				}
+				else
+				{
+					SAFE_DELETE( new_info );
 				}
 			}
 		}
@@ -449,14 +471,14 @@ void SpatialOSClient::Update()
 	}
 
 	// Check for deleted entities
-	for( entity_info_t& info : entity_info_list )
+	for( entity_info_t*& info : entity_info_list )
 	{
 		// See if we can no longer see an entity that has been created
-		if( context.view->m_entities.find( info.id ) == context.view->m_entities.end() && info.created )
+		if( info && context.view->m_entities.find( info->id ) == context.view->m_entities.end() && info->created && (EntityBase*)g_theGame->GetPlayerEntity() != info->game_entity )
 		{
 			// Tell the entity to die and then erase knowledge of entity
-			info.game_entity->Die();
-			info = entity_info_t();
+			info->game_entity->Die();
+			SAFE_DELETE(info);
 		}
 	}
 }
@@ -480,11 +502,11 @@ void SpatialOSClient::UpdateEntityWithWorkerEntity( EntityBase& entity, worker::
 */
 entity_info_t* SpatialOSClient::GetInfoWithEntityId( const worker::EntityId& entity_id )
 {
-	for (entity_info_t& info : GetInstance()->entity_info_list)
+	for (entity_info_t*& info : GetInstance()->entity_info_list)
 	{
-		if ( info.id == entity_id )
+		if ( info && info->id == entity_id )
 		{
-			return &info;
+			return info;
 		}
 	}
 
@@ -498,11 +520,11 @@ entity_info_t* SpatialOSClient::GetInfoWithEntityId( const worker::EntityId& ent
 */
 entity_info_t* SpatialOSClient::GetInfoWithEntity( EntityBase* entity_id )
 {
-	for (entity_info_t& info : GetInstance()->entity_info_list)
+	for (entity_info_t*& info : GetInstance()->entity_info_list)
 	{
-		if ( info.game_entity && info.game_entity == entity_id)
+		if ( info && info->game_entity && info->game_entity == entity_id )
 		{
-			return &info;
+			return info;
 		}
 	}
 
@@ -534,14 +556,19 @@ void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<Cr
 	if( op.StatusCode == worker::StatusCode::kSuccess )
 	{
 		entity_info_t* info = GetInfoWithCreateEntityCommandRequestId( op.RequestId.Id );
-		if( !info->game_entity )
-		{
-			Logf( "Warning", "Improper creation given within SpatialOSClient::ClientCreationResponse" );
-		}
 		if( info )
 		{
+			if( !info->game_entity )
+			{
+				Logf( "WARNING", "Improper creation given within SpatialOSClient::ClientCreationResponse" );
+			}
+			
 			info->created = true;
 			info->id = op.Response->id_created();
+		}
+		else
+		{
+			Logf( "WARNING", "Couldn't find the thing you were trying to create." );
 		}
 	}
 }
@@ -553,11 +580,11 @@ void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<Cr
 */
 entity_info_t* SpatialOSClient::GetInfoWithCreateEntityCommandRequestId( uint64_t request_id )
 {
-	for (entity_info_t& entity : GetInstance()->entity_info_list)
+	for (entity_info_t*& entity : GetInstance()->entity_info_list)
 	{
-		if ( entity.createEntityCommandRequestId == request_id )
+		if ( entity && entity->createEntityCommandRequestId == request_id )
 		{
-			return &entity;
+			return entity;
 		}
 	}
 	return nullptr;
@@ -567,7 +594,7 @@ entity_info_t* SpatialOSClient::GetInfoWithCreateEntityCommandRequestId( uint64_
 /**
 * GetInfoList
 */
-const std::vector<entity_info_t>& SpatialOSClient::GetInfoList()
+const std::vector<entity_info_t*>& SpatialOSClient::GetInfoList()
 {
 	return GetInstance()->entity_info_list;
 }
@@ -576,11 +603,11 @@ const std::vector<entity_info_t>& SpatialOSClient::GetInfoList()
 /**
 * AddEntityInfo
 */
-void SpatialOSClient::AddEntityInfo( const entity_info_t& to_add )
+void SpatialOSClient::AddEntityInfo( entity_info_t* to_add )
 {
-	for (entity_info_t& info_old : GetInstance()->entity_info_list)
+	for( entity_info_t*& info_old : GetInstance()->entity_info_list )
 	{
-		if (info_old.game_entity == nullptr)
+		if ( !info_old )
 		{
 			info_old = to_add;
 			return;

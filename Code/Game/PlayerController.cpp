@@ -8,6 +8,8 @@
 #include "Engine/Renderer/Camera.hpp"
 #include "Engine/Core/WindowContext.hpp"
 
+#include "Engine/Memory/Debug/Log.hpp"
+
 //--------------------------------------------------------------------------
 /**
 * PlayerController
@@ -16,6 +18,7 @@ PlayerController::PlayerController()
 	: ControllerBase()
 { 
 	m_player_interface = true;
+	Logf( "playerContr", "construction" );
 }
 
 //--------------------------------------------------------------------------
@@ -24,6 +27,7 @@ PlayerController::PlayerController()
 */
 PlayerController::~PlayerController()
 {
+	Logf( "playerContr", "deconstruction" );
 
 }
 

@@ -60,7 +60,6 @@ void App::Startup()
 	g_theGame = new Game();
 
 
-	LogSystemStartup("Data/Log/Log.txt");
 	ProfilerSystemInit();
 
 	ClockSystemStartup();
@@ -88,6 +87,8 @@ void App::Shutdown()
 {
 	g_theGame->Shutdown();
 
+	Zone::Shutdown();
+
 	g_theImGUISystem->Shutdown();
 	g_theConsole->Shutdown();
 	g_theDebugRenderSystem->Shutdown();
@@ -95,7 +96,6 @@ void App::Shutdown()
 	g_theEventSystem->Shutdown();
 
 	ProfilerSystemDeinit();
-	LogSystemShutdown();
 
 	SAFE_DELETE(g_theGame);
 

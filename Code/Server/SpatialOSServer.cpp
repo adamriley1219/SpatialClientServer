@@ -585,12 +585,12 @@ void SpatialOSServer::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 void SpatialOSServer::PlayerControlsUpdate( const worker::ComponentUpdateOp<siren::PlayerControls>& op )
 {
 	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
-//	std::cout << "recieved updates form player controls: " <<  op.EntityId << std::endl;
+	std::cout << "received updates form player controls: " <<  op.EntityId << std::endl;
 	if ( info && info->created )
 	{
 		const auto data_x = op.Update.x_move();
 		Vec2 direction( *data_x, *( op.Update.y_move() ) );
-		//std::cout << "	found info for update: " << direction.x << ", " << direction.y << std::endl;
+		std::cout << "	found info for update: " << direction.x << ", " << direction.y << std::endl;
 		( (SimController*)( (ActorBase*)info->game_entity )->GetController() )->SetMoveDirection( direction );
 	}
 }

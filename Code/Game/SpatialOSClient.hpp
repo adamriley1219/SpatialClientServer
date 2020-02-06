@@ -67,9 +67,9 @@ private:
 	static entity_info_t* GetInfoWithEntityId( const worker::EntityId& entity_id );
 	static entity_info_t* GetInfoWithEntity( EntityBase* entity_id );
 
-	static const std::vector<entity_info_t>& GetInfoList();
+	static const std::vector<entity_info_t*>& GetInfoList();
 
-	static void AddEntityInfo( const entity_info_t& to_add );
+	static void AddEntityInfo( entity_info_t* to_add );
 
 private:
 	static SpatialOSClient* GetInstance();
@@ -81,9 +81,7 @@ private:
 	bool isRunning = false;
 	std::thread client_thread;
 
-	std::mutex entity_info_list_lock;
-
 	ClientContext context;
-	std::vector<entity_info_t> entity_info_list;	
+	std::vector<entity_info_t*> entity_info_list;	
 	
 };

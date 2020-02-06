@@ -42,7 +42,7 @@
 */
 Game::Game()
 {
-	ConstructGame();
+
 }
 
 //--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ Game::Game()
 */
 Game::~Game()
 {
-	DeconstructGame();
+
 }
 
 //--------------------------------------------------------------------------
@@ -82,7 +82,7 @@ void Game::Startup()
 */
 void Game::Shutdown()
 {
-	Zone::Shutdown();
+
 }
 
 
@@ -231,7 +231,7 @@ bool Game::OnServerConnection(EventArgs& args)
 	m_clientEntity->Possess(m_clientController);
 
 	SpatialOSClient::RequestEntityCreation( m_clientEntity );
-
+	Logf( "Client", "Received connection from the server - made client entity" );
 	return true;
 }
 
@@ -262,32 +262,4 @@ EntityBase* Game::CreateSimulatedEntity( const std::string& name )
 		}
 	}
 	return nullptr;
-}
-
-//--------------------------------------------------------------------------
-/**
-* ResetGame
-*/
-void Game::ResetGame()
-{
-	DeconstructGame();
-	ConstructGame();
-}
-
-//--------------------------------------------------------------------------
-/**
-* ConstructGame
-*/
-void Game::ConstructGame()
-{
-
-}
-
-//--------------------------------------------------------------------------
-/**
-* DeconstructGame
-*/
-void Game::DeconstructGame()
-{
-
 }

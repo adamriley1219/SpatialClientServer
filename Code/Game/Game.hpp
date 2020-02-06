@@ -30,14 +30,14 @@ public:
 	void EndCamera();
 
 	Camera* GetCamera();
+
+	ActorRenderable* GetPlayerEntity() { return m_clientEntity; }
 	
 public:
 	void AddEntity( EntityBase* entity );
 	void RemoveEntity( EntityBase* entity );
 
 	EntityBase* CreateSimulatedEntity( const std::string& name );
-
-
 private:
 	void RenderDevConsole() const;
 
@@ -46,12 +46,6 @@ private:
 	bool OnServerConnection( EventArgs& args );
 
 private:
-	void ResetGame();
-
-	// Helper Methods
-	void ConstructGame();
-	void DeconstructGame();
-private:
 	bool m_isQuitting = false;
 
 	mutable Camera m_curentCamera;
@@ -59,5 +53,7 @@ private:
 
 	PlayerController* m_clientController = nullptr;
 	ActorRenderable* m_clientEntity = nullptr;
+
+
 
 };

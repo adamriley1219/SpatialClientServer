@@ -17,6 +17,8 @@
 #include "Engine/Core/WindowContext.hpp"
 #include "Engine/Renderer/RenderContext.hpp"
 
+#include "Engine/Memory/Debug/Log.hpp"
+
 #include "Engine/ImGUI/ImGUISystem.hpp"
 
 #include "Game/GameCommon.hpp"
@@ -193,6 +195,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 		}
 	}
 
+	LogSystemStartup("Data/Log/Log.txt");
 	//--------------------------------------------------------------------------
 	// Program main loop; keep running frames until it's time to quit
 
@@ -210,6 +213,9 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	}
 
 	Shutdown();
+
+
+	LogSystemShutdown();
 	return 0;
 }
 
