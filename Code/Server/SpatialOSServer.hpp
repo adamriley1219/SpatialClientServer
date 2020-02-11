@@ -10,6 +10,7 @@
 #include <mutex>
 
 class EntityBase;
+class View;
 
 using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;
 

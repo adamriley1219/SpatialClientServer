@@ -23,6 +23,14 @@ type CreateClientEntityResponse {
 	EntityId id_created = 1;
 }
 
+type DeleteClientEntityRequest {
+	EntityId id_to_delete = 1;
+}
+
+type DeleteClientEntityResponse {
+	EntityId id_deleted = 1;
+}
+
 type RequestEntityIdRequest {
 	
 }
@@ -55,15 +63,8 @@ component ServerAPI {
 	id = 1002;
 	/** Requests spawning of a client entity for the calling worker. */
 	command CreateClientEntityResponse create_client_entity(CreateClientEntityRequest);
-	/**
-	 * Notifies the server worker that the calling client worker is still alive.
-	 *
-	 * Every client needs to call this regularly, or the server worker will delete the client's entity.
-	 */
-	command ClientPingResponse client_ping(ClientPingRequest);
 
-	/** Requests updating a resource. */
-	command UpdateResourceResponse update_resource(UpdateResourceRequest);
+	command DeleteClientEntityResponse delete_client_entity(DeleteClientEntityRequest);
 }
 
 

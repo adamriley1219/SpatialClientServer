@@ -147,6 +147,9 @@ void SpatialOSClient::Startup(const std::vector<std::string>& args)
 */
 void SpatialOSClient::Shutdown()
 {
+// 	::siren::DeleteClientEntityResponse response;
+// 	response.set_id_deleted( context.clientEntityId );
+// 	context.connection->SendCommandRequest<DeleteClientEntity>(GetContext()->APIEntityId, 30000, response);
 	for( entity_info_t*& info : GetInstance()->entity_info_list )
 	{
 		SAFE_DELETE(info);

@@ -19,6 +19,9 @@
     <ClCompile Include="WorldSim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="View.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerApp.hpp">
@@ -31,6 +34,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="WorldSim.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="View.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

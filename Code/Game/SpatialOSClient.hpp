@@ -18,11 +18,6 @@ struct ClientContext {
 	View* view = nullptr;
 	worker::EntityId APIEntityId;
 	worker::EntityId clientEntityId;
-	bool absoluteInterest;
-	bool restrictController;
-	bool viewDependenciesUpdated;
-	double lastInterestUpdatePositionY;
-	double edgeLength;
 };
 
 struct entity_info_t
