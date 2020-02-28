@@ -11,6 +11,7 @@ public:
 	virtual ~ControllerBase();
 
 	virtual void Update( float deltaTime ) = 0;
+	ActorBase* GetActor() { return m_controlled; };
 
 protected:
 	void SetControlled( ActorBase* to_control );

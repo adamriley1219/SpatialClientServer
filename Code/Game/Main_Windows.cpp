@@ -213,7 +213,7 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 	}
 
 	Shutdown();
-
+	SpatialOSClient::Shutdown();
 
 	LogSystemShutdown();
 	return 0;

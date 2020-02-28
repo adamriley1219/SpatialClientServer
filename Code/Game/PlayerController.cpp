@@ -37,6 +37,7 @@ PlayerController::~PlayerController()
 */
 void PlayerController::Update( float deltaTime )
 {
+	UNUSED( deltaTime );
 	m_moveDir = Vec2::ZERO;
 
 	if( g_theInputSystem->KeyIsDown( KEY_W ) )
@@ -75,7 +76,7 @@ void PlayerController::Update( float deltaTime )
 	}
 
 	m_moveDir.Normalize();
-	m_controlled->ApplyForce( m_moveDir * m_controlled->GetSpeed() * deltaTime );
+	//m_controlled->ApplyForce( m_moveDir * m_controlled->GetSpeed() * deltaTime );
 }
 
 //--------------------------------------------------------------------------

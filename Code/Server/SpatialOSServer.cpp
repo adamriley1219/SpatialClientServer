@@ -124,6 +124,15 @@ void SpatialOSServer::RequestEntityCreation( EntityBase* entity_to_create )
 
 //--------------------------------------------------------------------------
 /**
+* RequestEntityDeletion
+*/
+void SpatialOSServer::RequestEntityDeletion( const worker::EntityId entity )
+{
+	GetInstance()->connection->SendDeleteEntityRequest( entity, 5000 );
+}
+
+//--------------------------------------------------------------------------
+/**
 * UpdatePosition
 */
 void SpatialOSServer::UpdatePosition( EntityBase* entity )
@@ -324,6 +333,7 @@ void SpatialOSServer::RegisterCallbacks( worker::Dispatcher& dispatcher )
 
 	// For requesting an entity to be created, used for client to enter.
 	dispatcher.OnCommandRequest<CreateClientEntity>( PlayerCreation );
+	dispatcher.OnCommandRequest<DeleteClientEntity>( PlayerDeletion );
 }
 
 //--------------------------------------------------------------------------
@@ -585,12 +595,12 @@ void SpatialOSServer::PositionUpdated( const worker::ComponentUpdateOp<improbabl
 void SpatialOSServer::PlayerControlsUpdate( const worker::ComponentUpdateOp<siren::PlayerControls>& op )
 {
 	entity_info_t* info = GetInfoFromEnityId( op.EntityId );
-	std::cout << "received updates form player controls: " <<  op.EntityId << std::endl;
+	//std::cout << "received updates form player controls: " <<  op.EntityId << std::endl;
 	if ( info && info->created )
 	{
 		const auto data_x = op.Update.x_move();
 		Vec2 direction( *data_x, *( op.Update.y_move() ) );
-		std::cout << "	found info for update: " << direction.x << ", " << direction.y << std::endl;
+		//std::cout << "	found info for update: " << direction.x << ", " << direction.y << std::endl;
 		( (SimController*)( (ActorBase*)info->game_entity )->GetController() )->SetMoveDirection( direction );
 	}
 }
@@ -628,6 +638,16 @@ void SpatialOSServer::PlayerCreation( const worker::CommandRequestOp<CreateClien
 	{
 		std::cout << "Warning: SpatialOSServer::PlayerCreation failed to create the info for the player." << std::endl;
 	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* PlayerDeletion
+*/
+void SpatialOSServer::PlayerDeletion(const worker::CommandRequestOp<DeleteClientEntity>& op)
+{
+	std::cout << "SpatialOSServer::PlayerDeletion | Deleting ID: " << op.Request.id_to_delete() << std::endl;
+	SpatialOSServer::RequestEntityDeletion( op.Request.id_to_delete() );
 }
 
 //--------------------------------------------------------------------------

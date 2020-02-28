@@ -132,7 +132,10 @@ void Game::GameRender() const
 void Game::UpdateGame( float deltaSeconds )
 {
 	Zone::GetZone()->Update( deltaSeconds );
+	
+	// Can't go into zone because that's shared with server. Send updated client input here.
 	SpatialOSClient::UpdatePlayerControls( m_clientEntity, m_clientController->GetMoveDirection() * m_clientEntity->GetSpeed() );
+
 	UpdateCamera( deltaSeconds );
 }
 
@@ -241,25 +244,23 @@ bool Game::OnServerConnection(EventArgs& args)
 */
 EntityBase* Game::CreateSimulatedEntity( const std::string& name )
 {
-	if (EntityBaseDefinition::IsGameType(name))
+	
+	if (AbilityBaseDefinition::DoesDefExist(name))
 	{
-		if (AbilityBaseDefinition::DoesDefExist(name))
+		return new AbilityBase(name);
+	}
+	else if (ActorBaseDefinition::DoesDefExist(name))
+	{
+		ActorRenderable* actor = new ActorRenderable(name);
+		if (name == "player")
 		{
-			return new AbilityBase(name);
+			actor->Possess(new SimController());
 		}
-		else if (ActorBaseDefinition::DoesDefExist(name))
+		else
 		{
-			ActorRenderable* actor = new ActorRenderable(name);
-			if (name == "player")
-			{
-				actor->Possess( new SimController() );
-			}
-			else
-			{
-				actor->Possess( new AIController() );
-			}
-			return actor;
+			actor->Possess(new AIController());
 		}
+		return actor;
 	}
 	return nullptr;
 }

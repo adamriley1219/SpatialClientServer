@@ -13,6 +13,7 @@ class EntityBase;
 class View;
 
 using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;
+using DeleteClientEntity = siren::ServerAPI::Commands::DeleteClientEntity;
 
 
 struct entity_info_t
@@ -38,6 +39,7 @@ public:
 
 public:
 	static void RequestEntityCreation( EntityBase* entity );
+	static void RequestEntityDeletion( const worker::EntityId entity );
 	static void UpdatePosition( EntityBase *entity );
 	static bool IsRunning();
 
@@ -60,6 +62,7 @@ private:
 	static void PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op );
 	static void PlayerControlsUpdate( const worker::ComponentUpdateOp<siren::PlayerControls>& op );
 	static void PlayerCreation( const worker::CommandRequestOp<CreateClientEntity>& op ); 
+	static void PlayerDeletion( const worker::CommandRequestOp<DeleteClientEntity>& op ); 
 
 private:
 	static SpatialOSServer* GetInstance();

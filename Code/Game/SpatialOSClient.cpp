@@ -38,6 +38,8 @@ const std::string kLoggerName = "client";
 const std::uint32_t kGetOpListTimeoutInMilliseconds = 100;
 static worker::RequestId<worker::EntityQueryRequest> APIQueryRequestId;
 
+using DeleteClientEntity = siren::ServerAPI::Commands::DeleteClientEntity;
+
 // Connection helpers
 worker::Connection ConnectWithLocator(const std::string hostname,
 	const std::string project_name,
@@ -147,9 +149,10 @@ void SpatialOSClient::Startup(const std::vector<std::string>& args)
 */
 void SpatialOSClient::Shutdown()
 {
-// 	::siren::DeleteClientEntityResponse response;
-// 	response.set_id_deleted( context.clientEntityId );
-// 	context.connection->SendCommandRequest<DeleteClientEntity>(GetContext()->APIEntityId, 30000, response);
+	ClientContext& context = GetInstance()->context;
+	::siren::DeleteClientEntityRequest request;
+	request.set_id_to_delete( context.clientEntityId );
+	worker::Result<worker::RequestId<worker::OutgoingCommandRequest<DeleteClientEntity>>> createEntityRequestId = context.connection->SendCommandRequest<DeleteClientEntity>( GetContext()->APIEntityId, request, 30000, {} );
 	for( entity_info_t*& info : GetInstance()->entity_info_list )
 	{
 		SAFE_DELETE(info);
@@ -318,7 +321,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 			{
 				if( response.Status.Code == worker::ConnectionStatusCode::kSuccess )
 				{
-					Logf("ClientLog", "[FAILED LOGIN] Success but no login tokens given");
+					Logf("ClientLog", "[FAILED LOGIN] Success but no login tokens given. Make sure you have dev_login tagged in the deployment.");
 					ERROR_AND_DIE("Failed to log into the server : Success but no login tokens given");
 				}
 				else
@@ -410,6 +413,13 @@ void SpatialOSClient::RegisterCallbacks( View& view )
 	view.OnEntityQueryResponse( EntityQueryResponse );
 
 	view.OnCommandResponse<CreateClientEntity>( ClientCreationResponse );
+
+	view.OnCommandResponse<DeleteClientEntity>( []( const worker::CommandResponseOp<DeleteClientEntity>& op )
+		{
+			Logf( "", op.Message.c_str() );
+		}
+	);
+
 
 }
 
@@ -568,6 +578,7 @@ void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<Cr
 			
 			info->created = true;
 			info->id = op.Response->id_created();
+			GetInstance()->context.clientEntityId = op.Response->id_created();
 		}
 		else
 		{

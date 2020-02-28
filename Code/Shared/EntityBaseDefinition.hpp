@@ -13,8 +13,6 @@ enum EntityType
 class EntityBaseDefinition
 {
 	friend class EntityBase;
-public:
-	static bool IsGameType( const std::string& name );
 
 protected:
 	EntityBaseDefinition(const XmlElement& element);

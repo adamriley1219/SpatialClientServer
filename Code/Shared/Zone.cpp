@@ -48,6 +48,26 @@ void Zone::Update(float deltaTime)
 	}
 
 	m_physics_system->Update(deltaTime);
+
+
+	// All entities with controllers
+	for (ControllerBase* contr : m_controllers)
+	{
+		if ( contr && contr->GetActor()->IsGarbage() )
+		{
+			RemoveEntityWithController( contr->GetActor(), contr );
+		}
+	}
+
+
+	// Rest of entities without controllers
+	for( EntityBase*& entity : m_entities )
+	{
+		if( entity && entity->IsGarbage() )
+		{
+			SAFE_DELETE(entity);
+		}
+	}
 }
 
 

@@ -2,18 +2,6 @@
 
 //--------------------------------------------------------------------------
 /**
-* IsGameType
-*/
-bool EntityBaseDefinition::IsGameType(const std::string& name)
-{
-	return name == "player" 
-		|| name == "turret"
-		|| name == "crawler"
-		;
-}
-
-//--------------------------------------------------------------------------
-/**
 * EntityBaseDefinition
 */
 EntityBaseDefinition::EntityBaseDefinition(const XmlElement& element)
