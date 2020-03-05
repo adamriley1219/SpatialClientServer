@@ -37,7 +37,7 @@ void AIController::Update(float deltaTime)
 	if( player )
 	{
 		MoveTowardPlayer( player );
-		AttackPlayerIfCan( player );
+		//AttackPlayerIfCan( player );
 	}
 
 }
