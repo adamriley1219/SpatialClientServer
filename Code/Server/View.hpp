@@ -1,7 +1,7 @@
 #pragma once
 #include <improbable/worker.h>
 #include <improbable/standard_library.h>
-
+#include <iostream>
 
 
 class View 
@@ -27,6 +27,8 @@ public:
 		bool garbage = false;
 	};
 
+	void CleanupGarbage();
+
 	worker::Map<worker::EntityId, entity_tracker_t> m_entities;
 	worker::Map<worker::EntityId, worker::Map<worker::ComponentId, worker::Authority>> m_component_authority;
 
@@ -43,7 +45,7 @@ private:
 			view.OnAddComponent<T>([&view](const worker::AddComponentOp<T>& op) 
 			{
 				auto it = view.m_entities.find(op.EntityId);
-				if (it != view.m_entities.end()) {
+				if ( it != view.m_entities.end() && !it->second.garbage ) {
 					entity_tracker_t& tracker = it->second;
 					tracker.worker_entity.Add<T>(op.Data);
 					tracker.updated = true;
@@ -53,7 +55,7 @@ private:
 			view.OnRemoveComponent<T>([&view](const worker::RemoveComponentOp& op) 
 			{
 				auto it = view.m_entities.find(op.EntityId);
-				if (it != view.m_entities.end()) {
+				if ( it != view.m_entities.end() && !it->second.garbage ) {
 					entity_tracker_t& tracker = it->second;
 					tracker.worker_entity.Remove<T>();
 					tracker.updated = true;
@@ -68,7 +70,7 @@ private:
 			view.OnComponentUpdate<T>([&view](const worker::ComponentUpdateOp<T>& op) 
 			{
 				auto it = view.m_entities.find(op.EntityId);
-				if (it != view.m_entities.end()) {
+				if (it != view.m_entities.end() && !it->second.garbage ) {
 					entity_tracker_t& tracker = it->second;
 					if (tracker.worker_entity.Get<T>()) {
 						tracker.worker_entity.Update<T>(op.Update);
@@ -78,8 +80,6 @@ private:
 			});
 		}
 	};
-
-
 };
 
 //--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ View::View(const worker::Components<T...>& components)
 		std::cout << "AddEntity: " << op.EntityId << std::endl;
 		});
 	OnRemoveEntity([this](const worker::RemoveEntityOp& op) {
-		m_entities.erase(op.EntityId);
+		m_entities[op.EntityId].garbage = true;
 		m_component_authority.erase(op.EntityId);
 		});
 	ForEachComponent(components, track_component_handler{ *this });

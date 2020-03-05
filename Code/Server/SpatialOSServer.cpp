@@ -372,9 +372,9 @@ void SpatialOSServer::Update()
 		auto itr = view->m_entities.find(info.id);
 		bool entity_in_view_list = itr != view->m_entities.end();
 
-		if( !entity_in_view_list )
+		if( entity_in_view_list )
 		{
-			if( info.created && info.seen_by_server )
+			if( itr->second.garbage )
 			{
 				// Tell the entity to die and then erase knowledge of entity
 				std::cout << "Killing entity with ID: " << info.id << std::endl;
@@ -383,12 +383,10 @@ void SpatialOSServer::Update()
 				continue;
 			}
 		}
-		else
-		{
-			info.seen_by_server = true;
-		}
 		++idx;
 	}
+
+	view->CleanupGarbage();
 }
 
 //--------------------------------------------------------------------------
@@ -664,7 +662,6 @@ void SpatialOSServer::PrintAllEntityinfos()
 		std::cout << "	Info id: " << info.id << std::endl;
 		std::cout << "		created: " << ( info.created ? "Yes" : "No" ) << std::endl;
 		std::cout << "		updated: " << ( info.updated ? "Yes" : "No" ) << std::endl;
-		std::cout << "		seen_by_server: " << ( info.seen_by_server ? "Yes" : "No" ) << std::endl;
 	}
 }
 

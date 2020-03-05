@@ -26,7 +26,6 @@ struct entity_info_t
 	uint64_t command_response_id = (uint64_t)-1;
 	std::string owner_id = "";
 	bool created = false;
-	bool seen_by_server = false;
 	bool updated = false;
 };
 
