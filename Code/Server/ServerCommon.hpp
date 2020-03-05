@@ -10,3 +10,7 @@
 
 class ServerApp;
 extern ServerApp* g_theServerApp;
+
+
+class WorldSim;
+extern WorldSim* g_theSim;

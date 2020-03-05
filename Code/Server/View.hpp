@@ -93,6 +93,7 @@ View::View(const worker::Components<T...>& components)
 	OnAddEntity([this](const worker::AddEntityOp& op) {
 		m_entities[op.EntityId];
 		m_component_authority[op.EntityId];
+		std::cout << "AddEntity: " << op.EntityId << std::endl;
 		});
 	OnRemoveEntity([this](const worker::RemoveEntityOp& op) {
 		m_entities.erase(op.EntityId);

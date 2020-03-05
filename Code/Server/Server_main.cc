@@ -26,9 +26,7 @@ void Startup()
 	{
 		g_gameConfigBlackboard.PopulateFromXmlElementAttributes(*root);
 	}
-	std::cout << "After blackboard Load" << std::endl;
 	g_theServerApp = new ServerApp();
-	std::cout << "After ServerApp New" << std::endl;
 	g_theServerApp->Startup();
 	std::cout << "After ServerApp Startup" << std::endl;
 }

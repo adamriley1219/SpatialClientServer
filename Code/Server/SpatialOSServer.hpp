@@ -26,6 +26,7 @@ struct entity_info_t
 	uint64_t command_response_id = (uint64_t)-1;
 	std::string owner_id = "";
 	bool created = false;
+	bool seen_by_server = false;
 	bool updated = false;
 };
 
@@ -47,20 +48,25 @@ private:
 	static void Run( const std::vector<std::string> arguments );
 	static void RegisterCallbacks( worker::Dispatcher& dispatcher );
 
+private:
+	void Update();
+	static void UpdateEntityWithWorkerEntity( EntityBase& entity, worker::Entity& worker_entity, worker::Map<worker::ComponentId, worker::Authority>& auth );
+
+private:
 	static uint64_t DeleteEntityResponse( const worker::DeleteEntityResponseOp& op );
 	static uint64_t CreateEntityResponse( const worker::CreateEntityResponseOp& op );
 	static uint64_t ReserveEntityIdsResponse( const worker::ReserveEntityIdsResponseOp& op );
 
-	static entity_info_t* GetInfoFromCreateEnityRequest( uint64_t entity_creation_request_id );
-	static entity_info_t* GetInfoFromDeleteEnityRequest( uint64_t entity_deletion_request_id );
-	static entity_info_t* GetInfoFromReserveEnityIdsRequest( uint64_t entity_id_reservation_request_id );
-	static entity_info_t* GetInfoFromEnityId( const worker::EntityId& entity_id );
-	static entity_info_t* GetInfoFromEnity( EntityBase* entity_id );
+	static entity_info_t* GetInfoWithCreateEnityRequest( uint64_t entity_creation_request_id );
+	static entity_info_t* GetInfoWithDeleteEnityRequest( uint64_t entity_deletion_request_id );
+	static entity_info_t* GetInfoWithReserveEnityIdsRequest( uint64_t entity_id_reservation_request_id );
+	static entity_info_t* GetInfoWithEnityId( const worker::EntityId& entity_id );
+	static entity_info_t* GetInfoWithEnity( EntityBase* entity_id );
+
+	static void PrintAllEntityinfos();
 
 private:
 	// Component Updating
-	static void PositionUpdated( const worker::ComponentUpdateOp<improbable::Position>& op );
-	static void PlayerControlsUpdate( const worker::ComponentUpdateOp<siren::PlayerControls>& op );
 	static void PlayerCreation( const worker::CommandRequestOp<CreateClientEntity>& op ); 
 	static void PlayerDeletion( const worker::CommandRequestOp<DeleteClientEntity>& op ); 
 
@@ -73,11 +79,11 @@ private:
 	bool isRunning = false;
 	std::thread server_thread;
 
-	worker::Dispatcher* dispatcher;
+	View* view;
+
 	worker::Connection* connection;
 
 	std::mutex entity_info_list_lock;
 
 	std::vector<entity_info_t> entity_info_list;
-	std::vector<EntityBase*> unclaimed_game_entities;
 };

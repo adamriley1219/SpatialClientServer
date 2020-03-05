@@ -26,7 +26,6 @@ struct entity_info_t
 	worker::EntityId id = 0;
 	uint64_t createEntityCommandRequestId = 0;
 	bool created = false;
-	bool garbage = false;
 };
 
 using CreateClientEntity = siren::ServerAPI::Commands::CreateClientEntity;

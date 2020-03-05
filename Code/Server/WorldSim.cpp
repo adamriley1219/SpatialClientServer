@@ -15,9 +15,12 @@
 #include "Server/SpatialOSServer.hpp"
 
 #include "Shared/AbilityBaseDefinition.hpp"
+#include "Shared/AbilityBase.hpp"
 #include "Shared/Zone.hpp"
 #include "Shared/AIController.hpp"
+#include "Shared/SimController.hpp"
 #include "Shared/ActorBase.hpp"
+#include "Shared/ActorBaseDefinition.hpp"
 
 #include <vector>
 
@@ -59,17 +62,17 @@ void WorldSim::Startup()
 
 	std::cout << "world setup" << std::endl;
 	
-	ActorBase* turret = new ActorBase( "turret", Vec2( 6.5f, 7.0f ) );
-	turret->Possess( new AIController() );
-	SpatialOSServer::RequestEntityCreation( turret );
+	ActorBase* ai_actor = new ActorBase( "turret", Vec2( 6.5f, 7.0f ) );
+	ai_actor->Possess( new AIController() );
+	SpatialOSServer::RequestEntityCreation( ai_actor );
 
-	turret = new ActorBase( "turret", Vec2( 5.0f, 7.0f ) );
-	turret->Possess( new AIController() );
-	SpatialOSServer::RequestEntityCreation( turret );
+	ai_actor = new ActorBase( "turret", Vec2( 5.0f, 7.0f ) );
+	ai_actor->Possess( new AIController() );
+	SpatialOSServer::RequestEntityCreation( ai_actor );
 
-	turret = new ActorBase("crawler", Vec2(-5.0f, 7.0f));
-	turret->Possess(new AIController());
-	SpatialOSServer::RequestEntityCreation(turret);
+	ai_actor = new ActorBase( "crawler", Vec2( -5.0f, 7.0f ) );
+	ai_actor->Possess( new AIController() );
+	SpatialOSServer::RequestEntityCreation( ai_actor );
 
 	std::cout << "Finished world setup" << std::endl;
 }
@@ -90,17 +93,40 @@ void WorldSim::Shutdown()
 void WorldSim::UpdateWorldSim( float deltaSeconds )
 {
 	Zone::UpdateZones( deltaSeconds );
-	//std::cout << "begin sending updates" << std::endl;
-	//uint count = 0;
+
 	for( EntityBase* entity : Zone::GetZone()->m_entities )
 	{
-		//std::cout << "Iteration: " << count++ << std::endl;
 		if( entity )
 		{
 			SpatialOSServer::UpdatePosition( entity );
 		}
 	}
-	//std::cout << "end sending updates" << std::endl;
+}
+
+//--------------------------------------------------------------------------
+/**
+* CreateSimulatedEntity
+*/
+EntityBase* WorldSim::CreateSimulatedEntity( const std::string& name )
+{
+	if (AbilityBaseDefinition::DoesDefExist(name))
+	{
+		return new AbilityBase(name);
+	}
+	else if (ActorBaseDefinition::DoesDefExist(name))
+	{
+		ActorBase* actor = new ActorBase(name);
+		if (name == "player")
+		{
+			actor->Possess(new SimController());
+		}
+		else
+		{
+			actor->Possess(new AIController());
+		}
+		return actor;
+	}
+	return nullptr;
 }
 
 //--------------------------------------------------------------------------

@@ -243,7 +243,7 @@ void SpatialOSClient::UpdatePlayerControls( EntityBase* player, const Vec2& forc
 		ctrUpdate.set_x_move( force_vec.x );
 		ctrUpdate.set_y_move( force_vec.y );
 		worker::UpdateParameters params;
-		Logf( "", "	Sending intent x: %.04f y:%.04f ", force_vec.x, force_vec.y );
+		Logf( "", "	Sending intent x: %.04f y:%.04f with entity ID: %i", force_vec.x, force_vec.y, info->id );
 		GetContext()->connection->SendComponentUpdate<siren::PlayerControls>( info->id, ctrUpdate, params );
 	}
 	else
@@ -416,7 +416,7 @@ void SpatialOSClient::RegisterCallbacks( View& view )
 
 	view.OnCommandResponse<DeleteClientEntity>( []( const worker::CommandResponseOp<DeleteClientEntity>& op )
 		{
-			Logf( "", op.Message.c_str() );
+			Logf( "%s", op.Message.c_str() );
 		}
 	);
 
@@ -444,6 +444,7 @@ void SpatialOSClient::Update()
 		{
 			if( info->game_entity )
 			{
+				Logf("SpatialOSClient::Update", "Updating ID: %i", ent_pair.first);
 				UpdateEntityWithWorkerEntity( *(info->game_entity), tracker.worker_entity );
 			}
 			else
@@ -457,7 +458,7 @@ void SpatialOSClient::Update()
 			// Game doesn't know about the instance from the server yet.
 			
 			//	Working on getting an entity into the game from the server
-			Logf("SpatialOSClient::Update", "can't find info");
+			Logf("SpatialOSClient::Update", "can't find info with ID: %i", ent_pair.first);
 			worker::Option<improbable::MetadataData&> data = tracker.worker_entity.Get<improbable::Metadata>();
 			worker::Option<improbable::InterestData&> intrest = tracker.worker_entity.Get<improbable::Interest>();
 			if (data)
@@ -566,11 +567,15 @@ void SpatialOSClient::EntityQueryResponse( const worker::EntityQueryResponseOp& 
 */
 void SpatialOSClient::ClientCreationResponse( const worker::CommandResponseOp<CreateClientEntity>& op )
 {
+	Logf( "SpatialOSClient::ClientCreationResponse", "Response with Request ID: %i and Entity ID: %i", op.RequestId.Id, op.EntityId );
 	if( op.StatusCode == worker::StatusCode::kSuccess )
 	{
+		Logf( "SpatialOSClient::ClientCreationResponse", "		Response from response received: %i", op.Response->id_created() );
 		entity_info_t* info = GetInfoWithCreateEntityCommandRequestId( op.RequestId.Id );
+
 		if( info )
 		{
+			Logf( "SpatialOSClient::ClientCreationResponse", "		Info found with entity ID: %i", info->id );
 			if( !info->game_entity )
 			{
 				Logf( "WARNING", "Improper creation given within SpatialOSClient::ClientCreationResponse" );
