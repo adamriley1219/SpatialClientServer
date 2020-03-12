@@ -115,12 +115,93 @@ void Game::GameRender() const
 {
 	g_theRenderer->BindMaterial( g_theRenderer->CreateOrGetMaterialFromXML( "Data/Materials/default_unlit.mat" ) );
 
-	Zone::GetZone()->m_physics_system->DebugRender(g_theRenderer, Rgba::GREEN);
-
 	std::vector<Vertex_PCU> verts;
+
 	AddVertsForRing2D(verts, Vec2::ZERO, 5.0f, 0.5f, Rgba::CYAN);
 
+	Vec2 client_pos = m_clientEntity->GetPosition();
+
+	int int_pos_x = (int)client_pos.x;
+	int int_pos_y = (int)client_pos.y;
+
+	int offset_x = int_pos_x % 10;
+	int offset_y = int_pos_y % 10;
+
+	AABB2 box = AABB2::ONE_BY_ONE;
+	box.AddPosition( int_pos_x - offset_x - 25, int_pos_y - offset_y - 25 );
+	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY );
+
+	box.AddPosition( 10, 0 );
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition( 10, 0 );
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition( 10, 0 );
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition( 10, 0 );
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition( 10, 0 );
+	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY );
+
+	box.AddPosition( 0, 10 );
+	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY );
+
+	box.AddPosition( -10, 0 );
+	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY );
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+
+	box.AddPosition(0, 10);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+
+	box.AddPosition(0, 10);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+
+	box.AddPosition(0, 10);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	box.AddPosition(10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+
 	g_theRenderer->DrawVertexArray(verts);
+
+	Zone::GetZone()->m_physics_system->DebugRender(g_theRenderer, Rgba::GREEN);
+
 
 	g_theDebugRenderSystem->RenderToCamera( &g_theGame->m_curentCamera );
 }
@@ -218,7 +299,7 @@ void Game::RenderDevConsole() const
 void Game::UpdateCamera( float deltaSeconds )
 {
 	UNUSED( deltaSeconds );
-	
+	m_curentCamera.SetModelMatrix( Matrix44::MakeTranslation2D( m_clientEntity->GetPosition() ) );
 }
 
 //--------------------------------------------------------------------------

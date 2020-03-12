@@ -14,9 +14,8 @@
     "layer_configurations": [
       {
         "layer": "simulation",
-        "rectangle_grid": {
-          "cols": 1,
-          "rows": 1
+        "hex_grid": {
+          "num_workers": 16
         }
       }
     ]

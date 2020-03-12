@@ -353,7 +353,7 @@ void SpatialOSServer::Update()
 				new_info.game_entity = g_theSim->CreateSimulatedEntity(name);
 				if (new_info.game_entity)
 				{
-					UpdateEntityWithWorkerEntity(*(new_info.game_entity), tracker.worker_entity, view->m_component_authority[ent_pair.first] );
+					InitEntityWithWorkerEntity(*(new_info.game_entity), tracker.worker_entity );
 					new_info.id = ent_pair.first;
 					new_info.created = true;
 					GetInstance()->entity_info_list.push_back( new_info );
@@ -419,6 +419,27 @@ void SpatialOSServer::UpdateEntityWithWorkerEntity( EntityBase& entity, worker::
 					Vec2( input_from_player->x_move(), input_from_player->y_move() )
 				);
 		}
+	}
+}
+
+//--------------------------------------------------------------------------
+/**
+* InitEntityWithWorkerEntity
+*/
+void SpatialOSServer::InitEntityWithWorkerEntity( EntityBase& entity, worker::Entity& worker_entity )
+{
+	worker::Option<improbable::PositionData&> pos = worker_entity.Get<improbable::Position>();
+
+	if (pos)
+	{
+		entity.SetPosition((float)pos->coords().x(), (float)pos->coords().z());
+	}
+	worker::Option<siren::PlayerControlsData&> input_from_player = worker_entity.Get<siren::PlayerControls>();
+	if (input_from_player)
+	{
+		((SimController*)((ActorBase*)&entity)->GetController())->SetMoveDirection(
+			Vec2(input_from_player->x_move(), input_from_player->y_move())
+		);
 	}
 }
 

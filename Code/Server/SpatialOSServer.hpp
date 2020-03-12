@@ -50,6 +50,7 @@ private:
 private:
 	void Update();
 	static void UpdateEntityWithWorkerEntity( EntityBase& entity, worker::Entity& worker_entity, worker::Map<worker::ComponentId, worker::Authority>& auth );
+	static void InitEntityWithWorkerEntity( EntityBase& entity, worker::Entity& worker_entity );
 
 private:
 	static uint64_t DeleteEntityResponse( const worker::DeleteEntityResponseOp& op );

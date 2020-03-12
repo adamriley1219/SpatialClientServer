@@ -97,12 +97,30 @@ static std::string get_random_characters(size_t count) {
 
 int CreateCleanSnapshot()
 {
+	// Pre data
 	improbable::WorkerAttributeSet clientAttributeSet({ "client" });
 	improbable::WorkerAttributeSet serverAttributeSet({ "simulation" });
 	improbable::WorkerRequirementSet clientRequirementSet({ clientAttributeSet });
 	improbable::WorkerRequirementSet serverRequirementSet({ serverAttributeSet });
 	improbable::WorkerRequirementSet clientOrServerRequirementSet({ clientAttributeSet, serverAttributeSet });
 
+
+	worker::Map<worker::ComponentId, improbable::WorkerRequirementSet> componentAcl;
+	componentAcl[improbable::Position::ComponentId] = serverRequirementSet;
+	componentAcl[improbable::EntityAcl::ComponentId] = serverRequirementSet;
+	componentAcl[improbable::Metadata::ComponentId] = serverRequirementSet;
+	componentAcl[siren::PlayerControls::ComponentId] = clientRequirementSet;
+
+	improbable::ComponentInterest::QueryConstraint relativeConstraint;
+	relativeConstraint.set_relative_box_constraint({ {{20.5, 9999, 20.5}} });
+	improbable::ComponentInterest::Query relativeQuery;
+	relativeQuery.set_constraint(relativeConstraint);
+	relativeQuery.set_full_snapshot_result({ true });
+	improbable::ComponentInterest ai_interest{ {relativeQuery} };
+
+	siren::PlayerControls::Data cntr_data;
+
+	// API Addition
 	worker::Entity apiEntity;
 	apiEntity.Add<improbable::Metadata>({ "API" });
 	apiEntity.Add<improbable::Persistence>({});
@@ -122,9 +140,50 @@ int CreateCleanSnapshot()
 	interestData.component_interest()[siren::ServerAPI::ComponentId] = componentInterest;
 	apiEntity.Add<improbable::Interest>(interestData);
 
-	worker::Result<worker::SnapshotOutputStream, worker::StreamErrorCode> outputStream = worker::SnapshotOutputStream::Create(ComponentRegistry, "D:/GitHubRepos/SpatialClientServer/SpatialOS/snapshots/CleanServerAPI.snapshot");
+
+
+	// World creation
+	worker::Entity turret1;
+	turret1.Add<improbable::Metadata>({ "turret" });
+	turret1.Add<improbable::Persistence>({});
+	turret1.Add<improbable::Position>({ {7, 0, 7} });
+	turret1.Add<siren::PlayerControls>(cntr_data);
+	turret1.Add<improbable::EntityAcl>(
+		improbable::EntityAcl::Data{/* read */ clientOrServerRequirementSet, /* write */ componentAcl });
+	turret1.Add<improbable::Interest>({ {{siren::Client::ComponentId, ai_interest}} });
+
+	worker::Entity turret2;
+	turret2.Add<improbable::Metadata>({ "turret" });
+	turret2.Add<improbable::Persistence>({});
+	turret2.Add<improbable::Position>({ {5, 0, 7} });
+	turret2.Add<siren::PlayerControls>(cntr_data);
+	turret2.Add<improbable::EntityAcl>(
+		improbable::EntityAcl::Data{/* read */ clientOrServerRequirementSet, /* write */ componentAcl });
+	turret2.Add<improbable::Interest>({ {{siren::Client::ComponentId, ai_interest}} });
+
+	worker::Entity crawler;
+	crawler.Add<improbable::Metadata>({ "crawler" });
+	crawler.Add<improbable::Persistence>({});
+	crawler.Add<improbable::Position>({ {-5, 0, 7} });
+	crawler.Add<siren::PlayerControls>(cntr_data);
+	crawler.Add<improbable::EntityAcl>(
+		improbable::EntityAcl::Data{/* read */ clientOrServerRequirementSet, /* write */ componentAcl });
+	crawler.Add<improbable::Interest>({ {{siren::Client::ComponentId, ai_interest}} });
+
+
+	worker::Result<worker::SnapshotOutputStream, worker::StreamErrorCode> outputStream = worker::SnapshotOutputStream::Create(ComponentRegistry, "D:/GitHubRepos/SpatialClientServer/SpatialOS/snapshots/WorldWithAPI.snapshot");
+	if( !outputStream )
+	{
+		return 1;
+	}
+	
 	worker::Result<worker::None, worker::StreamErrorCode> entityWritten = outputStream->WriteEntity(1, apiEntity);
-	if (!entityWritten) {
+	worker::Result<worker::None, worker::StreamErrorCode> entityWritten1 = outputStream->WriteEntity(2, turret1);
+	worker::Result<worker::None, worker::StreamErrorCode> entityWritten2 = outputStream->WriteEntity(3, turret2);
+	worker::Result<worker::None, worker::StreamErrorCode> entityWritten3 = outputStream->WriteEntity(4, crawler);
+		
+	if ( !entityWritten || !entityWritten1 || !entityWritten2 || !entityWritten3 ) 
+	{
 		return 1;
 	}
 	return 0;
@@ -262,6 +321,7 @@ void SpatialOSClient::Run( std::vector<std::string> arguments )
 	auto now = std::chrono::high_resolution_clock::now();
 	std::srand((uint)std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count());
 
+	//CreateCleanSnapshot();
 
 	constexpr unsigned kFramesPerSecond = 30;
 	constexpr std::chrono::duration<double> kFramePeriodSeconds{

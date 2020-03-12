@@ -60,21 +60,21 @@ void WorldSim::Startup()
 	std::cout << "Finished registering" << std::endl;
 
 
-	std::cout << "world setup" << std::endl;
-	
-	ActorBase* ai_actor = new ActorBase( "turret", Vec2( 6.5f, 7.0f ) );
-	ai_actor->Possess( new AIController() );
-	SpatialOSServer::RequestEntityCreation( ai_actor );
-
-	ai_actor = new ActorBase( "turret", Vec2( 5.0f, 7.0f ) );
-	ai_actor->Possess( new AIController() );
-	SpatialOSServer::RequestEntityCreation( ai_actor );
-
-	ai_actor = new ActorBase( "crawler", Vec2( -5.0f, 7.0f ) );
-	ai_actor->Possess( new AIController() );
-	SpatialOSServer::RequestEntityCreation( ai_actor );
-
-	std::cout << "Finished world setup" << std::endl;
+// 	std::cout << "world setup" << std::endl;
+// 	
+// 	ActorBase* ai_actor = new ActorBase( "turret", Vec2( 6.5f, 7.0f ) );
+// 	ai_actor->Possess( new AIController() );
+// 	SpatialOSServer::RequestEntityCreation( ai_actor );
+// 
+// 	ai_actor = new ActorBase( "turret", Vec2( 5.0f, 7.0f ) );
+// 	ai_actor->Possess( new AIController() );
+// 	SpatialOSServer::RequestEntityCreation( ai_actor );
+// 
+// 	ai_actor = new ActorBase( "crawler", Vec2( -5.0f, 7.0f ) );
+// 	ai_actor->Possess( new AIController() );
+// 	SpatialOSServer::RequestEntityCreation( ai_actor );
+// 
+// 	std::cout << "Finished world setup" << std::endl;
 }
 
 //--------------------------------------------------------------------------
