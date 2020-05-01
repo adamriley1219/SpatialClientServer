@@ -226,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\Run\Data\GameConfig.xml" />
+    <Xml Include="..\..\Run\Data\Shaders\shader.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SpatialOS\workers\External\cmake_build\Schema\Schema.vcxproj">

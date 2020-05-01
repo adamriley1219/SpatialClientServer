@@ -113,8 +113,7 @@ bool Game::HandleKeyReleased( unsigned char keyCode )
 */
 void Game::GameRender() const
 {
-	g_theRenderer->BindMaterial( g_theRenderer->CreateOrGetMaterialFromXML( "Data/Materials/default_unlit.mat" ) );
-
+	//g_theRenderer->BindShader( g_theRenderer->CreateOrGetShaderFromFile( "Data/Shaders/shader.xml" ) );
 	std::vector<Vertex_PCU> verts;
 
 	AddVertsForRing2D(verts, Vec2::ZERO, 5.0f, 0.5f, Rgba::CYAN);
@@ -127,81 +126,108 @@ void Game::GameRender() const
 	int offset_x = int_pos_x % 10;
 	int offset_y = int_pos_y % 10;
 
-	AABB2 box = AABB2::ONE_BY_ONE;
-	box.AddPosition( int_pos_x - offset_x - 25, int_pos_y - offset_y - 25 );
-	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY );
+	Vec2 mins;
+	Vec2 maxs( 1.0f / 8.0f, 1.0f / 8.0f );
+
+	AABB2 box = AABB2( Vec2(), Vec2( 10.0f, 10.0f ) );
+	box.AddPosition( int_pos_x - offset_x - 35, int_pos_y - offset_y - 35 );
+	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY, mins, maxs );
 
 	box.AddPosition( 10, 0 );
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition( 10, 0 );
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition( 10, 0 );
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition( 10, 0 );
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition( 10, 0 );
-	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY );
+	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY, mins, maxs );
 
 	box.AddPosition( 0, 10 );
-	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY );
+	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY, mins, maxs );
 
 	box.AddPosition( -10, 0 );
-	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY );
+	AddVertsForAABB2D( verts, box, Rgba::FADED_GRAY, mins, maxs );
 	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 
 	box.AddPosition(0, 10);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
-
-	box.AddPosition(0, 10);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
-
-	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
-	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
-	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
-	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
-	box.AddPosition(-10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 
 	box.AddPosition(0, 10);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+
+	box.AddPosition(0, 10);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 	box.AddPosition(10, 0);
-	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
 
+	box.AddPosition(0, 10);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+	box.AddPosition(-10, 0);
+	AddVertsForAABB2D(verts, box, Rgba::FADED_GRAY, mins, maxs);
+
+	g_theRenderer->BindTextureView( 0, (TextureView*) g_theRenderer->CreateOrGetTextureViewFromFile( "Data/Images/Terrain_8x8.png" ) );
+	g_theRenderer->BindSampler( eSampleMode::SAMPLE_MODE_POINT );
+	g_theRenderer->SetBlendMode( BLEND_MODE_OPAQUE );
 	g_theRenderer->DrawVertexArray(verts);
 
 	Zone::GetZone()->m_physics_system->DebugRender(g_theRenderer, Rgba::GREEN);
-
+	for( EntityBase* actor : Zone::GetZone()->m_entities )
+	{
+		if( actor && actor->GetType() == ENTITY_ACTOR )
+		{
+			ActorRenderable* actor_r = (ActorRenderable*) actor;
+			actor_r->Render();
+		}
+	}
 
 	g_theDebugRenderSystem->RenderToCamera( &g_theGame->m_curentCamera );
 }
